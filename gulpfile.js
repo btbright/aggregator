@@ -56,7 +56,7 @@ gulp.task('scripts', function(){
 
 var customOpts = {
   entries: [packageConfig.paths.app],
-  transform: ['reactify','debowerify'],
+  transform: ['babelify','reactify','debowerify'],
   debug: true
 };
 var opts = assign({}, watchify.args, customOpts);

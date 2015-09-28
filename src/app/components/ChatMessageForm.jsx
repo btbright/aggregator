@@ -1,0 +1,51 @@
+import React, { Component, PropTypes } from 'react'
+import cx from 'classnames'
+import $ from 'jquery'
+
+class ChatMessageForm extends Component {
+	constructor(props) {
+      	super(props);
+		this.state = {
+			hasSpaceConflict : false,
+			userInput : ''
+		}
+		this.handleChange = this.handleChange.bind(this)
+	}
+	handleChange(e){
+		var hasConflict = false;
+		var inputText = e.target.value;
+		
+		var submitInstructionsWidth = $(React.findDOMNode(this.refs.submitInstructions)).width();
+		var textWidth = $(React.findDOMNode(this.refs.hiddenCommentMirror)).width() || 0;
+		var inputWidth = $(React.findDOMNode(e.target)).width();
+
+		if (inputWidth-submitInstructionsWidth<=textWidth+60){
+			hasConflict = true;
+		}
+		
+		this.setState({
+			userInput: inputText,
+			hasSpaceConflict : hasConflict
+		});
+	}
+	render(){
+		var classNames = cx('comment-form',{
+			'has-entered-text' : !!this.state.userInput,
+			'space-conflict' : this.state.hasSpaceConflict
+		});
+		var hiddenCommentMirror;
+		if (!!this.state.userInput){
+			hiddenCommentMirror = <span ref="hiddenCommentMirror" className="hidden-comment-mirror">{this.state.userInput}</span>
+		}
+		
+		return (
+			<form className={classNames}>
+			  {hiddenCommentMirror}
+              <input type="text" value={this.state.userInput} ref="commentBox" onChange={this.handleChange} className="comment-box" placeholder="Enter a comment here..." />
+              <span ref="submitInstructions" className="submit-instructions">Press Enter To Submit</span>
+            </form>
+			);
+	}
+}
+
+export default ChatMessageForm

@@ -1,15 +1,16 @@
-var React = require('react');
+import React, { Component, PropTypes } from 'react'
 
-var AggregatorBarText = React.createClass({
-	propTypes: {
-		position : React.PropTypes.string.isRequired,
-		text : React.PropTypes.string.isRequired,
-	},
-	render: function(){
+class AggregatorBarText extends Component {
+	render() {
 		return (
 			<span className={this.props.position+"-text"}>{this.props.text}</span>
-			);
+			)
 	}
-});
+}
 
-module.exports = AggregatorBarText;
+AggregatorBarText.propTypes = {
+	position : React.PropTypes.string.isRequired,
+	text : React.PropTypes.string.isRequired,
+}
+
+export default AggregatorBarText

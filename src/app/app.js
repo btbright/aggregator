@@ -1,7 +1,7 @@
-var React = require('react');
-var AggregatorApp = require('./components/App.jsx');
+import React from 'react'
+import App from './components/App.jsx'
 
 React.render(
-	<AggregatorApp />,
+	<App />,
 	document.getElementById("react-root")
-	);
+	)
