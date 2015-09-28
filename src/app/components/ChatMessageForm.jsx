@@ -10,6 +10,7 @@ class ChatMessageForm extends Component {
 			userInput : ''
 		}
 		this.handleChange = this.handleChange.bind(this)
+		this.handleSubmit = this.handleSubmit.bind(this)
 	}
 	handleChange(e){
 		var hasConflict = false;
@@ -28,6 +29,14 @@ class ChatMessageForm extends Component {
 			hasSpaceConflict : hasConflict
 		});
 	}
+	handleSubmit(e) {
+		const text = e.target.value.trim();
+		if (e.which === 13) {
+		  e.preventDefault()
+		  this.props.onNewMessage(text);
+		  this.setState({ userInput: '' });
+		}
+	}
 	render(){
 		var classNames = cx('comment-form',{
 			'has-entered-text' : !!this.state.userInput,
@@ -41,7 +50,14 @@ class ChatMessageForm extends Component {
 		return (
 			<form className={classNames}>
 			  {hiddenCommentMirror}
-              <input type="text" value={this.state.userInput} ref="commentBox" onChange={this.handleChange} className="comment-box" placeholder="Enter a comment here..." />
+              <input 
+              	type="text" 
+              	value={this.state.userInput} 
+              	ref="commentBox" 
+              	onChange={this.handleChange} 
+              	onKeyDown={this.handleSubmit.bind(this)}
+              	className="comment-box" 
+              	placeholder="Enter a comment here..." />
               <span ref="submitInstructions" className="submit-instructions">Press Enter To Submit</span>
             </form>
 			);

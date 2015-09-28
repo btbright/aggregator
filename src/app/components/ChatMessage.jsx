@@ -28,7 +28,7 @@ class ChatMessage extends Component {
 		}
 		var commentClasses = cx('comment','clearfix',{
 			'comment-aggregated' : this.props.isAggregated,
-			'has-clicked' : this.props.hasUserClicked
+			'has-clicked' : this.props.hasUserVoted
 		});
 		return (
 			<div onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.props.onClick} className={commentClasses}>
@@ -49,7 +49,7 @@ ChatMessage.propTypes = {
 	userName : PropTypes.string.isRequired,
 	displayText : PropTypes.string.isRequired,
 	formattedTime : PropTypes.string.isRequired,
-	hasUserClicked : PropTypes.bool,
+	hasUserVoted : PropTypes.bool,
 	isAggregated : PropTypes.bool,
 	clicks : PropTypes.number,
 	aggregationLevel : PropTypes.string

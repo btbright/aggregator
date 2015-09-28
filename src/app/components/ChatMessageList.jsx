@@ -7,7 +7,7 @@ class ChatMessageList extends Component {
 		return (
 			<div className="chat-messsage-list">
 			  {Object.keys(this.props.messages).map(function(key,i){
-				return <ChatMessage hasUserClicked={this.props.messages[key].hasUserClicked} onClick={this.props.chatMessageClicked} key={this.props.messages[key].id} {...this.props.messages[key]} />
+				return <ChatMessage hasUserClicked={this.props.messages[key].hasUserClicked} onClick={this.props.handleChatMessageClick} key={this.props.messages[key].id} {...this.props.messages[key]} />
 			  },this)}
 			</div>
 			);
