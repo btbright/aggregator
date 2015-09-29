@@ -17,7 +17,7 @@ export default function(clicks, time){
 	function calculateVelocity(activeClickCount){
 		//calc accelerations
 		var thrustDV = (activeClickCount * ballisticsParameters.THRUST_VELOCITY)/ballisticsParameters.MASS;
-		var dragDV = -ballisticsParameters.DRAG_CONSTANT * currentVelocity;
+		var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity); //only drag on way up to clear off quicker
 		//calc velocity
 		return (thrustDV + ballisticsParameters.GRAVITY_ACCELERATION)*frameRate;
 	}

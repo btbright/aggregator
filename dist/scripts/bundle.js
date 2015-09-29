@@ -35418,7 +35418,7 @@ var AggregatorBar = (function (_Component) {
 					'div',
 					{ className: barWrapClasses },
 					this.state.flashes.map(function (flashKey) {
-						return _react2['default'].createElement('div', { key: flashKey, style: { width: width + '%', right: width + '%' }, className: 'bar-leader' });
+						return _react2['default'].createElement('div', { key: flashKey, style: { width: '100%', right: 100 - width + '%' }, className: 'bar-leader' });
 					}),
 					residue,
 					_react2['default'].createElement('div', { className: 'bar-inner', style: { width: width + '%' } }),
@@ -36159,6 +36159,7 @@ function aggregators(state, action) {
 				x: 0,
 				isComplete: false
 			}].concat(_toConsumableArray(state));
+		//set calculated aggregator state to time based on click history
 		case _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME:
 			var index = state.findIndex(function (m) {
 				return m.id == action.id;
@@ -36403,6 +36404,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getLevel = getLevel;
 var levelColors = {
+	0: "default",
 	1: "blue",
 	2: "green",
 	3: "gold"
@@ -36411,10 +36413,13 @@ var levelColors = {
 exports.levelColors = levelColors;
 
 function getLevel(x) {
-	if (x < 40) {
+	if (x < 30) {
+		return 0;
+	}
+	if (x < 60) {
 		return 1;
 	}
-	if (x < 70) {
+	if (x < 90) {
 		return 2;
 	}
 	return 3;
@@ -36447,7 +36452,7 @@ exports["default"] = function (clicks, time) {
 	function calculateVelocity(activeClickCount) {
 		//calc accelerations
 		var thrustDV = activeClickCount * ballisticsParameters.THRUST_VELOCITY / ballisticsParameters.MASS;
-		var dragDV = -ballisticsParameters.DRAG_CONSTANT * currentVelocity;
+		var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity); //only drag on way up to clear off quicker
 		//calc velocity
 		return (thrustDV + ballisticsParameters.GRAVITY_ACCELERATION) * frameRate;
 	}

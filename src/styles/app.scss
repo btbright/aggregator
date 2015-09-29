@@ -95,6 +95,16 @@ textarea {
    Aggregator styles
    ========================================================================== */
 
+$levelBlue: #3FCEF3;
+$levelGreen: #33C333;
+$levelGold: #FFB600;
+$levelDefault: #BBBBBB;
+
+$levelBackgroundBlue: rgba(63,206,243,.1);
+$levelBackgroundGreen: rgba(51,195,51,.1);
+$levelBackgroundGold: rgba(255,182,0,.1);
+$levelBackgroundDefault: rgba(0,0,0,.05);
+
 body {
     background:#fbfbfb;
     color:rgba(0,0,0,.5);
@@ -267,18 +277,23 @@ body {
     }
 
     &.aggregator-level-gold {
-        border-left: 2px solid #FFB600;
-        background: rgba(255,182,0,.1);
+        border-left: 2px solid $levelGold;
+        background: $levelBackgroundGold;
     }
 
     &.aggregator-level-blue {
-        border-left: 2px solid #3FCEF3;
-        background: rgba(63,206,243,.1);
+        border-left: 2px solid $levelBlue;
+        background: $levelBackgroundBlue;
     }
 
     &.aggregator-level-green {
-        border-left: 2px solid #33C333;
-        background: rgba(51,195,51,.1);
+        border-left: 2px solid $levelGreen;
+        background: $levelBackgroundGreen;
+    }
+
+    &.aggregator-level-default {
+        border-left: 2px solid $levelDefault;
+        background: $levelBackgroundDefault;
     }
 
     &.aggregator-complete {
@@ -311,12 +326,13 @@ body {
 
             .bar-inner {
                 -webkit-user-select:none;
-                background:#33C333;
+                background:$levelDefault;
                 height:100%;
                 position: relative;
                 cursor: pointer;
                 position: relative;
                 z-index: 1;
+                transition: background-color .2s;
 
                 &::before {
                     opacity: 0;
@@ -358,19 +374,19 @@ body {
                 background: #fff;
                 top:0px;
                 left:0px;
-                opacity: 0.1;
+                opacity: 0.2;
 
                 &.bar-residue-green {
-                    background: #33C333;
+                    background: $levelGreen;
                 }
                 &.bar-residue-blue {
-                    background: #3FCEF3;
+                    background: $levelBlue;
                 }
-                &.bar-residue-red {
-                    background: #FF3C3C;
+                &.bar-residue-default {
+                    background: $levelDefault;
                 }
                 &.bar-residue-gold {
-                    background: rgb(255,182,0);
+                    background: $levelGold;
                 }
             }
 
@@ -380,7 +396,7 @@ body {
                 right:0px;
                 height:100%;
                 transition:width .7s ease-in-out;
-                background: rgba(255,255,255,.25);
+                background: rgba(255,255,255,.3);
                 opacity: 1;
                 animation-name: boom;
                 animation-duration: 0.3s;
@@ -425,13 +441,16 @@ body {
             }
 
             &.bar-blue .bar-inner {
-                background:#3FCEF3;
+                background: $levelBlue;
             }
-            &.bar-red .bar-inner {
-                background: #FF3C3C;
+            &.bar-green .bar-inner {
+                background: $levelGreen;
             }
             &.bar-gold .bar-inner {
-                background: rgb(255,182,0);
+                background: $levelGold;
+            }
+            &.bar-default .bar-inner {
+                background: $levelDefault;
             }
         }
     }

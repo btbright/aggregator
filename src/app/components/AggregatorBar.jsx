@@ -58,7 +58,7 @@ class AggregatorBar extends Component {
 			<div className="bar">
 				<div className={barWrapClasses}>
 					{this.state.flashes.map(function(flashKey){
-						return <div key={flashKey} style={{width:width + '%',right:width + '%'}} className='bar-leader'></div>
+						return <div key={flashKey} style={{width:'100%',right:100-width + '%'}} className='bar-leader'></div>
 					})}
 					{residue}
 					<div className="bar-inner" style={{width:width + '%'}}></div>

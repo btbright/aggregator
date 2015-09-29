@@ -19,6 +19,7 @@ export default function aggregators(state = initialState, action) {
 		  x : 0,
 		  isComplete : false
 		},...state]
+	//set calculated aggregator state to time based on click history
 	case UPDATE_AGGREGATOR_TO_TIME:
 		var index = state.findIndex(m => m.id == action.id);
 		if (index === -1) return state;
