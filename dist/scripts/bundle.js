@@ -35263,7 +35263,7 @@ var Aggregator = (function (_Component) {
 		value: function handleOnMouseUp() {
 			var _this2 = this;
 
-			if (!this.state.lastMouseDown) return;
+			if (!this.state.lastMouseDown || this.props.isComplete) return;
 			var timeSinceLastMouseDown = Date.now() - this.state.lastMouseDown;
 			if (timeSinceLastMouseDown > _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT) {
 				return;

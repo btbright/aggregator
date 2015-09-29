@@ -54,7 +54,7 @@ class Aggregator extends Component {
 		})
 	}
 	handleOnMouseUp(){
-		if (!this.state.lastMouseDown) return;
+		if (!this.state.lastMouseDown || this.props.isComplete) return;
 		var timeSinceLastMouseDown = Date.now() - this.state.lastMouseDown;
 		if (timeSinceLastMouseDown > constants.Aggregator.CLICKTIMEOUT){
 			return;
