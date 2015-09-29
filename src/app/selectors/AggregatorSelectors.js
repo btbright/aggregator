@@ -1,4 +1,5 @@
-import { createSelector } from 'reselect';
+import { createSelector } from 'reselect'
+import { levelColors, getLevel } from '../utils/levels'
 
 const chatMessagesSelector = (state) => state.chatMessages
 const aggregatorsSelector = (state) => state.aggregators
@@ -10,14 +11,14 @@ function mapAggregatedMessages(chatMessages, aggregators){
 			var chatMessage = chatMessages.find((message) => message.id === aggregator.objectId);
 			return {
 				id : aggregator.id,
-				level : aggregator.level,
 				maxValue : aggregator.maxValue,
 				clicks : aggregator.clicks,
 				x : aggregator.x,
 				text : chatMessage.text,
 				userName : chatMessage.userName,
 				time : chatMessage.time,
-				hasUserNominated : chatMessage.hasUserNominated
+				hasUserNominated : chatMessage.hasUserNominated,
+				isComplete : aggregator.isComplete
 			}
 		})
 }
@@ -31,21 +32,6 @@ export const aggregatedMessagesSelector = createSelector(
 		}
 	});
 
-const levelColors = {
-	1 : "blue",
-	2 : "green",
-	3 : "gold"
-};
-
-function getBarLevel(x){
-	if (x < 40){
-		return 1;
-	}
-	if (x < 70){
-		return 2;
-	}
-	return 3;
-}
 
 function mapDisplayMessages(aggregatedMessages){
 	return aggregatedMessages
@@ -53,12 +39,13 @@ function mapDisplayMessages(aggregatedMessages){
 			return {
 				id : message.id,
 				displayText : message.text,
-				barColor : levelColors[getBarLevel(message.x)],
+				barColor : levelColors[getLevel(message.x)],
 				barValue : message.x,
 				rightText : new Date(message.time).toLocaleTimeString(),
 				residueValue : message.maxValue,
-				residueColorClass : levelColors[getBarLevel(message.maxValue)],
-				leftText : message.userName
+				residueColorClass : levelColors[getLevel(message.maxValue)],
+				leftText : message.userName,
+				isComplete : message.isComplete
 			}
 		});
 }

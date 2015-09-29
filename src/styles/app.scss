@@ -119,6 +119,10 @@ body {
     position:relative;
     min-height: 300px;
     margin-right:20px;
+    .chat-message-list {
+        max-height:500px;
+        overflow-y: auto;
+    }
     .comment {
         width:100%;
         position: relative;
@@ -245,16 +249,50 @@ body {
     }
 }
 
+.aggregator-list {
+    max-height:500px;
+    overflow-y: auto;
+}
 .aggregator {
     clear:both;
     margin:0px 0px 30px;
     position: relative;
     background:rgba(0,0,0,.04);
     cursor: pointer;
-    transition: background .2s;
+    transition: background .2s, border .2s;
+    box-sizing: border-box;
 
     &:hover {
         background:rgba(0,0,0,.03);
+    }
+
+    &.aggregator-level-gold {
+        border-left: 2px solid #FFB600;
+        background: rgba(255,182,0,.1);
+    }
+
+    &.aggregator-level-blue {
+        border-left: 2px solid #3FCEF3;
+        background: rgba(63,206,243,.1);
+    }
+
+    &.aggregator-level-green {
+        border-left: 2px solid #33C333;
+        background: rgba(51,195,51,.1);
+    }
+
+    &.aggregator-complete {
+        cursor: default;
+        .bar-inner {
+            opacity: 0 !important;
+        }
+        .right-text,
+        .left-text {
+            opacity: 1 !important;
+        }
+        .bar-residue {
+            opacity: 0 !important;
+        }
     }
 
     .bar {
@@ -277,7 +315,6 @@ body {
                 height:100%;
                 position: relative;
                 cursor: pointer;
-                
                 position: relative;
                 z-index: 1;
 
@@ -372,18 +409,19 @@ body {
                 font-size: 11px;
                 font-weight: 500;
                 color: rgba(0,0,0,.2);
-                transition:transform .2s;
+                transition:opacity .2s;
                 z-index: 0;
+                opacity: 1;
             }
 
             .left-text {
                 left:3px;
                 right:auto;
+                opacity: 0;
             }
 
             &.bar-almost-full .right-text {
-                transform: translateY(14px);
-                color: rgba(0,0,0,.3);
+                opacity: 0;
             }
 
             &.bar-blue .bar-inner {

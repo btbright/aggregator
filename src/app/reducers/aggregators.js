@@ -8,17 +8,17 @@ export default function aggregators(state = initialState, action) {
 	case ADD_AGGREGATOR:
 		//if an aggregator already exists for the object, don't add it
 		if (state.some((aggregator) => aggregator.objectId === action.objectId)) return state;
-		return [...state,{
+		return [{
 		  id: state.reduce((maxId, todo) => Math.max(todo.id, maxId), -1) + 1,
 		  createdTime: action.createdTime,
 		  userName : action.user,
 		  objectType : action.objectType,
 		  objectId : action.objectId,
 		  clicks : [action.createdTime],
-		  level : 1,
 		  maxValue : 0,
-		  x : 0
-		}]
+		  x : 0,
+		  isComplete : false
+		},...state]
 	case UPDATE_AGGREGATOR_TO_TIME:
 		var index = state.findIndex(m => m.id == action.id);
 		if (index === -1) return state;
@@ -52,7 +52,8 @@ function aggregator(state, action){
 		var newScore = scorer(state.clicks, action.time);
 		return Object.assign({},state,{
 			x : newScore,
-			maxValue : state.maxValue >= newScore ? state.maxValue : newScore
+			maxValue : state.maxValue >= newScore ? state.maxValue : newScore,
+			isComplete : newScore === 100 || (newScore === 0 && state.maxValue != 0)
 		});
 	case ADD_CLICK_TO_AGGREGATOR:
 		return Object.assign({},state,{

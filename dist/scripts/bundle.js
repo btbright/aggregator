@@ -35074,7 +35074,7 @@ _react2['default'].render(_react2['default'].createElement(
 ), document.getElementById("react-root"));
 
 
-},{"./components/App.jsx":189,"./store/configureStore":200,"./utils/scorer":201,"react":168,"react-redux":8}],183:[function(require,module,exports){
+},{"./components/App.jsx":189,"./store/configureStore":200,"./utils/scorer":202,"react":168,"react-redux":8}],183:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35191,6 +35191,8 @@ var _constantsAppJs = require('../constants/App.js');
 
 var _constantsAppJs2 = _interopRequireDefault(_constantsAppJs);
 
+var _utilsLevels = require('../utils/levels');
+
 var Aggregator = (function (_Component) {
 	_inherits(Aggregator, _Component);
 
@@ -35226,6 +35228,10 @@ var Aggregator = (function (_Component) {
 		value: function start(update) {
 			var _this = this;
 
+			if (this.props.isComplete) {
+				this.stop();
+				return;
+			}
 			var fps = 60;
 			var frameId = requestAnimationFrame(function () {
 				return _this.start(update);
@@ -35276,8 +35282,9 @@ var Aggregator = (function (_Component) {
 	}, {
 		key: 'render',
 		value: function render() {
-			var aggregatorClassNames = (0, _classnames2['default'])('aggregator', {
-				'aggregator-user-clicking': this.state.isClicking
+			var aggregatorClassNames = (0, _classnames2['default'])('aggregator', this.props.isComplete ? 'aggregator-level-' + _utilsLevels.levelColors[(0, _utilsLevels.getLevel)(this.props.residueValue)] : '', {
+				'aggregator-user-clicking': this.state.isClicking,
+				'aggregator-complete': this.props.isComplete
 			});
 			return _react2['default'].createElement(
 				'div',
@@ -35287,6 +35294,7 @@ var Aggregator = (function (_Component) {
 					barColorClass: "bar-" + this.props.barColor,
 					barValue: this.props.barValue,
 					rightText: this.props.rightText,
+					leftText: this.props.leftText,
 					residueValue: this.props.residueValue,
 					residueColorClass: "bar-residue-" + this.props.residueColorClass }),
 				_react2['default'].createElement(_AggregatorTextJsx2['default'], { displayText: this.props.displayText })
@@ -35298,14 +35306,15 @@ var Aggregator = (function (_Component) {
 })(_react.Component);
 
 Aggregator.propTypes = {
-	aggregatorClicked: _react.PropTypes.func
+	aggregatorClicked: _react.PropTypes.func,
+	isComplete: _react.PropTypes.bool.isRequired
 };
 
 exports['default'] = Aggregator;
 module.exports = exports['default'];
 
 
-},{"../constants/App.js":195,"./../../../bower_components/classnames/index.js":1,"./AggregatorBar.jsx":185,"./AggregatorText.jsx":188,"react":168}],185:[function(require,module,exports){
+},{"../constants/App.js":195,"../utils/levels":201,"./../../../bower_components/classnames/index.js":1,"./AggregatorBar.jsx":185,"./AggregatorText.jsx":188,"react":168}],185:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35399,7 +35408,7 @@ var AggregatorBar = (function (_Component) {
 				colorClass = this.props.barColorClass;
 			}
 			var barWrapClasses = (0, _classnames2['default'])('bar-wrap', colorClass, {
-				'bar-almost-full': this.props.barValue > 90
+				'bar-almost-full': this.props.barValue > 85
 			});
 
 			return _react2['default'].createElement(
@@ -36049,11 +36058,17 @@ var ChatMessageList = (function (_Component) {
 	}
 
 	_createClass(ChatMessageList, [{
+		key: 'componentDidUpdate',
+		value: function componentDidUpdate() {
+			var chatList = _react2['default'].findDOMNode(this.refs.chatMessageList);
+			chatList.scrollTop = chatList.scrollHeight;
+		}
+	}, {
 		key: 'render',
 		value: function render() {
 			return _react2['default'].createElement(
 				'div',
-				{ className: 'chat-messsage-list' },
+				{ className: 'chat-message-list', ref: 'chatMessageList' },
 				Object.keys(this.props.messages).map(function (key, i) {
 					return _react2['default'].createElement(_ChatMessageJsx2['default'], _extends({ hasUserClicked: this.props.messages[key].hasUserClicked, onClick: this.props.handleChatMessageClick, key: this.props.messages[key].id }, this.props.messages[key]));
 				}, this)
@@ -36131,7 +36146,7 @@ function aggregators(state, action) {
 			if (state.some(function (aggregator) {
 				return aggregator.objectId === action.objectId;
 			})) return state;
-			return [].concat(_toConsumableArray(state), [{
+			return [{
 				id: state.reduce(function (maxId, todo) {
 					return Math.max(todo.id, maxId);
 				}, -1) + 1,
@@ -36140,10 +36155,10 @@ function aggregators(state, action) {
 				objectType: action.objectType,
 				objectId: action.objectId,
 				clicks: [action.createdTime],
-				level: 1,
 				maxValue: 0,
-				x: 0
-			}]);
+				x: 0,
+				isComplete: false
+			}].concat(_toConsumableArray(state));
 		case _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME:
 			var index = state.findIndex(function (m) {
 				return m.id == action.id;
@@ -36173,7 +36188,8 @@ function aggregator(state, action) {
 			var newScore = (0, _utilsScorer2['default'])(state.clicks, action.time);
 			return Object.assign({}, state, {
 				x: newScore,
-				maxValue: state.maxValue >= newScore ? state.maxValue : newScore
+				maxValue: state.maxValue >= newScore ? state.maxValue : newScore,
+				isComplete: newScore === 100 || newScore === 0 && state.maxValue != 0
 			});
 		case _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR:
 			return Object.assign({}, state, {
@@ -36186,7 +36202,7 @@ function aggregator(state, action) {
 module.exports = exports['default'];
 
 
-},{"../constants/ActionTypes":194,"../utils/scorer":201}],197:[function(require,module,exports){
+},{"../constants/ActionTypes":194,"../utils/scorer":202}],197:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -36259,13 +36275,15 @@ module.exports = exports['default'];
 
 
 },{"./aggregators":196,"./chat":197,"redux":171}],199:[function(require,module,exports){
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 
 var _reselect = require('reselect');
+
+var _utilsLevels = require('../utils/levels');
 
 var chatMessagesSelector = function chatMessagesSelector(state) {
 	return state.chatMessages;
@@ -36283,14 +36301,14 @@ function mapAggregatedMessages(chatMessages, aggregators) {
 		});
 		return {
 			id: aggregator.id,
-			level: aggregator.level,
 			maxValue: aggregator.maxValue,
 			clicks: aggregator.clicks,
 			x: aggregator.x,
 			text: chatMessage.text,
 			userName: chatMessage.userName,
 			time: chatMessage.time,
-			hasUserNominated: chatMessage.hasUserNominated
+			hasUserNominated: chatMessage.hasUserNominated,
+			isComplete: aggregator.isComplete
 		};
 	});
 }
@@ -36303,33 +36321,18 @@ var aggregatedMessagesSelector = (0, _reselect.createSelector)([chatMessagesSele
 });
 
 exports.aggregatedMessagesSelector = aggregatedMessagesSelector;
-var levelColors = {
-	1: "blue",
-	2: "green",
-	3: "gold"
-};
-
-function getBarLevel(x) {
-	if (x < 40) {
-		return 1;
-	}
-	if (x < 70) {
-		return 2;
-	}
-	return 3;
-}
-
 function mapDisplayMessages(aggregatedMessages) {
 	return aggregatedMessages.map(function (message) {
 		return {
 			id: message.id,
 			displayText: message.text,
-			barColor: levelColors[getBarLevel(message.x)],
+			barColor: _utilsLevels.levelColors[(0, _utilsLevels.getLevel)(message.x)],
 			barValue: message.x,
 			rightText: new Date(message.time).toLocaleTimeString(),
 			residueValue: message.maxValue,
-			residueColorClass: levelColors[getBarLevel(message.maxValue)],
-			leftText: message.userName
+			residueColorClass: _utilsLevels.levelColors[(0, _utilsLevels.getLevel)(message.maxValue)],
+			leftText: message.userName,
+			isComplete: message.isComplete
 		};
 	});
 }
@@ -36343,7 +36346,7 @@ var aggregatedMessagesDisplaySelector = (0, _reselect.createSelector)([aggregate
 exports.aggregatedMessagesDisplaySelector = aggregatedMessagesDisplaySelector;
 
 
-},{"reselect":179}],200:[function(require,module,exports){
+},{"../utils/levels":201,"reselect":179}],200:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -36398,15 +36401,44 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.getLevel = getLevel;
+var levelColors = {
+	1: "blue",
+	2: "green",
+	3: "gold"
+};
+
+exports.levelColors = levelColors;
+
+function getLevel(x) {
+	if (x < 40) {
+		return 1;
+	}
+	if (x < 70) {
+		return 2;
+	}
+	return 3;
+}
+
+
+},{}],202:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 var ballisticsParameters = {
 	THRUST_VELOCITY: 300,
 	THRUST_TIME: .2, //ms
 	MASS: 30,
 	GRAVITY_ACCELERATION: -10,
-	DRAG_CONSTANT: 0.8
+	DRAG_CONSTANT: 5
 };
 
+var maxX = 100;
 var frameRate = 1 / 60;
+var initialVelocity = 15;
+var initialX = 0;
 
 //takes an array of timestamps and returns 0-100 x position
 //based on physics model at a specific time
@@ -36415,7 +36447,7 @@ exports["default"] = function (clicks, time) {
 	function calculateVelocity(activeClickCount) {
 		//calc accelerations
 		var thrustDV = activeClickCount * ballisticsParameters.THRUST_VELOCITY / ballisticsParameters.MASS;
-		var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity);
+		var dragDV = -ballisticsParameters.DRAG_CONSTANT * currentVelocity;
 		//calc velocity
 		return (thrustDV + ballisticsParameters.GRAVITY_ACCELERATION) * frameRate;
 	}
@@ -36427,7 +36459,7 @@ exports["default"] = function (clicks, time) {
 	}
 
 	var t = (time || Date.now()) / 1000;
-	var x = 0;
+	var x = initialX;
 	//if there aren't any clicks
 	if (!clicks || !Array.isArray(clicks) || clicks.length === 0) return x;
 	//throw out clicks newer than t, they are in the future and don't count
@@ -36440,7 +36472,7 @@ exports["default"] = function (clicks, time) {
 	//x = x + v * dt
 	var startTime = filteredClicks[0];
 	var frames = Math.floor((t - startTime) / frameRate);
-	var currentVelocity = 0;
+	var currentVelocity = initialVelocity;
 	for (var i = 0; i < frames; i++) {
 		var activeClickCount = activeClicks(filteredClicks, startTime + i * frameRate).length;
 		currentVelocity = currentVelocity + calculateVelocity(activeClickCount);
@@ -36449,6 +36481,9 @@ exports["default"] = function (clicks, time) {
 		if (x <= 0) {
 			currentVelocity = 0;
 			x = 0;
+		}
+		if (x > maxX) {
+			x = maxX;
 		}
 	};
 	return x;

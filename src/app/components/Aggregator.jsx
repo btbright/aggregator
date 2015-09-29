@@ -3,6 +3,7 @@ import classnames from 'classnames'
 import AggregatorBar from './AggregatorBar.jsx'
 import AggregatorText from './AggregatorText.jsx'
 import constants from '../constants/App.js'
+import { levelColors, getLevel } from '../utils/levels'
 
 class Aggregator extends Component {
 	constructor(props){
@@ -28,6 +29,10 @@ class Aggregator extends Component {
 		*/
 	}
 	start(update) {
+		if (this.props.isComplete){
+			this.stop()
+			return
+		}
 		var fps = 60;
 		var frameId = requestAnimationFrame(() => this.start(update));
 		if (Date.now() - this.state.lastFrameTime > (1000/fps)){
@@ -66,8 +71,9 @@ class Aggregator extends Component {
 		},constants.Aggregator.CLICKTIMEOUT);
 	}
 	render(){
-		var aggregatorClassNames = classnames('aggregator',{
-			'aggregator-user-clicking' : this.state.isClicking
+		var aggregatorClassNames = classnames('aggregator', this.props.isComplete ? 'aggregator-level-'+levelColors[getLevel(this.props.residueValue)] : '' ,{
+			'aggregator-user-clicking' : this.state.isClicking,
+			'aggregator-complete' : this.props.isComplete
 		});
 		return (
 			<div onClick={this.props.aggregatorClicked} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>
@@ -75,7 +81,8 @@ class Aggregator extends Component {
 					ref="aggregatorBar"
 					barColorClass={"bar-"+this.props.barColor} 
 					barValue={this.props.barValue} 
-					rightText={this.props.rightText} 
+					rightText={this.props.rightText}
+					leftText={this.props.leftText}
 					residueValue={this.props.residueValue} 
 					residueColorClass={"bar-residue-"+this.props.residueColorClass} />
 				<AggregatorText displayText={this.props.displayText} />
@@ -85,7 +92,8 @@ class Aggregator extends Component {
 }
 
 Aggregator.propTypes = {
-	aggregatorClicked : PropTypes.func
+	aggregatorClicked : PropTypes.func,
+	isComplete : PropTypes.bool.isRequired
 }
 
 export default Aggregator
