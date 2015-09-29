@@ -33,12 +33,12 @@ class ChatMessage extends Component {
 		return (
 			<div onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.props.onClick} className={commentClasses}>
 			  {aggregationSummary}
-			  <span className="comment-time">{this.props.formattedTime}</span>
+			  <span className="comment-time">{new Date(this.props.time).toLocaleTimeString()}</span>
 			  <p className="comment-text">
 			  	<span className="comment-meta">
 			    	<span className="author">{this.props.userName}:</span>
 			  	</span>
-			  	{this.props.displayText}
+			  	{this.props.text}
 			  </p>
 			</div>
 			);
@@ -47,8 +47,8 @@ class ChatMessage extends Component {
 
 ChatMessage.propTypes = {
 	userName : PropTypes.string.isRequired,
-	displayText : PropTypes.string.isRequired,
-	formattedTime : PropTypes.string.isRequired,
+	text : PropTypes.string.isRequired,
+	time : PropTypes.number.isRequired,
 	hasUserVoted : PropTypes.bool,
 	isAggregated : PropTypes.bool,
 	clicks : PropTypes.number,

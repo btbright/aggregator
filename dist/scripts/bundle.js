@@ -34864,6 +34864,154 @@ module.exports = exports["default"];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.defaultMemoize = defaultMemoize;
+exports.createSelectorCreator = createSelectorCreator;
+exports.createSelector = createSelector;
+exports.createStructuredSelector = createStructuredSelector;
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+function defaultEqualityCheck(a, b) {
+    return a === b;
+}
+
+function defaultMemoize(func) {
+    var equalityCheck = arguments.length <= 1 || arguments[1] === undefined ? defaultEqualityCheck : arguments[1];
+
+    var lastArgs = null;
+    var lastResult = null;
+    return function () {
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        if (lastArgs !== null && args.every(function (value, index) {
+            return equalityCheck(value, lastArgs[index]);
+        })) {
+            return lastResult;
+        }
+        lastArgs = args;
+        lastResult = func.apply(undefined, args);
+        return lastResult;
+    };
+}
+
+function createSelectorCreator(memoize) {
+    for (var _len2 = arguments.length, memoizeOptions = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        memoizeOptions[_key2 - 1] = arguments[_key2];
+    }
+
+    return function () {
+        for (var _len3 = arguments.length, funcs = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+            funcs[_key3] = arguments[_key3];
+        }
+
+        var recomputations = 0;
+        var resultFunc = funcs.pop();
+        var dependencies = Array.isArray(funcs[0]) ? funcs[0] : funcs;
+
+        var memoizedResultFunc = memoize.apply(undefined, [function () {
+            recomputations++;
+            return resultFunc.apply(undefined, arguments);
+        }].concat(memoizeOptions));
+
+        var selector = function selector(state, props) {
+            for (var _len4 = arguments.length, args = Array(_len4 > 2 ? _len4 - 2 : 0), _key4 = 2; _key4 < _len4; _key4++) {
+                args[_key4 - 2] = arguments[_key4];
+            }
+
+            var params = dependencies.map(function (dependency) {
+                return dependency.apply(undefined, [state, props].concat(args));
+            });
+            return memoizedResultFunc.apply(undefined, _toConsumableArray(params));
+        };
+
+        selector.recomputations = function () {
+            return recomputations;
+        };
+        return selector;
+    };
+}
+
+function createSelector() {
+    return createSelectorCreator(defaultMemoize).apply(undefined, arguments);
+}
+
+function createStructuredSelector(selectors) {
+    var selectorCreator = arguments.length <= 1 || arguments[1] === undefined ? createSelector : arguments[1];
+
+    var objectKeys = Object.keys(selectors);
+    return selectorCreator(objectKeys.map(function (key) {
+        return selectors[key];
+    }), function () {
+        for (var _len5 = arguments.length, values = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+            values[_key5] = arguments[_key5];
+        }
+
+        return values.reduce(function (composition, value, index) {
+            composition[objectKeys[index]] = value;
+            return composition;
+        }, {});
+    });
+}
+},{}],180:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.updateAggregatorToTime = updateAggregatorToTime;
+exports.updateAggregatorToNow = updateAggregatorToNow;
+exports.addClickToAggregator = addClickToAggregator;
+exports.addAggregator = addAggregator;
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
+
+var _constantsActionTypes = require('../constants/ActionTypes');
+
+var types = _interopRequireWildcard(_constantsActionTypes);
+
+function updateAggregatorToTime(id, time) {
+	return {
+		type: types.UPDATE_AGGREGATOR_TO_TIME,
+		id: id,
+		time: time
+	};
+}
+
+function updateAggregatorToNow(id) {
+	return {
+		type: types.UPDATE_AGGREGATOR_TO_TIME,
+		id: id,
+		time: Date.now()
+	};
+}
+
+function addClickToAggregator(id) {
+	return {
+		type: types.ADD_CLICK_TO_AGGREGATOR,
+		id: id,
+		click: Date.now()
+	};
+}
+
+function addAggregator(objectType, objectId) {
+	return {
+		type: types.ADD_AGGREGATOR,
+		createdTime: Date.now(),
+		objectType: objectType,
+		objectId: objectId,
+		user: "ben"
+	};
+}
+
+
+},{"../constants/ActionTypes":194}],181:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.newChatMessage = newChatMessage;
@@ -34892,7 +35040,7 @@ function voteChatMessage(id) {
 }
 
 
-},{"../constants/ActionTypes":192}],180:[function(require,module,exports){
+},{"../constants/ActionTypes":194}],182:[function(require,module,exports){
 'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -34911,6 +35059,10 @@ var _storeConfigureStore = require('./store/configureStore');
 
 var _storeConfigureStore2 = _interopRequireDefault(_storeConfigureStore);
 
+var _utilsScorer = require('./utils/scorer');
+
+var _utilsScorer2 = _interopRequireDefault(_utilsScorer);
+
 var store = (0, _storeConfigureStore2['default'])();
 
 _react2['default'].render(_react2['default'].createElement(
@@ -34922,7 +35074,7 @@ _react2['default'].render(_react2['default'].createElement(
 ), document.getElementById("react-root"));
 
 
-},{"./components/App.jsx":187,"./store/configureStore":196,"react":168,"react-redux":8}],181:[function(require,module,exports){
+},{"./components/App.jsx":189,"./store/configureStore":200,"./utils/scorer":201,"react":168,"react-redux":8}],183:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35002,7 +35154,7 @@ exports["default"] = AggregationSummary;
 module.exports = exports["default"];
 
 
-},{"react":168}],182:[function(require,module,exports){
+},{"react":168}],184:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35048,13 +35200,52 @@ var Aggregator = (function (_Component) {
 		_get(Object.getPrototypeOf(Aggregator.prototype), 'constructor', this).call(this, props);
 		this.state = {
 			lastMouseDown: false,
-			isClicking: false
+			isClicking: false,
+			frameId: null,
+			lastFrameTime: 0,
+			frame: 0
 		};
 		this.handleOnMouseDown = this.handleOnMouseDown.bind(this);
 		this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
+		this.start = this.start.bind(this);
+		this.stop = this.stop.bind(this);
 	}
 
 	_createClass(Aggregator, [{
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			this.start(this.props.updateToNow);
+			/*
+   setTimeout(()=>{
+   	this.stop()
+   },3000)
+   */
+		}
+	}, {
+		key: 'start',
+		value: function start(update) {
+			var _this = this;
+
+			var fps = 60;
+			var frameId = requestAnimationFrame(function () {
+				return _this.start(update);
+			});
+			if (Date.now() - this.state.lastFrameTime > 1000 / fps) {
+				this.setState({
+					frameId: frameId,
+					frame: this.state.frame + 1,
+					lastFrameTime: Date.now()
+				});
+				update(this.props.id);
+			}
+		}
+	}, {
+		key: 'stop',
+		value: function stop() {
+			cancelAnimationFrame(this.state.frameId);
+			this.setState({ frameId: null, startedAt: null, frame: 0 });
+		}
+	}, {
 		key: 'handleOnMouseDown',
 		value: function handleOnMouseDown() {
 			this.setState({
@@ -35064,7 +35255,7 @@ var Aggregator = (function (_Component) {
 	}, {
 		key: 'handleOnMouseUp',
 		value: function handleOnMouseUp() {
-			var _this = this;
+			var _this2 = this;
 
 			if (!this.state.lastMouseDown) return;
 			var timeSinceLastMouseDown = Date.now() - this.state.lastMouseDown;
@@ -35076,8 +35267,8 @@ var Aggregator = (function (_Component) {
 			});
 			this.refs.aggregatorBar.flash();
 			setTimeout(function () {
-				if (Date.now() - _this.state.lastMouseDown < _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT) return;
-				_this.setState({
+				if (Date.now() - _this2.state.lastMouseDown < _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT) return;
+				_this2.setState({
 					isClicking: false
 				});
 			}, _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT);
@@ -35090,14 +35281,14 @@ var Aggregator = (function (_Component) {
 			});
 			return _react2['default'].createElement(
 				'div',
-				{ onMouseDown: this.handleOnMouseDown, onMouseUp: this.handleOnMouseUp, className: aggregatorClassNames },
+				{ onClick: this.props.aggregatorClicked, onMouseDown: this.handleOnMouseDown, onMouseUp: this.handleOnMouseUp, className: aggregatorClassNames },
 				_react2['default'].createElement(_AggregatorBarJsx2['default'], {
 					ref: 'aggregatorBar',
 					barColorClass: "bar-" + this.props.barColor,
 					barValue: this.props.barValue,
 					rightText: this.props.rightText,
 					residueValue: this.props.residueValue,
-					residueColorClass: "bar-residue-" + this.props.residueColor }),
+					residueColorClass: "bar-residue-" + this.props.residueColorClass }),
 				_react2['default'].createElement(_AggregatorTextJsx2['default'], { displayText: this.props.displayText })
 			);
 		}
@@ -35106,11 +35297,15 @@ var Aggregator = (function (_Component) {
 	return Aggregator;
 })(_react.Component);
 
+Aggregator.propTypes = {
+	aggregatorClicked: _react.PropTypes.func
+};
+
 exports['default'] = Aggregator;
 module.exports = exports['default'];
 
 
-},{"../constants/App.js":193,"./../../../bower_components/classnames/index.js":1,"./AggregatorBar.jsx":183,"./AggregatorText.jsx":186,"react":168}],183:[function(require,module,exports){
+},{"../constants/App.js":195,"./../../../bower_components/classnames/index.js":1,"./AggregatorBar.jsx":185,"./AggregatorText.jsx":188,"react":168}],185:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35241,7 +35436,7 @@ exports['default'] = AggregatorBar;
 module.exports = exports['default'];
 
 
-},{"../constants/App.js":193,"./../../../bower_components/classnames/index.js":1,"./AggregatorBarText.jsx":184,"lodash":4,"react":168}],184:[function(require,module,exports){
+},{"../constants/App.js":195,"./../../../bower_components/classnames/index.js":1,"./AggregatorBarText.jsx":186,"lodash":4,"react":168}],186:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35294,7 +35489,7 @@ exports["default"] = AggregatorBarText;
 module.exports = exports["default"];
 
 
-},{"react":168}],185:[function(require,module,exports){
+},{"react":168}],187:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35306,6 +35501,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -35321,27 +35518,43 @@ var _AggregatorJsx = require('./Aggregator.jsx');
 
 var _AggregatorJsx2 = _interopRequireDefault(_AggregatorJsx);
 
-var _lodash = require('lodash');
+var _reactRedux = require('react-redux');
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _selectorsAggregatorSelectorsJs = require('../selectors/AggregatorSelectors.js');
+
+var _actionsAggregators = require('../actions/aggregators');
+
+var AggregatorActions = _interopRequireWildcard(_actionsAggregators);
+
+var _redux = require('redux');
 
 var AggregatorList = (function (_Component) {
 	_inherits(AggregatorList, _Component);
 
-	function AggregatorList() {
+	function AggregatorList(props) {
 		_classCallCheck(this, AggregatorList);
 
-		_get(Object.getPrototypeOf(AggregatorList.prototype), 'constructor', this).apply(this, arguments);
+		_get(Object.getPrototypeOf(AggregatorList.prototype), 'constructor', this).call(this, props);
+		this.actions = (0, _redux.bindActionCreators)(AggregatorActions, this.props.dispatch);
+		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this);
 	}
 
 	_createClass(AggregatorList, [{
+		key: 'handleAggregatorClicked',
+		value: function handleAggregatorClicked(e, rawId) {
+			var id = parseInt(rawId.substr(rawId.indexOf("$") + 1), 10);
+			this.actions.addClickToAggregator(id);
+		}
+	}, {
 		key: 'render',
 		value: function render() {
+			var _this = this;
+
 			return _react2['default'].createElement(
 				'div',
 				{ className: 'aggregator-list' },
-				this.props.aggregators.map(function (aggregatorData) {
-					return _react2['default'].createElement(_AggregatorJsx2['default'], _extends({ key: _lodash2['default'].uniqueId("aggregator") }, aggregatorData));
+				this.props.displayReadyAggregatedMessages.map(function (aggregatorData) {
+					return _react2['default'].createElement(_AggregatorJsx2['default'], _extends({ updateToNow: _this.actions.updateAggregatorToNow, aggregatorClicked: _this.handleAggregatorClicked, key: aggregatorData.id }, aggregatorData));
 				})
 			);
 		}
@@ -35350,29 +35563,11 @@ var AggregatorList = (function (_Component) {
 	return AggregatorList;
 })(_react.Component);
 
-AggregatorList.defaultProps = {
-	aggregators: [{
-		displayText: "Lorem steven dolor sit amet, consectetur adipiscing elit.",
-		barColor: "blue",
-		barValue: 30,
-		rightText: "9:32pm",
-		residueValue: 80,
-		residueColor: "green"
-	}, {
-		displayText: "Another silly dolor sit amet, consectetur adipiscing elit.",
-		barColor: "green",
-		barValue: 50,
-		rightText: "9:37pm",
-		residueValue: 70,
-		residueColor: "blue"
-	}]
-};
-
-exports['default'] = AggregatorList;
+exports['default'] = (0, _reactRedux.connect)(_selectorsAggregatorSelectorsJs.aggregatedMessagesDisplaySelector)(AggregatorList);
 module.exports = exports['default'];
 
 
-},{"./Aggregator.jsx":182,"lodash":4,"react":168}],186:[function(require,module,exports){
+},{"../actions/aggregators":180,"../selectors/AggregatorSelectors.js":199,"./Aggregator.jsx":184,"react":168,"react-redux":8,"redux":171}],188:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35428,7 +35623,7 @@ exports["default"] = AggregatorText;
 module.exports = exports["default"];
 
 
-},{"react":168}],187:[function(require,module,exports){
+},{"react":168}],189:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35485,7 +35680,7 @@ exports['default'] = App;
 module.exports = exports['default'];
 
 
-},{"./AggregatorList.jsx":185,"./Chat.jsx":188,"react":168}],188:[function(require,module,exports){
+},{"./AggregatorList.jsx":187,"./Chat.jsx":190,"react":168}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35524,6 +35719,10 @@ var _actionsChat = require('../actions/chat');
 
 var ChatActions = _interopRequireWildcard(_actionsChat);
 
+var _actionsAggregators = require('../actions/aggregators');
+
+var AggregatorActions = _interopRequireWildcard(_actionsAggregators);
+
 var _reactRedux = require('react-redux');
 
 var _redux = require('redux');
@@ -35536,14 +35735,16 @@ var Chat = (function (_Component) {
 
 		_get(Object.getPrototypeOf(Chat.prototype), 'constructor', this).call(this, props);
 		this.handleChatMessageClick = this.handleChatMessageClick.bind(this);
-		this.actions = (0, _redux.bindActionCreators)(ChatActions, this.props.dispatch);
+		this.chatActions = (0, _redux.bindActionCreators)(ChatActions, this.props.dispatch);
+		this.aggregatorActions = (0, _redux.bindActionCreators)(AggregatorActions, this.props.dispatch);
 	}
 
 	_createClass(Chat, [{
 		key: 'handleChatMessageClick',
 		value: function handleChatMessageClick(e, rawId) {
-			var id = rawId.substr(rawId.indexOf("$") + 1);
-			this.actions.voteChatMessage(id);
+			var id = parseInt(rawId.substr(rawId.indexOf("$") + 1), 10);
+			this.chatActions.voteChatMessage(id);
+			this.aggregatorActions.addAggregator("message", id);
 		}
 	}, {
 		key: 'render',
@@ -35554,7 +35755,7 @@ var Chat = (function (_Component) {
 				'div',
 				{ className: 'chat' },
 				_react2['default'].createElement(_ChatMessageListJsx2['default'], { messages: chatMessages, handleChatMessageClick: this.handleChatMessageClick }),
-				_react2['default'].createElement(_ChatMessageFormJsx2['default'], { onNewMessage: this.actions.newChatMessage })
+				_react2['default'].createElement(_ChatMessageFormJsx2['default'], { onNewMessage: this.chatActions.newChatMessage })
 			);
 		}
 	}]);
@@ -35572,7 +35773,7 @@ exports['default'] = (0, _reactRedux.connect)(mapStateToProps)(Chat);
 module.exports = exports['default'];
 
 
-},{"../actions/chat":179,"./../../../bower_components/classnames/index.js":1,"./ChatMessageForm.jsx":190,"./ChatMessageList.jsx":191,"react":168,"react-redux":8,"redux":171}],189:[function(require,module,exports){
+},{"../actions/aggregators":180,"../actions/chat":181,"./../../../bower_components/classnames/index.js":1,"./ChatMessageForm.jsx":192,"./ChatMessageList.jsx":193,"react":168,"react-redux":8,"redux":171}],191:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35647,7 +35848,7 @@ var ChatMessage = (function (_Component) {
 				_react2['default'].createElement(
 					'span',
 					{ className: 'comment-time' },
-					this.props.formattedTime
+					new Date(this.props.time).toLocaleTimeString()
 				),
 				_react2['default'].createElement(
 					'p',
@@ -35662,7 +35863,7 @@ var ChatMessage = (function (_Component) {
 							':'
 						)
 					),
-					this.props.displayText
+					this.props.text
 				)
 			);
 		}
@@ -35673,8 +35874,8 @@ var ChatMessage = (function (_Component) {
 
 ChatMessage.propTypes = {
 	userName: _react.PropTypes.string.isRequired,
-	displayText: _react.PropTypes.string.isRequired,
-	formattedTime: _react.PropTypes.string.isRequired,
+	text: _react.PropTypes.string.isRequired,
+	time: _react.PropTypes.number.isRequired,
 	hasUserVoted: _react.PropTypes.bool,
 	isAggregated: _react.PropTypes.bool,
 	clicks: _react.PropTypes.number,
@@ -35690,7 +35891,7 @@ exports['default'] = ChatMessage;
 module.exports = exports['default'];
 
 
-},{"./../../../bower_components/classnames/index.js":1,"./AggregationSummary.jsx":181,"react":168}],190:[function(require,module,exports){
+},{"./../../../bower_components/classnames/index.js":1,"./AggregationSummary.jsx":183,"react":168}],192:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35807,7 +36008,7 @@ exports['default'] = ChatMessageForm;
 module.exports = exports['default'];
 
 
-},{"./../../../bower_components/classnames/index.js":1,"./../../../bower_components/jquery/dist/jquery.js":2,"react":168}],191:[function(require,module,exports){
+},{"./../../../bower_components/classnames/index.js":1,"./../../../bower_components/jquery/dist/jquery.js":2,"react":168}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35867,7 +36068,7 @@ exports['default'] = ChatMessageList;
 module.exports = exports['default'];
 
 
-},{"./../../../bower_components/classnames/index.js":1,"./ChatMessage.jsx":189,"react":168}],192:[function(require,module,exports){
+},{"./../../../bower_components/classnames/index.js":1,"./ChatMessage.jsx":191,"react":168}],194:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35876,10 +36077,17 @@ Object.defineProperty(exports, '__esModule', {
 var ADD_CHAT_MESSAGE = 'ADD_CHAT_MESSAGE';
 exports.ADD_CHAT_MESSAGE = ADD_CHAT_MESSAGE;
 var VOTE_CHAT_MESSAGE = 'VOTE_CHAT_MESSAGE';
+
 exports.VOTE_CHAT_MESSAGE = VOTE_CHAT_MESSAGE;
+var ADD_AGGREGATOR = 'ADD_AGGREGATOR';
+exports.ADD_AGGREGATOR = ADD_AGGREGATOR;
+var ADD_CLICK_TO_AGGREGATOR = 'ADD_CLICK_TO_AGGREGATOR';
+exports.ADD_CLICK_TO_AGGREGATOR = ADD_CLICK_TO_AGGREGATOR;
+var UPDATE_AGGREGATOR_TO_TIME = 'UPDATE_AGGREGATOR_TO_TIME';
+exports.UPDATE_AGGREGATOR_TO_TIME = UPDATE_AGGREGATOR_TO_TIME;
 
 
-},{}],193:[function(require,module,exports){
+},{}],195:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35894,7 +36102,91 @@ exports["default"] = {
 module.exports = exports["default"];
 
 
-},{}],194:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+exports['default'] = aggregators;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+var _constantsActionTypes = require('../constants/ActionTypes');
+
+var _utilsScorer = require('../utils/scorer');
+
+var _utilsScorer2 = _interopRequireDefault(_utilsScorer);
+
+var initialState = [];
+
+function aggregators(state, action) {
+	if (state === undefined) state = initialState;
+
+	switch (action.type) {
+		case _constantsActionTypes.ADD_AGGREGATOR:
+			//if an aggregator already exists for the object, don't add it
+			if (state.some(function (aggregator) {
+				return aggregator.objectId === action.objectId;
+			})) return state;
+			return [].concat(_toConsumableArray(state), [{
+				id: state.reduce(function (maxId, todo) {
+					return Math.max(todo.id, maxId);
+				}, -1) + 1,
+				createdTime: action.createdTime,
+				userName: action.user,
+				objectType: action.objectType,
+				objectId: action.objectId,
+				clicks: [action.createdTime],
+				level: 1,
+				maxValue: 0,
+				x: 0
+			}]);
+		case _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME:
+			var index = state.findIndex(function (m) {
+				return m.id == action.id;
+			});
+			if (index === -1) return state;
+			return [].concat(_toConsumableArray(state.slice(0, index)), [aggregator(state[index], {
+				type: _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME,
+				time: action.time
+			})], _toConsumableArray(state.slice(index + 1)));
+		case _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR:
+			var index = state.findIndex(function (m) {
+				return m.id == action.id;
+			});
+			if (index === -1) return state;
+			return [].concat(_toConsumableArray(state.slice(0, index)), [aggregator(state[index], {
+				type: _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR,
+				click: action.click
+			})], _toConsumableArray(state.slice(index + 1)));
+		default:
+			return state;
+	}
+}
+
+function aggregator(state, action) {
+	switch (action.type) {
+		case _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME:
+			var newScore = (0, _utilsScorer2['default'])(state.clicks, action.time);
+			return Object.assign({}, state, {
+				x: newScore,
+				maxValue: state.maxValue >= newScore ? state.maxValue : newScore
+			});
+		case _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR:
+			return Object.assign({}, state, {
+				clicks: [].concat(_toConsumableArray(state.clicks), [action.click])
+			});
+		default:
+			return state;
+	}
+}
+module.exports = exports['default'];
+
+
+},{"../constants/ActionTypes":194,"../utils/scorer":201}],197:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35906,13 +36198,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var _constantsActionTypes = require('../constants/ActionTypes');
 
-var initialState = [{
-	displayText: 'not a real message',
-	id: 1235,
-	userName: "ben",
-	formattedTime: "10:30pm",
-	hasUserVoted: false
-}];
+var initialState = [];
 
 function chatMessages(state, action) {
 	if (state === undefined) state = initialState;
@@ -35923,14 +36209,14 @@ function chatMessages(state, action) {
 				id: state.reduce(function (maxId, todo) {
 					return Math.max(todo.id, maxId);
 				}, -1) + 1,
-				displayText: action.text,
+				text: action.text,
 				userName: action.user,
-				formattedTime: new Date(action.time).toLocaleTimeString(),
+				time: action.time,
 				hasUserVoted: false
 			}]);
 		case _constantsActionTypes.VOTE_CHAT_MESSAGE:
 			var index = state.findIndex(function (m) {
-				return m.id == action.id;
+				return m.id === action.id;
 			});
 			if (index === -1) return state;
 			return [].concat(_toConsumableArray(state.slice(0, index)), [Object.assign({}, state[index], {
@@ -35944,7 +36230,7 @@ function chatMessages(state, action) {
 module.exports = exports['default'];
 
 
-},{"../constants/ActionTypes":192}],195:[function(require,module,exports){
+},{"../constants/ActionTypes":194}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35959,15 +36245,105 @@ var _chat = require('./chat');
 
 var _chat2 = _interopRequireDefault(_chat);
 
+var _aggregators = require('./aggregators');
+
+var _aggregators2 = _interopRequireDefault(_aggregators);
+
 var rootReducer = (0, _redux.combineReducers)({
-  chatMessages: _chat2['default']
+  chatMessages: _chat2['default'],
+  aggregators: _aggregators2['default']
 });
 
 exports['default'] = rootReducer;
 module.exports = exports['default'];
 
 
-},{"./chat":194,"redux":171}],196:[function(require,module,exports){
+},{"./aggregators":196,"./chat":197,"redux":171}],199:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _reselect = require('reselect');
+
+var chatMessagesSelector = function chatMessagesSelector(state) {
+	return state.chatMessages;
+};
+var aggregatorsSelector = function aggregatorsSelector(state) {
+	return state.aggregators;
+};
+
+function mapAggregatedMessages(chatMessages, aggregators) {
+	return aggregators.filter(function (aggregator) {
+		return aggregator.objectType === "message";
+	}).map(function (aggregator) {
+		var chatMessage = chatMessages.find(function (message) {
+			return message.id === aggregator.objectId;
+		});
+		return {
+			id: aggregator.id,
+			level: aggregator.level,
+			maxValue: aggregator.maxValue,
+			clicks: aggregator.clicks,
+			x: aggregator.x,
+			text: chatMessage.text,
+			userName: chatMessage.userName,
+			time: chatMessage.time,
+			hasUserNominated: chatMessage.hasUserNominated
+		};
+	});
+}
+
+//this selector handles the message->aggregator join
+var aggregatedMessagesSelector = (0, _reselect.createSelector)([chatMessagesSelector, aggregatorsSelector], function (chatMessages, aggregators) {
+	return {
+		aggregatedMessages: mapAggregatedMessages(chatMessages, aggregators)
+	};
+});
+
+exports.aggregatedMessagesSelector = aggregatedMessagesSelector;
+var levelColors = {
+	1: "blue",
+	2: "green",
+	3: "gold"
+};
+
+function getBarLevel(x) {
+	if (x < 40) {
+		return 1;
+	}
+	if (x < 70) {
+		return 2;
+	}
+	return 3;
+}
+
+function mapDisplayMessages(aggregatedMessages) {
+	return aggregatedMessages.map(function (message) {
+		return {
+			id: message.id,
+			displayText: message.text,
+			barColor: levelColors[getBarLevel(message.x)],
+			barValue: message.x,
+			rightText: new Date(message.time).toLocaleTimeString(),
+			residueValue: message.maxValue,
+			residueColorClass: levelColors[getBarLevel(message.maxValue)],
+			leftText: message.userName
+		};
+	});
+}
+
+//this selector does the calculations to prepare the aggregator for display
+var aggregatedMessagesDisplaySelector = (0, _reselect.createSelector)([aggregatedMessagesSelector], function (state) {
+	return {
+		displayReadyAggregatedMessages: mapDisplayMessages(state.aggregatedMessages)
+	};
+});
+exports.aggregatedMessagesDisplaySelector = aggregatedMessagesDisplaySelector;
+
+
+},{"reselect":179}],200:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -35992,12 +36368,12 @@ function logger(_ref) {
 
   return function (next) {
     return function (action) {
-      console.log('will dispatch', action);
+      //console.log('will dispatch', action);
 
       // Call the next dispatch method in the middleware chain.
       var returnValue = next(action);
 
-      console.log('state after dispatch', getState());
+      //console.log('state after dispatch', getState());
 
       // This will likely be the action itself, unless
       // a middleware further in chain changed it.
@@ -36016,7 +36392,72 @@ function configureStore(initialState) {
 module.exports = exports['default'];
 
 
-},{"../reducers":195,"redux":171,"redux-thunk":169}]},{},[180])
+},{"../reducers":198,"redux":171,"redux-thunk":169}],201:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var ballisticsParameters = {
+	THRUST_VELOCITY: 300,
+	THRUST_TIME: .2, //ms
+	MASS: 30,
+	GRAVITY_ACCELERATION: -10,
+	DRAG_CONSTANT: 0.8
+};
+
+var frameRate = 1 / 60;
+
+//takes an array of timestamps and returns 0-100 x position
+//based on physics model at a specific time
+
+exports["default"] = function (clicks, time) {
+	function calculateVelocity(activeClickCount) {
+		//calc accelerations
+		var thrustDV = activeClickCount * ballisticsParameters.THRUST_VELOCITY / ballisticsParameters.MASS;
+		var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity);
+		//calc velocity
+		return (thrustDV + ballisticsParameters.GRAVITY_ACCELERATION) * frameRate;
+	}
+
+	function activeClicks(clicks, time) {
+		return clicks.filter(function (click) {
+			return Math.abs(time - click) <= ballisticsParameters.THRUST_TIME;
+		});
+	}
+
+	var t = (time || Date.now()) / 1000;
+	var x = 0;
+	//if there aren't any clicks
+	if (!clicks || !Array.isArray(clicks) || clicks.length === 0) return x;
+	//throw out clicks newer than t, they are in the future and don't count
+	var filteredClicks = clicks.map(function (click) {
+		return click / 1000;
+	}).filter(function (click) {
+		return click <= t;
+	});
+	//v = v + a * dt
+	//x = x + v * dt
+	var startTime = filteredClicks[0];
+	var frames = Math.floor((t - startTime) / frameRate);
+	var currentVelocity = 0;
+	for (var i = 0; i < frames; i++) {
+		var activeClickCount = activeClicks(filteredClicks, startTime + i * frameRate).length;
+		currentVelocity = currentVelocity + calculateVelocity(activeClickCount);
+		var dx = currentVelocity * frameRate;
+		x = x + dx;
+		if (x <= 0) {
+			currentVelocity = 0;
+			x = 0;
+		}
+	};
+	return x;
+};
+
+module.exports = exports["default"];
+
+
+},{}]},{},[182])
 
 
 //# sourceMappingURL=bundle.js.map

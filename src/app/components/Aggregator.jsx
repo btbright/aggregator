@@ -9,10 +9,39 @@ class Aggregator extends Component {
 		super(props)
 		this.state = {
 			lastMouseDown : false,
-			isClicking : false
+			isClicking : false,
+			frameId : null,
+			lastFrameTime : 0,
+			frame : 0
 		}
 		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
 		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
+		this.start = this.start.bind(this)
+		this.stop = this.stop.bind(this)
+	}
+	componentDidMount() {
+		this.start(this.props.updateToNow)
+		/*
+		setTimeout(()=>{
+			this.stop()
+		},3000)
+		*/
+	}
+	start(update) {
+		var fps = 60;
+		var frameId = requestAnimationFrame(() => this.start(update));
+		if (Date.now() - this.state.lastFrameTime > (1000/fps)){
+			this.setState({
+			  frameId: frameId,
+			  frame: this.state.frame + 1,
+			  lastFrameTime : Date.now()
+			});
+			update(this.props.id);
+		}
+	}
+	stop() {
+		cancelAnimationFrame(this.state.frameId);
+		this.setState({ frameId: null, startedAt: null, frame: 0 });
 	}
 	handleOnMouseDown(){
 		this.setState({
@@ -41,18 +70,22 @@ class Aggregator extends Component {
 			'aggregator-user-clicking' : this.state.isClicking
 		});
 		return (
-			<div onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>
+			<div onClick={this.props.aggregatorClicked} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>
 				<AggregatorBar 
 					ref="aggregatorBar"
 					barColorClass={"bar-"+this.props.barColor} 
 					barValue={this.props.barValue} 
 					rightText={this.props.rightText} 
 					residueValue={this.props.residueValue} 
-					residueColorClass={"bar-residue-"+this.props.residueColor} />
+					residueColorClass={"bar-residue-"+this.props.residueColorClass} />
 				<AggregatorText displayText={this.props.displayText} />
 			</div>
 			);
 	}
+}
+
+Aggregator.propTypes = {
+	aggregatorClicked : PropTypes.func
 }
 
 export default Aggregator

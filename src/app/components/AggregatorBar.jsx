@@ -43,7 +43,7 @@ class AggregatorBar extends Component {
 			var classes = cx('bar-residue', this.props.residueColorClass);
 			residue = <div className={classes} style={{width:this.props.residueValue + '%'}}></div>
 		}
-
+		
 		//determine wrap class names
 		var colorClass = false;
 		if (this.props.barColorClass){

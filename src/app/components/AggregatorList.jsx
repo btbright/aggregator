@@ -1,38 +1,29 @@
 import React, { Component, PropTypes } from 'react'
 import Aggregator from './Aggregator.jsx'
-import _ from 'lodash'
+import { connect } from 'react-redux';
+import { aggregatedMessagesDisplaySelector } from '../selectors/AggregatorSelectors.js';
+import * as AggregatorActions from '../actions/aggregators'
+import { bindActionCreators } from 'redux'
 
 class AggregatorList extends Component {
+	constructor(props){
+		super(props)
+		this.actions = bindActionCreators(AggregatorActions, this.props.dispatch);
+		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this)
+	}
+	handleAggregatorClicked(e,rawId){
+		var id = parseInt(rawId.substr(rawId.indexOf("$")+1),10);
+		this.actions.addClickToAggregator(id)
+	}
 	render(){
 		return (
 			<div className="aggregator-list">
-				{this.props.aggregators.map(function(aggregatorData){
-					return <Aggregator key={_.uniqueId("aggregator")} {...aggregatorData} />
+				{this.props.displayReadyAggregatedMessages.map((aggregatorData)=>{
+					return <Aggregator updateToNow={this.actions.updateAggregatorToNow} aggregatorClicked={this.handleAggregatorClicked} key={aggregatorData.id} {...aggregatorData} />
 				})}
 			</div>
 			)
 	}
 }
 
-AggregatorList.defaultProps = {
-	aggregators : [
-		{
-			displayText: "Lorem steven dolor sit amet, consectetur adipiscing elit.",
-			barColor: "blue",
-			barValue: 30,
-			rightText: "9:32pm",
-			residueValue: 80,
-			residueColor: "green"
-		},
-		{
-			displayText: "Another silly dolor sit amet, consectetur adipiscing elit.",
-			barColor: "green",
-			barValue: 50,
-			rightText: "9:37pm",
-			residueValue: 70,
-			residueColor: "blue"
-		}
-	]
-}
-
-export default AggregatorList
+export default connect(aggregatedMessagesDisplaySelector)(AggregatorList)

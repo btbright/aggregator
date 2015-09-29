@@ -29,7 +29,7 @@ class ChatMessageForm extends Component {
 			hasSpaceConflict : hasConflict
 		});
 	}
-	handleSubmit(e) {
+	handleSubmit(e){
 		const text = e.target.value.trim();
 		if (e.which === 13) {
 		  e.preventDefault()
