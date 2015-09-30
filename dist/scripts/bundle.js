@@ -1529,20 +1529,9 @@ var _commonContainersApp = require('../common/containers/App');
 
 var _commonContainersApp2 = _interopRequireDefault(_commonContainersApp);
 
-var _commonApiutils = require('../common/apiutils/');
-
-var _commonApiutils2 = _interopRequireDefault(_commonApiutils);
-
-var _commonActionsRoom = require('../common/actions/room');
-
 var initialState = window.__INITIAL_STATE__;
 
 var store = (0, _commonStoreConfigureStore2['default'])(initialState);
-
-//start the server listeners and give them the dispatch function to respond with
-(0, _commonApiutils2['default'])(store.dispatch);
-//tell the server to attach us to the right room
-store.dispatch((0, _commonActionsRoom.requestUpdateRoom)(store.getState().room.name));
 
 var rootElement = document.getElementById(_commonConstantsApp2['default'].React.ROOTELEMENTID);
 
@@ -1555,7 +1544,7 @@ _react2['default'].render(_react2['default'].createElement(
 ), rootElement);
 
 
-},{"../common/actions/room":6,"../common/apiutils/":9,"../common/constants/App":24,"../common/containers/App":25,"../common/store/configureStore":33,"react":201,"react-redux":41}],4:[function(require,module,exports){
+},{"../common/constants/App":23,"../common/containers/App":24,"../common/store/configureStore":32,"react":201,"react-redux":41}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1563,6 +1552,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.updateAggregatorToTime = updateAggregatorToTime;
 exports.updateAggregatorToNow = updateAggregatorToNow;
+exports.newAggregatorClick = newAggregatorClick;
 exports.addClickToAggregator = addClickToAggregator;
 exports.updateAggregatorId = updateAggregatorId;
 exports.addAggregator = addAggregator;
@@ -1594,11 +1584,17 @@ function updateAggregatorToNow(id) {
 	};
 }
 
-function addClickToAggregator(id) {
+function newAggregatorClick(id) {
+	var click = Date.now();
+	(0, _apiutilsAggregators.submitAggregatorClick)(id, click);
+	return addClickToAggregator(id, click);
+}
+
+function addClickToAggregator(id, click) {
 	return {
 		type: types.ADD_CLICK_TO_AGGREGATOR,
 		id: id,
-		click: Date.now()
+		click: click
 	};
 }
 
@@ -1611,7 +1607,6 @@ function updateAggregatorId(originalId, newId) {
 }
 
 function addAggregator(aggregator) {
-	console.log("eaege");
 	return {
 		type: types.ADD_AGGREGATOR,
 		aggregator: aggregator
@@ -1632,7 +1627,7 @@ function newAggregator(objectType, objectId) {
 }
 
 
-},{"../apiutils/aggregators":7,"../constants/ActionTypes":23,"../models/aggregator":26}],5:[function(require,module,exports){
+},{"../apiutils/aggregators":7,"../constants/ActionTypes":22,"../models/aggregator":25}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1689,7 +1684,7 @@ function voteChatMessage(id) {
 }
 
 
-},{"../apiutils/chat":8,"../constants/ActionTypes":23,"../models/chatMessage":27}],6:[function(require,module,exports){
+},{"../apiutils/chat":8,"../constants/ActionTypes":22,"../models/chatMessage":26}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1722,7 +1717,7 @@ function requestUpdateRoom(newRoom) {
 }
 
 
-},{"../apiutils/room":10,"../constants/ActionTypes":23}],7:[function(require,module,exports){
+},{"../apiutils/room":9,"../constants/ActionTypes":22}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1730,6 +1725,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.bindAggregatorListeners = bindAggregatorListeners;
 exports.submitAggregator = submitAggregator;
+exports.submitAggregatorClick = submitAggregatorClick;
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
@@ -1740,14 +1736,22 @@ var _actionsAggregators = require('../actions/aggregators');
 var AggregatorActions = _interopRequireWildcard(_actionsAggregators);
 
 function bindAggregatorListeners(dispatch) {
+	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
 	var actions = (0, _redux.bindActionCreators)(AggregatorActions, dispatch);
 	var socket = io();
 	socket.on('aggregator:accepted', actions.updateAggregatorId);
 	socket.on('aggregator:new', actions.addAggregator);
+	socket.on('aggregator:click:new', actions.addClickToAggregator);
 }
 
 function submitAggregator(aggregator) {
+	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
 	io().emit('aggregator:new', aggregator);
+}
+
+function submitAggregatorClick(aggregatorId, click) {
+	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
+	io().emit('aggregator:click:new', aggregatorId, click);
 }
 
 
@@ -1769,6 +1773,7 @@ var _actionsChat = require('../actions/chat');
 var ChatActions = _interopRequireWildcard(_actionsChat);
 
 function bindChatListeners(dispatch) {
+	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
 	var actions = (0, _redux.bindActionCreators)(ChatActions, dispatch);
 	var socket = io();
 	socket.on('chatMessage:accepted', actions.updateChatMessageId);
@@ -1776,34 +1781,12 @@ function bindChatListeners(dispatch) {
 }
 
 function submitMessage(message) {
+	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
 	io().emit('chatMessage:new', message);
 }
 
 
 },{"../actions/chat":5,"redux":204}],9:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-exports['default'] = bindListeners;
-
-var _chat = require('./chat');
-
-var _room = require('./room');
-
-var _aggregators = require('./aggregators');
-
-function bindListeners(dispatch) {
-	(0, _chat.bindChatListeners)(dispatch);
-	(0, _room.bindRoomListeners)(dispatch);
-	(0, _aggregators.bindAggregatorListeners)(dispatch);
-}
-
-module.exports = exports['default'];
-
-
-},{"./aggregators":7,"./chat":8,"./room":10}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1821,17 +1804,19 @@ var _actionsRoom = require('../actions/room');
 var RoomActions = _interopRequireWildcard(_actionsRoom);
 
 function bindRoomListeners(dispatch) {
+	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
 	var actions = (0, _redux.bindActionCreators)(RoomActions, dispatch);
 	var socket = io();
 	socket.on('userCount:update', actions.updateUserCount);
 }
 
 function requestNewRoom(newRoom, oldRoom) {
+	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
 	io().emit("room:change", { newRoom: newRoom, oldRoom: oldRoom });
 }
 
 
-},{"../actions/room":6,"redux":204}],11:[function(require,module,exports){
+},{"../actions/room":6,"redux":204}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1911,7 +1896,7 @@ exports["default"] = AggregationSummary;
 module.exports = exports["default"];
 
 
-},{"react":201}],12:[function(require,module,exports){
+},{"react":201}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1974,11 +1959,11 @@ var Aggregator = (function (_Component) {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
 			this.start(this.props.updateToNow);
-			/*
-   setTimeout(()=>{
-   	this.stop()
-   },3000)
-   */
+		}
+	}, {
+		key: 'componentWillUnmount',
+		value: function componentWillUnmount() {
+			this.stop();
 		}
 	}, {
 		key: 'start',
@@ -2071,7 +2056,7 @@ exports['default'] = Aggregator;
 module.exports = exports['default'];
 
 
-},{"../constants/App.js":24,"../utils/levels":34,"./../../bower_components/classnames/index.js":1,"./AggregatorBar.jsx":13,"./AggregatorText.jsx":16,"react":201}],13:[function(require,module,exports){
+},{"../constants/App.js":23,"../utils/levels":33,"./../../bower_components/classnames/index.js":1,"./AggregatorBar.jsx":12,"./AggregatorText.jsx":15,"react":201}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2202,7 +2187,7 @@ exports['default'] = AggregatorBar;
 module.exports = exports['default'];
 
 
-},{"../constants/App.js":24,"./../../bower_components/classnames/index.js":1,"./AggregatorBarText.jsx":14,"lodash":37,"react":201}],14:[function(require,module,exports){
+},{"../constants/App.js":23,"./../../bower_components/classnames/index.js":1,"./AggregatorBarText.jsx":13,"lodash":37,"react":201}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2255,7 +2240,7 @@ exports["default"] = AggregatorBarText;
 module.exports = exports["default"];
 
 
-},{"react":201}],15:[function(require,module,exports){
+},{"react":201}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2294,6 +2279,8 @@ var AggregatorActions = _interopRequireWildcard(_actionsAggregators);
 
 var _redux = require('redux');
 
+var _apiutilsAggregators = require('../apiutils/aggregators');
+
 var AggregatorList = (function (_Component) {
 	_inherits(AggregatorList, _Component);
 
@@ -2303,13 +2290,14 @@ var AggregatorList = (function (_Component) {
 		_get(Object.getPrototypeOf(AggregatorList.prototype), 'constructor', this).call(this, props);
 		this.actions = (0, _redux.bindActionCreators)(AggregatorActions, this.props.dispatch);
 		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this);
+		(0, _apiutilsAggregators.bindAggregatorListeners)(this.props.dispatch);
 	}
 
 	_createClass(AggregatorList, [{
 		key: 'handleAggregatorClicked',
 		value: function handleAggregatorClicked(e, rawId) {
 			var id = rawId.substr(rawId.indexOf("$") + 1);
-			this.actions.addClickToAggregator(id);
+			this.actions.newAggregatorClick(id);
 		}
 	}, {
 		key: 'render',
@@ -2333,7 +2321,7 @@ exports['default'] = (0, _reactRedux.connect)(_selectorsAggregatorSelectorsJs.ag
 module.exports = exports['default'];
 
 
-},{"../actions/aggregators":4,"../selectors/AggregatorSelectors.js":32,"./Aggregator.jsx":12,"react":201,"react-redux":41,"redux":204}],16:[function(require,module,exports){
+},{"../actions/aggregators":4,"../apiutils/aggregators":7,"../selectors/AggregatorSelectors.js":31,"./Aggregator.jsx":11,"react":201,"react-redux":41,"redux":204}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2389,7 +2377,7 @@ exports["default"] = AggregatorText;
 module.exports = exports["default"];
 
 
-},{"react":201}],17:[function(require,module,exports){
+},{"react":201}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2451,7 +2439,7 @@ exports['default'] = App;
 module.exports = exports['default'];
 
 
-},{"./AggregatorList.jsx":15,"./Chat.jsx":18,"./RoomInfo.jsx":22,"react":201}],18:[function(require,module,exports){
+},{"./AggregatorList.jsx":14,"./Chat.jsx":17,"./RoomInfo.jsx":21,"react":201}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2498,6 +2486,8 @@ var _reactRedux = require('react-redux');
 
 var _redux = require('redux');
 
+var _apiutilsChat = require('../apiutils/chat');
+
 var Chat = (function (_Component) {
 	_inherits(Chat, _Component);
 
@@ -2508,6 +2498,7 @@ var Chat = (function (_Component) {
 		this.handleChatMessageClick = this.handleChatMessageClick.bind(this);
 		this.chatActions = (0, _redux.bindActionCreators)(ChatActions, this.props.dispatch);
 		this.aggregatorActions = (0, _redux.bindActionCreators)(AggregatorActions, this.props.dispatch);
+		(0, _apiutilsChat.bindChatListeners)(this.props.dispatch);
 	}
 
 	_createClass(Chat, [{
@@ -2544,7 +2535,7 @@ exports['default'] = (0, _reactRedux.connect)(mapStateToProps)(Chat);
 module.exports = exports['default'];
 
 
-},{"../actions/aggregators":4,"../actions/chat":5,"./../../bower_components/classnames/index.js":1,"./ChatMessageForm.jsx":20,"./ChatMessageList.jsx":21,"react":201,"react-redux":41,"redux":204}],19:[function(require,module,exports){
+},{"../actions/aggregators":4,"../actions/chat":5,"../apiutils/chat":8,"./../../bower_components/classnames/index.js":1,"./ChatMessageForm.jsx":19,"./ChatMessageList.jsx":20,"react":201,"react-redux":41,"redux":204}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2662,7 +2653,7 @@ exports['default'] = ChatMessage;
 module.exports = exports['default'];
 
 
-},{"./../../bower_components/classnames/index.js":1,"./AggregationSummary.jsx":11,"react":201}],20:[function(require,module,exports){
+},{"./../../bower_components/classnames/index.js":1,"./AggregationSummary.jsx":10,"react":201}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2779,7 +2770,7 @@ exports['default'] = ChatMessageForm;
 module.exports = exports['default'];
 
 
-},{"./../../bower_components/classnames/index.js":1,"./../../bower_components/jquery/dist/jquery.js":2,"react":201}],21:[function(require,module,exports){
+},{"./../../bower_components/classnames/index.js":1,"./../../bower_components/jquery/dist/jquery.js":2,"react":201}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2845,7 +2836,7 @@ exports['default'] = ChatMessageList;
 module.exports = exports['default'];
 
 
-},{"./../../bower_components/classnames/index.js":1,"./ChatMessage.jsx":19,"react":201}],22:[function(require,module,exports){
+},{"./../../bower_components/classnames/index.js":1,"./ChatMessage.jsx":18,"react":201}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2868,6 +2859,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = require('react-redux');
 
+var _apiutilsRoom = require('../apiutils/room');
+
+var _actionsRoom = require('../actions/room');
+
 var RoomInfo = (function (_Component) {
 	_inherits(RoomInfo, _Component);
 
@@ -2875,6 +2870,8 @@ var RoomInfo = (function (_Component) {
 		_classCallCheck(this, RoomInfo);
 
 		_get(Object.getPrototypeOf(RoomInfo.prototype), 'constructor', this).call(this, props);
+		(0, _apiutilsRoom.bindRoomListeners)(this.props.dispatch);
+		this.props.dispatch((0, _actionsRoom.requestUpdateRoom)(this.props.name));
 	}
 
 	_createClass(RoomInfo, [{
@@ -2913,7 +2910,7 @@ exports['default'] = (0, _reactRedux.connect)(mapStateToProps)(RoomInfo);
 module.exports = exports['default'];
 
 
-},{"react":201,"react-redux":41}],23:[function(require,module,exports){
+},{"../actions/room":6,"../apiutils/room":9,"react":201,"react-redux":41}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2941,7 +2938,7 @@ var UPDATE_ROOM = 'UPDATE_ROOM';
 exports.UPDATE_ROOM = UPDATE_ROOM;
 
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2959,7 +2956,7 @@ exports["default"] = {
 module.exports = exports["default"];
 
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -2976,7 +2973,7 @@ exports['default'] = _componentsAppJsx2['default'];
 module.exports = exports['default'];
 
 
-},{"../components/App.jsx":17}],26:[function(require,module,exports){
+},{"../components/App.jsx":16}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3005,7 +3002,7 @@ function createAggregator(props) {
 }
 
 
-},{"shortid":216}],27:[function(require,module,exports){
+},{"shortid":216}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3030,7 +3027,7 @@ function createChatMessage(props) {
 }
 
 
-},{"shortid":216}],28:[function(require,module,exports){
+},{"shortid":216}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3048,6 +3045,8 @@ var _utilsScorer = require('../utils/scorer');
 
 var _utilsScorer2 = _interopRequireDefault(_utilsScorer);
 
+var _utilsReducerTools = require('../utils/reducerTools');
+
 var initialState = [];
 
 function aggregators(state, action) {
@@ -3062,32 +3061,11 @@ function aggregators(state, action) {
 			return [action.aggregator].concat(_toConsumableArray(state));
 		//set calculated aggregator state to time based on click history
 		case _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME:
-			var index = state.findIndex(function (m) {
-				return m.id == action.id;
-			});
-			if (index === -1) return state;
-			return [].concat(_toConsumableArray(state.slice(0, index)), [aggregator(state[index], {
-				type: _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME,
-				time: action.time
-			})], _toConsumableArray(state.slice(index + 1)));
+			return (0, _utilsReducerTools.newListWithReplacementFromSubreducer)(state, action, aggregator);
 		case _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR:
-			var index = state.findIndex(function (m) {
-				return m.id == action.id;
-			});
-			if (index === -1) return state;
-			return [].concat(_toConsumableArray(state.slice(0, index)), [aggregator(state[index], {
-				type: _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR,
-				click: action.click
-			})], _toConsumableArray(state.slice(index + 1)));
+			return (0, _utilsReducerTools.newListWithReplacementFromSubreducer)(state, action, aggregator);
 		case _constantsActionTypes.UPDATE_AGGREGATOR_ID:
-			var index = state.findIndex(function (m) {
-				return m.id == action.originalId;
-			});
-			if (index === -1) return state;
-			return [].concat(_toConsumableArray(state.slice(0, index)), [aggregator(state[index], {
-				type: _constantsActionTypes.UPDATE_AGGREGATOR_ID,
-				id: action.newId
-			})], _toConsumableArray(state.slice(index + 1)));
+			return (0, _utilsReducerTools.newListWithReplacementFromSubreducer)(state, action, aggregator, "originalId");
 		default:
 			return state;
 	}
@@ -3108,7 +3086,7 @@ function aggregator(state, action) {
 			});
 		case _constantsActionTypes.UPDATE_AGGREGATOR_ID:
 			return Object.assign({}, state, {
-				id: action.id
+				id: action.newId
 			});
 		default:
 			return state;
@@ -3117,7 +3095,7 @@ function aggregator(state, action) {
 module.exports = exports['default'];
 
 
-},{"../constants/ActionTypes":23,"../utils/scorer":35}],29:[function(require,module,exports){
+},{"../constants/ActionTypes":22,"../utils/reducerTools":34,"../utils/scorer":35}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3129,6 +3107,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var _constantsActionTypes = require('../constants/ActionTypes');
 
+var _utilsReducerTools = require('../utils/reducerTools');
+
 var initialState = [];
 
 function chatMessages(state, action) {
@@ -3138,21 +3118,13 @@ function chatMessages(state, action) {
 		case _constantsActionTypes.ADD_CHAT_MESSAGE:
 			return [].concat(_toConsumableArray(state), [action.message]);
 		case _constantsActionTypes.VOTE_CHAT_MESSAGE:
-			var index = state.findIndex(function (m) {
-				return m.id === action.id;
+			return (0, _utilsReducerTools.newListWithReplacementFields)(state, action.id, function (oldMessage) {
+				return { hasUserVoted: !oldMessage.hasUserVoted };
 			});
-			if (index === -1) return state;
-			return [].concat(_toConsumableArray(state.slice(0, index)), [Object.assign({}, state[index], {
-				hasUserVoted: !state[index].hasUserVoted
-			})], _toConsumableArray(state.slice(index + 1)));
 		case _constantsActionTypes.UPDATE_CHAT_MESSAGE_ID:
-			var index = state.findIndex(function (m) {
-				return m.id === action.originalId;
+			return (0, _utilsReducerTools.newListWithReplacementFields)(state, action.originalId, function () {
+				return { id: action.newId };
 			});
-			if (index === -1) return state;
-			return [].concat(_toConsumableArray(state.slice(0, index)), [Object.assign({}, state[index], {
-				id: action.newId
-			})], _toConsumableArray(state.slice(index + 1)));
 		default:
 			return state;
 	}
@@ -3161,7 +3133,7 @@ function chatMessages(state, action) {
 module.exports = exports['default'];
 
 
-},{"../constants/ActionTypes":23}],30:[function(require,module,exports){
+},{"../constants/ActionTypes":22,"../utils/reducerTools":34}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3194,7 +3166,7 @@ exports['default'] = rootReducer;
 module.exports = exports['default'];
 
 
-},{"./aggregators":28,"./chat":29,"./room":31,"redux":204}],31:[function(require,module,exports){
+},{"./aggregators":27,"./chat":28,"./room":30,"redux":204}],30:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3225,7 +3197,7 @@ function room(state, action) {
 module.exports = exports["default"];
 
 
-},{"../constants/ActionTypes":23}],32:[function(require,module,exports){
+},{"../constants/ActionTypes":22}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3297,7 +3269,7 @@ var aggregatedMessagesDisplaySelector = (0, _reselect.createSelector)([aggregate
 exports.aggregatedMessagesDisplaySelector = aggregatedMessagesDisplaySelector;
 
 
-},{"../utils/levels":34,"reselect":212}],33:[function(require,module,exports){
+},{"../utils/levels":33,"reselect":212}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3346,7 +3318,7 @@ function configureStore(initialState) {
 module.exports = exports['default'];
 
 
-},{"../reducers":30,"redux":204,"redux-thunk":202}],34:[function(require,module,exports){
+},{"../reducers":29,"redux":204,"redux-thunk":202}],33:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3373,6 +3345,45 @@ function getLevel(x) {
 		return 2;
 	}
 	return 3;
+}
+
+
+},{}],34:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.newListWithReplacementFromSubreducer = newListWithReplacementFromSubreducer;
+exports.newListWithReplacement = newListWithReplacement;
+exports.newListWithReplacementFields = newListWithReplacementFields;
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+function newListWithReplacementFromSubreducer(state, action, reducer) {
+	var actionIdField = arguments.length <= 3 || arguments[3] === undefined ? "id" : arguments[3];
+
+	return newListWithReplacement(state, action[actionIdField], function (oldObject) {
+		return reducer(oldObject, action);
+	});
+}
+
+function newListWithReplacement(list, searchId, transform) {
+	var index = list.findIndex(function (m) {
+		return m.id === searchId;
+	});
+	if (index === -1) return list;
+	return [].concat(_toConsumableArray(list.slice(0, index)), [transform(list[index])], _toConsumableArray(list.slice(index + 1)));
+}
+
+//takes a transform function of the form:
+//(oldObject) => { fieldToUpdate : newValue }
+//-- it merges the returned object from the function with the old object as the replacement
+
+function newListWithReplacementFields(list, searchId, transform) {
+	return newListWithReplacement(list, searchId, function (oldObject) {
+		return Object.assign({}, oldObject, transform(oldObject));
+	});
 }
 
 

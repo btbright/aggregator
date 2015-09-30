@@ -22,11 +22,9 @@ class Aggregator extends Component {
 	}
 	componentDidMount() {
 		this.start(this.props.updateToNow)
-		/*
-		setTimeout(()=>{
-			this.stop()
-		},3000)
-		*/
+	}
+	componentWillUnmount(){
+		this.stop()
 	}
 	start(update) {
 		if (this.props.isComplete){

@@ -1,6 +1,6 @@
 import * as types from '../constants/ActionTypes'
 import { createAggregator } from '../models/aggregator'
-import { submitAggregator } from '../apiutils/aggregators'
+import { submitAggregator, submitAggregatorClick } from '../apiutils/aggregators'
 
 export function updateAggregatorToTime(id, time){
 	return {
@@ -18,11 +18,17 @@ export function updateAggregatorToNow(id){
 	}
 }
 
-export function addClickToAggregator(id){
+export function newAggregatorClick(id){
+	var click = Date.now();
+	submitAggregatorClick(id, click);
+	return addClickToAggregator(id, click);
+}
+
+export function addClickToAggregator(id, click){
 	return {
 		type : types.ADD_CLICK_TO_AGGREGATOR,
 		id,
-		click : Date.now()
+		click
 	}
 }
 
@@ -35,7 +41,6 @@ export function updateAggregatorId(originalId, newId){
 }
 
 export function addAggregator(aggregator){
-	console.log("eaege")
 	return {
 		type : types.ADD_AGGREGATOR,
 		aggregator : aggregator

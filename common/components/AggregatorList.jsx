@@ -4,16 +4,18 @@ import { connect } from 'react-redux';
 import { aggregatedMessagesDisplaySelector } from '../selectors/AggregatorSelectors.js';
 import * as AggregatorActions from '../actions/aggregators'
 import { bindActionCreators } from 'redux'
+import { bindAggregatorListeners } from '../apiutils/aggregators'
 
 class AggregatorList extends Component {
 	constructor(props){
 		super(props)
 		this.actions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this)
+		bindAggregatorListeners(this.props.dispatch);
 	}
 	handleAggregatorClicked(e,rawId){
 		var id = rawId.substr(rawId.indexOf("$")+1);
-		this.actions.addClickToAggregator(id)
+		this.actions.newAggregatorClick(id)
 	}
 	render(){
 		return (

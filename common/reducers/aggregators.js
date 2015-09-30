@@ -1,5 +1,6 @@
 import { UPDATE_AGGREGATOR_TO_TIME, ADD_AGGREGATOR, ADD_CLICK_TO_AGGREGATOR, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
 import scorer from '../utils/scorer'
+import { newListWithReplacementFromSubreducer } from '../utils/reducerTools'
 
 const initialState = [];
 
@@ -11,38 +12,11 @@ export default function aggregators(state = initialState, action) {
 		return [action.aggregator,...state]
 	//set calculated aggregator state to time based on click history
 	case UPDATE_AGGREGATOR_TO_TIME:
-		var index = state.findIndex(m => m.id == action.id);
-		if (index === -1) return state;
-		return [
-		  ...state.slice(0, index),
-		  aggregator(state[index],{
-		  	type : UPDATE_AGGREGATOR_TO_TIME,
-		  	time : action.time
-		  }),
-		  ...state.slice(index + 1)
-		]
+		return newListWithReplacementFromSubreducer(state, action, aggregator);
 	case ADD_CLICK_TO_AGGREGATOR:
-		var index = state.findIndex(m => m.id == action.id);
-		if (index === -1) return state;
-		return [
-		  ...state.slice(0, index),
-		  aggregator(state[index],{
-		  	type : ADD_CLICK_TO_AGGREGATOR,
-		  	click : action.click
-		  }),
-		  ...state.slice(index + 1)
-		]
+		return newListWithReplacementFromSubreducer(state, action, aggregator);
 	case UPDATE_AGGREGATOR_ID:
-		var index = state.findIndex(m => m.id == action.originalId);
-		if (index === -1) return state;
-		return [
-		  ...state.slice(0, index),
-		  aggregator(state[index],{
-		  	type : UPDATE_AGGREGATOR_ID,
-		  	id : action.newId
-		  }),
-		  ...state.slice(index + 1)
-		]
+		return newListWithReplacementFromSubreducer(state, action, aggregator, "originalId");
 	default:
     	return state;
   	}
@@ -63,7 +37,7 @@ function aggregator(state, action){
 		});
 	case UPDATE_AGGREGATOR_ID:
 		return Object.assign({},state,{
-			id : action.id
+			id : action.newId
 		});
 	default:
 		return state;

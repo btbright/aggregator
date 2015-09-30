@@ -6,6 +6,7 @@ import * as ChatActions from '../actions/chat'
 import * as AggregatorActions from '../actions/aggregators'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { bindChatListeners } from '../apiutils/chat'
 
 class Chat extends Component {
 	constructor(props){
@@ -13,6 +14,7 @@ class Chat extends Component {
 		this.handleChatMessageClick = this.handleChatMessageClick.bind(this)
 		this.chatActions = bindActionCreators(ChatActions, this.props.dispatch);
 		this.aggregatorActions = bindActionCreators(AggregatorActions, this.props.dispatch);
+		bindChatListeners(this.props.dispatch);
 	}
 	handleChatMessageClick(e,rawId){
 		var id = rawId.substr(rawId.indexOf("$")+1);
