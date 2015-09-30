@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import AggregatorList from './AggregatorList.jsx'
 import Chat from './Chat.jsx'
+import RoomInfo from './RoomInfo.jsx'
 
 
 class App extends Component {
@@ -10,8 +11,9 @@ class App extends Component {
 	render(){
 		return (
 			<div className="app-wrap clearfix">
-				<Chat />
+				<RoomInfo />
 				<AggregatorList />
+				<Chat />
 			</div>
 			)
 	}

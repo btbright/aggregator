@@ -12,7 +12,7 @@ class AggregatorList extends Component {
 		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this)
 	}
 	handleAggregatorClicked(e,rawId){
-		var id = parseInt(rawId.substr(rawId.indexOf("$")+1),10);
+		var id = rawId.substr(rawId.indexOf("$")+1);
 		this.actions.addClickToAggregator(id)
 	}
 	render(){

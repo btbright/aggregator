@@ -15,9 +15,9 @@ class Chat extends Component {
 		this.aggregatorActions = bindActionCreators(AggregatorActions, this.props.dispatch);
 	}
 	handleChatMessageClick(e,rawId){
-		var id = parseInt(rawId.substr(rawId.indexOf("$")+1),10);
+		var id = rawId.substr(rawId.indexOf("$")+1);
 		this.chatActions.voteChatMessage(id)
-		this.aggregatorActions.addAggregator("message",id);
+		this.aggregatorActions.newAggregator("message",id);
 	}
 	render(){
 		const { chatMessages } = this.props;

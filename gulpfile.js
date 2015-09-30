@@ -16,9 +16,9 @@ var gulp = require('gulp'),
 
 
 gulp.task('default', ['styles','scripts'], function(){
-    gulp.watch(packageConfig.paths.sass,['reload']);
-    gulp.watch(packageConfig.paths.js,['reload']);
-    gulp.watch(packageConfig.paths.jsx,['reload']);
+    gulp.watch(packageConfig.paths.sass,['styles']);
+    gulp.watch(packageConfig.paths.js,['scripts']);
+    gulp.watch(packageConfig.paths.jsx,['scripts']);
 });
 
 gulp.task('styles', function() {

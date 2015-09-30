@@ -1,4 +1,6 @@
 import * as types from '../constants/ActionTypes'
+import { createAggregator } from '../models/aggregator'
+import { submitAggregator } from '../apiutils/aggregators'
 
 export function updateAggregatorToTime(id, time){
 	return {
@@ -24,12 +26,31 @@ export function addClickToAggregator(id){
 	}
 }
 
-export function addAggregator(objectType, objectId){
+export function updateAggregatorId(originalId, newId){
+	return {
+		type: types.UPDATE_AGGREGATOR_ID,
+		originalId,
+		newId
+	}
+}
+
+export function addAggregator(aggregator){
+	console.log("eaege")
 	return {
 		type : types.ADD_AGGREGATOR,
-		createdTime : Date.now(),
-		objectType,
+		aggregator : aggregator
+	}
+}
+
+export function newAggregator(objectType, objectId){
+	var aggregator = createAggregator({
 		objectId,
+		objectType,
 		user : "ben"
+	});
+	submitAggregator(aggregator);
+	return {
+		type : types.ADD_AGGREGATOR,
+		aggregator : aggregator
 	}
 }
