@@ -1507,6 +1507,1571 @@ if(typeof noGlobal === strundefined){window.jQuery = window.$ = jQuery;}return j
 
 
 },{}],3:[function(require,module,exports){
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = require('react-redux');
+
+var _commonConstantsApp = require('../common/constants/App');
+
+var _commonConstantsApp2 = _interopRequireDefault(_commonConstantsApp);
+
+var _commonStoreConfigureStore = require('../common/store/configureStore');
+
+var _commonStoreConfigureStore2 = _interopRequireDefault(_commonStoreConfigureStore);
+
+var _commonContainersApp = require('../common/containers/App');
+
+var _commonContainersApp2 = _interopRequireDefault(_commonContainersApp);
+
+var initialState = window.__INITIAL_STATE__;
+
+var store = (0, _commonStoreConfigureStore2['default'])(initialState);
+
+var rootElement = document.getElementById(_commonConstantsApp2['default'].React.ROOTELEMENTID);
+
+_react2['default'].render(_react2['default'].createElement(
+  _reactRedux.Provider,
+  { store: store },
+  function () {
+    return _react2['default'].createElement(_commonContainersApp2['default'], null);
+  }
+), rootElement);
+
+
+},{"../common/constants/App":18,"../common/containers/App":19,"../common/store/configureStore":24,"react":192,"react-redux":32}],4:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.updateAggregatorToTime = updateAggregatorToTime;
+exports.updateAggregatorToNow = updateAggregatorToNow;
+exports.addClickToAggregator = addClickToAggregator;
+exports.addAggregator = addAggregator;
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
+
+var _constantsActionTypes = require('../constants/ActionTypes');
+
+var types = _interopRequireWildcard(_constantsActionTypes);
+
+function updateAggregatorToTime(id, time) {
+	return {
+		type: types.UPDATE_AGGREGATOR_TO_TIME,
+		id: id,
+		time: time
+	};
+}
+
+function updateAggregatorToNow(id) {
+	return {
+		type: types.UPDATE_AGGREGATOR_TO_TIME,
+		id: id,
+		time: Date.now()
+	};
+}
+
+function addClickToAggregator(id) {
+	return {
+		type: types.ADD_CLICK_TO_AGGREGATOR,
+		id: id,
+		click: Date.now()
+	};
+}
+
+function addAggregator(objectType, objectId) {
+	return {
+		type: types.ADD_AGGREGATOR,
+		createdTime: Date.now(),
+		objectType: objectType,
+		objectId: objectId,
+		user: "ben"
+	};
+}
+
+
+},{"../constants/ActionTypes":17}],5:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.newChatMessage = newChatMessage;
+exports.voteChatMessage = voteChatMessage;
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
+
+var _constantsActionTypes = require('../constants/ActionTypes');
+
+var types = _interopRequireWildcard(_constantsActionTypes);
+
+function newChatMessage(text) {
+	return {
+		type: types.ADD_CHAT_MESSAGE,
+		text: text,
+		user: "ben",
+		time: Date.now()
+	};
+}
+
+function voteChatMessage(id) {
+	return {
+		type: types.VOTE_CHAT_MESSAGE,
+		id: id
+	};
+}
+
+
+},{"../constants/ActionTypes":17}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var AggregationSummary = (function (_Component) {
+	_inherits(AggregationSummary, _Component);
+
+	function AggregationSummary(props) {
+		_classCallCheck(this, AggregationSummary);
+
+		_get(Object.getPrototypeOf(AggregationSummary.prototype), "constructor", this).call(this, props);
+		this.state = {
+			componentWidth: 0
+		};
+	}
+
+	_createClass(AggregationSummary, [{
+		key: "componentDidUpdate",
+		value: function componentDidUpdate() {
+			var newWidth = _react2["default"].findDOMNode(this).offsetWidth;
+			if (this.state.componentWidth != newWidth) {
+				this.setState({
+					componentWidth: newWidth
+				});
+			}
+		}
+	}, {
+		key: "render",
+		value: function render() {
+			var styles = { right: this.props.shouldShow ? -this.state.componentWidth : -2 };
+			return _react2["default"].createElement(
+				"div",
+				{ style: styles, className: "aggregation-summary" },
+				_react2["default"].createElement(
+					"p",
+					null,
+					_react2["default"].createElement(
+						"span",
+						{ className: "count" },
+						this.props.clicks
+					),
+					_react2["default"].createElement(
+						"span",
+						{ className: "count-label" },
+						"⇶"
+					)
+				)
+			);
+		}
+	}]);
+
+	return AggregationSummary;
+})(_react.Component);
+
+AggregationSummary.propTypes = {
+	clicks: _react.PropTypes.number.isRequired,
+	shouldShow: _react.PropTypes.bool
+};
+
+exports["default"] = AggregationSummary;
+module.exports = exports["default"];
+
+
+},{"react":192}],7:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _classnames = require("./../../bower_components/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _AggregatorBarJsx = require('./AggregatorBar.jsx');
+
+var _AggregatorBarJsx2 = _interopRequireDefault(_AggregatorBarJsx);
+
+var _AggregatorTextJsx = require('./AggregatorText.jsx');
+
+var _AggregatorTextJsx2 = _interopRequireDefault(_AggregatorTextJsx);
+
+var _constantsAppJs = require('../constants/App.js');
+
+var _constantsAppJs2 = _interopRequireDefault(_constantsAppJs);
+
+var _utilsLevels = require('../utils/levels');
+
+var Aggregator = (function (_Component) {
+	_inherits(Aggregator, _Component);
+
+	function Aggregator(props) {
+		_classCallCheck(this, Aggregator);
+
+		_get(Object.getPrototypeOf(Aggregator.prototype), 'constructor', this).call(this, props);
+		this.state = {
+			lastMouseDown: false,
+			isClicking: false,
+			frameId: null,
+			lastFrameTime: 0,
+			frame: 0
+		};
+		this.handleOnMouseDown = this.handleOnMouseDown.bind(this);
+		this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
+		this.start = this.start.bind(this);
+		this.stop = this.stop.bind(this);
+	}
+
+	_createClass(Aggregator, [{
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			this.start(this.props.updateToNow);
+			/*
+   setTimeout(()=>{
+   	this.stop()
+   },3000)
+   */
+		}
+	}, {
+		key: 'start',
+		value: function start(update) {
+			var _this = this;
+
+			if (this.props.isComplete) {
+				this.stop();
+				return;
+			}
+			var fps = 60;
+			var frameId = requestAnimationFrame(function () {
+				return _this.start(update);
+			});
+			if (Date.now() - this.state.lastFrameTime > 1000 / fps) {
+				this.setState({
+					frameId: frameId,
+					frame: this.state.frame + 1,
+					lastFrameTime: Date.now()
+				});
+				update(this.props.id);
+			}
+		}
+	}, {
+		key: 'stop',
+		value: function stop() {
+			cancelAnimationFrame(this.state.frameId);
+			this.setState({ frameId: null, startedAt: null, frame: 0 });
+		}
+	}, {
+		key: 'handleOnMouseDown',
+		value: function handleOnMouseDown() {
+			this.setState({
+				lastMouseDown: Date.now()
+			});
+		}
+	}, {
+		key: 'handleOnMouseUp',
+		value: function handleOnMouseUp() {
+			var _this2 = this;
+
+			if (!this.state.lastMouseDown || this.props.isComplete) return;
+			var timeSinceLastMouseDown = Date.now() - this.state.lastMouseDown;
+			if (timeSinceLastMouseDown > _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT) {
+				return;
+			}
+			this.setState({
+				isClicking: true
+			});
+			this.refs.aggregatorBar.flash();
+			setTimeout(function () {
+				if (Date.now() - _this2.state.lastMouseDown < _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT) return;
+				_this2.setState({
+					isClicking: false
+				});
+			}, _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var aggregatorClassNames = (0, _classnames2['default'])('aggregator', this.props.isComplete ? 'aggregator-level-' + _utilsLevels.levelColors[(0, _utilsLevels.getLevel)(this.props.residueValue)] : '', {
+				'aggregator-user-clicking': this.state.isClicking,
+				'aggregator-complete': this.props.isComplete
+			});
+			return _react2['default'].createElement(
+				'div',
+				{ onClick: this.props.aggregatorClicked, onMouseDown: this.handleOnMouseDown, onMouseUp: this.handleOnMouseUp, className: aggregatorClassNames },
+				_react2['default'].createElement(_AggregatorBarJsx2['default'], {
+					ref: 'aggregatorBar',
+					barColorClass: "bar-" + this.props.barColor,
+					barValue: this.props.barValue,
+					rightText: this.props.rightText,
+					leftText: this.props.leftText,
+					residueValue: this.props.residueValue,
+					residueColorClass: "bar-residue-" + this.props.residueColorClass }),
+				_react2['default'].createElement(_AggregatorTextJsx2['default'], { displayText: this.props.displayText })
+			);
+		}
+	}]);
+
+	return Aggregator;
+})(_react.Component);
+
+Aggregator.propTypes = {
+	aggregatorClicked: _react.PropTypes.func,
+	isComplete: _react.PropTypes.bool.isRequired
+};
+
+exports['default'] = Aggregator;
+module.exports = exports['default'];
+
+
+},{"../constants/App.js":18,"../utils/levels":25,"./../../bower_components/classnames/index.js":1,"./AggregatorBar.jsx":8,"./AggregatorText.jsx":11,"react":192}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _AggregatorBarTextJsx = require('./AggregatorBarText.jsx');
+
+var _AggregatorBarTextJsx2 = _interopRequireDefault(_AggregatorBarTextJsx);
+
+var _classnames = require("./../../bower_components/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _constantsAppJs = require('../constants/App.js');
+
+var _constantsAppJs2 = _interopRequireDefault(_constantsAppJs);
+
+var AggregatorBar = (function (_Component) {
+	_inherits(AggregatorBar, _Component);
+
+	function AggregatorBar(props) {
+		_classCallCheck(this, AggregatorBar);
+
+		_get(Object.getPrototypeOf(AggregatorBar.prototype), 'constructor', this).call(this, props);
+		this.state = {
+			flashes: []
+		};
+	}
+
+	_createClass(AggregatorBar, [{
+		key: 'flash',
+		value: function flash() {
+			var _this = this;
+
+			this.setState(function (previousState) {
+				previousState.flashes.push("flash:" + Date.now());
+				return {
+					flashes: previousState.flashes
+				};
+			});
+			setTimeout(function () {
+				_this.setState({
+					flashes: _lodash2['default'].rest(_this.state.flashes) //get array except oldest
+				});
+			}, _constantsAppJs2['default'].Aggregator.FLASHLENGTH);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var width = this.props.barValue;
+
+			//add optional text
+			var rightText;
+			if (this.props.rightText) {
+				rightText = _react2['default'].createElement(_AggregatorBarTextJsx2['default'], { key: 'rightText', text: this.props.rightText, position: 'right' });
+			}
+			var leftText;
+			if (this.props.leftText) {
+				leftText = _react2['default'].createElement(_AggregatorBarTextJsx2['default'], { key: 'leftText', text: this.props.leftText, position: 'left' });
+			}
+
+			//add optional residue marker
+			var residue;
+			if (this.props.residueValue && this.props.residueColorClass) {
+				var classes = (0, _classnames2['default'])('bar-residue', this.props.residueColorClass);
+				residue = _react2['default'].createElement('div', { className: classes, style: { width: this.props.residueValue + '%' } });
+			}
+
+			//determine wrap class names
+			var colorClass = false;
+			if (this.props.barColorClass) {
+				colorClass = this.props.barColorClass;
+			}
+			var barWrapClasses = (0, _classnames2['default'])('bar-wrap', colorClass, {
+				'bar-almost-full': this.props.barValue > 85
+			});
+
+			return _react2['default'].createElement(
+				'div',
+				{ className: 'bar' },
+				_react2['default'].createElement(
+					'div',
+					{ className: barWrapClasses },
+					this.state.flashes.map(function (flashKey) {
+						return _react2['default'].createElement('div', { key: flashKey, style: { width: '100%', right: 100 - width + '%' }, className: 'bar-leader' });
+					}),
+					residue,
+					_react2['default'].createElement('div', { className: 'bar-inner', style: { width: width + '%' } }),
+					rightText,
+					leftText
+				)
+			);
+		}
+	}]);
+
+	return AggregatorBar;
+})(_react.Component);
+
+AggregatorBar.propTypes = {
+	rightText: _react.PropTypes.string,
+	leftText: _react.PropTypes.string,
+	barValue: _react.PropTypes.number.isRequired,
+	residueValue: _react.PropTypes.number,
+	residueColorClass: _react.PropTypes.string,
+	barColorClass: _react.PropTypes.string
+};
+
+exports['default'] = AggregatorBar;
+module.exports = exports['default'];
+
+
+},{"../constants/App.js":18,"./../../bower_components/classnames/index.js":1,"./AggregatorBarText.jsx":9,"lodash":28,"react":192}],9:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var AggregatorBarText = (function (_Component) {
+	_inherits(AggregatorBarText, _Component);
+
+	function AggregatorBarText() {
+		_classCallCheck(this, AggregatorBarText);
+
+		_get(Object.getPrototypeOf(AggregatorBarText.prototype), "constructor", this).apply(this, arguments);
+	}
+
+	_createClass(AggregatorBarText, [{
+		key: "render",
+		value: function render() {
+			return _react2["default"].createElement(
+				"span",
+				{ className: this.props.position + "-text" },
+				this.props.text
+			);
+		}
+	}]);
+
+	return AggregatorBarText;
+})(_react.Component);
+
+AggregatorBarText.propTypes = {
+	position: _react2["default"].PropTypes.string.isRequired,
+	text: _react2["default"].PropTypes.string.isRequired
+};
+
+exports["default"] = AggregatorBarText;
+module.exports = exports["default"];
+
+
+},{"react":192}],10:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _AggregatorJsx = require('./Aggregator.jsx');
+
+var _AggregatorJsx2 = _interopRequireDefault(_AggregatorJsx);
+
+var _reactRedux = require('react-redux');
+
+var _selectorsAggregatorSelectorsJs = require('../selectors/AggregatorSelectors.js');
+
+var _actionsAggregators = require('../actions/aggregators');
+
+var AggregatorActions = _interopRequireWildcard(_actionsAggregators);
+
+var _redux = require('redux');
+
+var AggregatorList = (function (_Component) {
+	_inherits(AggregatorList, _Component);
+
+	function AggregatorList(props) {
+		_classCallCheck(this, AggregatorList);
+
+		_get(Object.getPrototypeOf(AggregatorList.prototype), 'constructor', this).call(this, props);
+		this.actions = (0, _redux.bindActionCreators)(AggregatorActions, this.props.dispatch);
+		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this);
+	}
+
+	_createClass(AggregatorList, [{
+		key: 'handleAggregatorClicked',
+		value: function handleAggregatorClicked(e, rawId) {
+			var id = parseInt(rawId.substr(rawId.indexOf("$") + 1), 10);
+			this.actions.addClickToAggregator(id);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var _this = this;
+
+			return _react2['default'].createElement(
+				'div',
+				{ className: 'aggregator-list' },
+				this.props.displayReadyAggregatedMessages.map(function (aggregatorData) {
+					return _react2['default'].createElement(_AggregatorJsx2['default'], _extends({ updateToNow: _this.actions.updateAggregatorToNow, aggregatorClicked: _this.handleAggregatorClicked, key: aggregatorData.id }, aggregatorData));
+				})
+			);
+		}
+	}]);
+
+	return AggregatorList;
+})(_react.Component);
+
+exports['default'] = (0, _reactRedux.connect)(_selectorsAggregatorSelectorsJs.aggregatedMessagesDisplaySelector)(AggregatorList);
+module.exports = exports['default'];
+
+
+},{"../actions/aggregators":4,"../selectors/AggregatorSelectors.js":23,"./Aggregator.jsx":7,"react":192,"react-redux":32,"redux":195}],11:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var AggregatorText = (function (_Component) {
+	_inherits(AggregatorText, _Component);
+
+	function AggregatorText() {
+		_classCallCheck(this, AggregatorText);
+
+		_get(Object.getPrototypeOf(AggregatorText.prototype), "constructor", this).apply(this, arguments);
+	}
+
+	_createClass(AggregatorText, [{
+		key: "render",
+		value: function render() {
+			return _react2["default"].createElement(
+				"div",
+				{ className: "text-display" },
+				_react2["default"].createElement(
+					"p",
+					null,
+					this.props.displayText
+				)
+			);
+		}
+	}]);
+
+	return AggregatorText;
+})(_react.Component);
+
+AggregatorText.propTypes = {
+	displayText: _react2["default"].PropTypes.string.isRequired
+};
+
+exports["default"] = AggregatorText;
+module.exports = exports["default"];
+
+
+},{"react":192}],12:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _AggregatorListJsx = require('./AggregatorList.jsx');
+
+var _AggregatorListJsx2 = _interopRequireDefault(_AggregatorListJsx);
+
+var _ChatJsx = require('./Chat.jsx');
+
+var _ChatJsx2 = _interopRequireDefault(_ChatJsx);
+
+var App = (function (_Component) {
+	_inherits(App, _Component);
+
+	function App(props) {
+		_classCallCheck(this, App);
+
+		_get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this, props);
+	}
+
+	_createClass(App, [{
+		key: 'render',
+		value: function render() {
+			return _react2['default'].createElement(
+				'div',
+				{ className: 'app-wrap clearfix' },
+				_react2['default'].createElement(_ChatJsx2['default'], null),
+				_react2['default'].createElement(_AggregatorListJsx2['default'], null)
+			);
+		}
+	}]);
+
+	return App;
+})(_react.Component);
+
+exports['default'] = App;
+module.exports = exports['default'];
+
+
+},{"./AggregatorList.jsx":10,"./Chat.jsx":13,"react":192}],13:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _classnames = require("./../../bower_components/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _ChatMessageListJsx = require('./ChatMessageList.jsx');
+
+var _ChatMessageListJsx2 = _interopRequireDefault(_ChatMessageListJsx);
+
+var _ChatMessageFormJsx = require('./ChatMessageForm.jsx');
+
+var _ChatMessageFormJsx2 = _interopRequireDefault(_ChatMessageFormJsx);
+
+var _actionsChat = require('../actions/chat');
+
+var ChatActions = _interopRequireWildcard(_actionsChat);
+
+var _actionsAggregators = require('../actions/aggregators');
+
+var AggregatorActions = _interopRequireWildcard(_actionsAggregators);
+
+var _reactRedux = require('react-redux');
+
+var _redux = require('redux');
+
+var Chat = (function (_Component) {
+	_inherits(Chat, _Component);
+
+	function Chat(props) {
+		_classCallCheck(this, Chat);
+
+		_get(Object.getPrototypeOf(Chat.prototype), 'constructor', this).call(this, props);
+		this.handleChatMessageClick = this.handleChatMessageClick.bind(this);
+		this.chatActions = (0, _redux.bindActionCreators)(ChatActions, this.props.dispatch);
+		this.aggregatorActions = (0, _redux.bindActionCreators)(AggregatorActions, this.props.dispatch);
+	}
+
+	_createClass(Chat, [{
+		key: 'handleChatMessageClick',
+		value: function handleChatMessageClick(e, rawId) {
+			var id = parseInt(rawId.substr(rawId.indexOf("$") + 1), 10);
+			this.chatActions.voteChatMessage(id);
+			this.aggregatorActions.addAggregator("message", id);
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var chatMessages = this.props.chatMessages;
+
+			return _react2['default'].createElement(
+				'div',
+				{ className: 'chat' },
+				_react2['default'].createElement(_ChatMessageListJsx2['default'], { messages: chatMessages, handleChatMessageClick: this.handleChatMessageClick }),
+				_react2['default'].createElement(_ChatMessageFormJsx2['default'], { onNewMessage: this.chatActions.newChatMessage })
+			);
+		}
+	}]);
+
+	return Chat;
+})(_react.Component);
+
+function mapStateToProps(state) {
+	return {
+		chatMessages: state.chatMessages
+	};
+}
+
+exports['default'] = (0, _reactRedux.connect)(mapStateToProps)(Chat);
+module.exports = exports['default'];
+
+
+},{"../actions/aggregators":4,"../actions/chat":5,"./../../bower_components/classnames/index.js":1,"./ChatMessageForm.jsx":15,"./ChatMessageList.jsx":16,"react":192,"react-redux":32,"redux":195}],14:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _classnames = require("./../../bower_components/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _AggregationSummaryJsx = require('./AggregationSummary.jsx');
+
+var _AggregationSummaryJsx2 = _interopRequireDefault(_AggregationSummaryJsx);
+
+var ChatMessage = (function (_Component) {
+	_inherits(ChatMessage, _Component);
+
+	function ChatMessage(props) {
+		_classCallCheck(this, ChatMessage);
+
+		_get(Object.getPrototypeOf(ChatMessage.prototype), 'constructor', this).call(this, props);
+		this.state = {
+			shouldShowAggregationSummary: false
+		};
+		this.handleMouseEnter = this.handleMouseEnter.bind(this);
+		this.handleMouseLeave = this.handleMouseLeave.bind(this);
+	}
+
+	_createClass(ChatMessage, [{
+		key: 'handleMouseEnter',
+		value: function handleMouseEnter() {
+			this.setState({
+				shouldShowAggregationSummary: true
+			});
+		}
+	}, {
+		key: 'handleMouseLeave',
+		value: function handleMouseLeave() {
+			this.setState({
+				shouldShowAggregationSummary: false
+			});
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var aggregationSummary;
+			if (this.props.isAggregated) {
+				aggregationSummary = _react2['default'].createElement(_AggregationSummaryJsx2['default'], { shouldShow: this.state.shouldShowAggregationSummary, clicks: this.props.clicks });
+			}
+			var commentClasses = (0, _classnames2['default'])('comment', 'clearfix', {
+				'comment-aggregated': this.props.isAggregated,
+				'has-clicked': this.props.hasUserVoted
+			});
+			return _react2['default'].createElement(
+				'div',
+				{ onMouseEnter: this.handleMouseEnter, onMouseLeave: this.handleMouseLeave, onClick: this.props.onClick, className: commentClasses },
+				aggregationSummary,
+				_react2['default'].createElement(
+					'span',
+					{ className: 'comment-time' },
+					new Date(this.props.time).toLocaleTimeString()
+				),
+				_react2['default'].createElement(
+					'p',
+					{ className: 'comment-text' },
+					_react2['default'].createElement(
+						'span',
+						{ className: 'comment-meta' },
+						_react2['default'].createElement(
+							'span',
+							{ className: 'author' },
+							this.props.userName,
+							':'
+						)
+					),
+					this.props.text
+				)
+			);
+		}
+	}]);
+
+	return ChatMessage;
+})(_react.Component);
+
+ChatMessage.propTypes = {
+	userName: _react.PropTypes.string.isRequired,
+	text: _react.PropTypes.string.isRequired,
+	time: _react.PropTypes.number.isRequired,
+	hasUserVoted: _react.PropTypes.bool,
+	isAggregated: _react.PropTypes.bool,
+	clicks: _react.PropTypes.number,
+	aggregationLevel: _react.PropTypes.string
+};
+
+ChatMessage.defaultProps = {
+	hasUserClicked: false,
+	isAggregated: false
+};
+
+exports['default'] = ChatMessage;
+module.exports = exports['default'];
+
+
+},{"./../../bower_components/classnames/index.js":1,"./AggregationSummary.jsx":6,"react":192}],15:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _classnames = require("./../../bower_components/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _jquery = require("./../../bower_components/jquery/dist/jquery.js");
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var ChatMessageForm = (function (_Component) {
+	_inherits(ChatMessageForm, _Component);
+
+	function ChatMessageForm(props) {
+		_classCallCheck(this, ChatMessageForm);
+
+		_get(Object.getPrototypeOf(ChatMessageForm.prototype), 'constructor', this).call(this, props);
+		this.state = {
+			hasSpaceConflict: false,
+			userInput: ''
+		};
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	_createClass(ChatMessageForm, [{
+		key: 'handleChange',
+		value: function handleChange(e) {
+			var hasConflict = false;
+			var inputText = e.target.value;
+
+			var submitInstructionsWidth = (0, _jquery2['default'])(_react2['default'].findDOMNode(this.refs.submitInstructions)).width();
+			var textWidth = (0, _jquery2['default'])(_react2['default'].findDOMNode(this.refs.hiddenCommentMirror)).width() || 0;
+			var inputWidth = (0, _jquery2['default'])(_react2['default'].findDOMNode(e.target)).width();
+
+			if (inputWidth - submitInstructionsWidth <= textWidth + 60) {
+				hasConflict = true;
+			}
+
+			this.setState({
+				userInput: inputText,
+				hasSpaceConflict: hasConflict
+			});
+		}
+	}, {
+		key: 'handleSubmit',
+		value: function handleSubmit(e) {
+			var text = e.target.value.trim();
+			if (e.which === 13) {
+				e.preventDefault();
+				this.props.onNewMessage(text);
+				this.setState({ userInput: '' });
+			}
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var classNames = (0, _classnames2['default'])('comment-form', {
+				'has-entered-text': !!this.state.userInput,
+				'space-conflict': this.state.hasSpaceConflict
+			});
+			var hiddenCommentMirror;
+			if (!!this.state.userInput) {
+				hiddenCommentMirror = _react2['default'].createElement(
+					'span',
+					{ ref: 'hiddenCommentMirror', className: 'hidden-comment-mirror' },
+					this.state.userInput
+				);
+			}
+
+			return _react2['default'].createElement(
+				'form',
+				{ className: classNames },
+				hiddenCommentMirror,
+				_react2['default'].createElement('input', {
+					type: 'text',
+					value: this.state.userInput,
+					ref: 'commentBox',
+					onChange: this.handleChange,
+					onKeyDown: this.handleSubmit.bind(this),
+					className: 'comment-box',
+					placeholder: 'Enter a comment here...' }),
+				_react2['default'].createElement(
+					'span',
+					{ ref: 'submitInstructions', className: 'submit-instructions' },
+					'Press Enter To Submit'
+				)
+			);
+		}
+	}]);
+
+	return ChatMessageForm;
+})(_react.Component);
+
+exports['default'] = ChatMessageForm;
+module.exports = exports['default'];
+
+
+},{"./../../bower_components/classnames/index.js":1,"./../../bower_components/jquery/dist/jquery.js":2,"react":192}],16:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _classnames = require("./../../bower_components/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _ChatMessageJsx = require('./ChatMessage.jsx');
+
+var _ChatMessageJsx2 = _interopRequireDefault(_ChatMessageJsx);
+
+var ChatMessageList = (function (_Component) {
+	_inherits(ChatMessageList, _Component);
+
+	function ChatMessageList() {
+		_classCallCheck(this, ChatMessageList);
+
+		_get(Object.getPrototypeOf(ChatMessageList.prototype), 'constructor', this).apply(this, arguments);
+	}
+
+	_createClass(ChatMessageList, [{
+		key: 'componentDidUpdate',
+		value: function componentDidUpdate() {
+			var chatList = _react2['default'].findDOMNode(this.refs.chatMessageList);
+			chatList.scrollTop = chatList.scrollHeight;
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			return _react2['default'].createElement(
+				'div',
+				{ className: 'chat-message-list', ref: 'chatMessageList' },
+				Object.keys(this.props.messages).map(function (key, i) {
+					return _react2['default'].createElement(_ChatMessageJsx2['default'], _extends({ hasUserClicked: this.props.messages[key].hasUserClicked, onClick: this.props.handleChatMessageClick, key: this.props.messages[key].id }, this.props.messages[key]));
+				}, this)
+			);
+		}
+	}]);
+
+	return ChatMessageList;
+})(_react.Component);
+
+exports['default'] = ChatMessageList;
+module.exports = exports['default'];
+
+
+},{"./../../bower_components/classnames/index.js":1,"./ChatMessage.jsx":14,"react":192}],17:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var ADD_CHAT_MESSAGE = 'ADD_CHAT_MESSAGE';
+exports.ADD_CHAT_MESSAGE = ADD_CHAT_MESSAGE;
+var VOTE_CHAT_MESSAGE = 'VOTE_CHAT_MESSAGE';
+
+exports.VOTE_CHAT_MESSAGE = VOTE_CHAT_MESSAGE;
+var ADD_AGGREGATOR = 'ADD_AGGREGATOR';
+exports.ADD_AGGREGATOR = ADD_AGGREGATOR;
+var ADD_CLICK_TO_AGGREGATOR = 'ADD_CLICK_TO_AGGREGATOR';
+exports.ADD_CLICK_TO_AGGREGATOR = ADD_CLICK_TO_AGGREGATOR;
+var UPDATE_AGGREGATOR_TO_TIME = 'UPDATE_AGGREGATOR_TO_TIME';
+exports.UPDATE_AGGREGATOR_TO_TIME = UPDATE_AGGREGATOR_TO_TIME;
+
+
+},{}],18:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports["default"] = {
+	React: {
+		ROOTELEMENTID: "react-root"
+	},
+	Aggregator: {
+		CLICKTIMEOUT: 300,
+		FLASHLENGTH: 300
+	}
+};
+module.exports = exports["default"];
+
+
+},{}],19:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _componentsAppJsx = require('../components/App.jsx');
+
+var _componentsAppJsx2 = _interopRequireDefault(_componentsAppJsx);
+
+exports['default'] = _componentsAppJsx2['default'];
+module.exports = exports['default'];
+
+
+},{"../components/App.jsx":12}],20:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+exports['default'] = aggregators;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+var _constantsActionTypes = require('../constants/ActionTypes');
+
+var _utilsScorer = require('../utils/scorer');
+
+var _utilsScorer2 = _interopRequireDefault(_utilsScorer);
+
+var initialState = [];
+
+function aggregators(state, action) {
+	if (state === undefined) state = initialState;
+
+	switch (action.type) {
+		case _constantsActionTypes.ADD_AGGREGATOR:
+			//if an aggregator already exists for the object, don't add it
+			if (state.some(function (aggregator) {
+				return aggregator.objectId === action.objectId;
+			})) return state;
+			return [{
+				id: state.reduce(function (maxId, todo) {
+					return Math.max(todo.id, maxId);
+				}, -1) + 1,
+				createdTime: action.createdTime,
+				userName: action.user,
+				objectType: action.objectType,
+				objectId: action.objectId,
+				clicks: [action.createdTime],
+				maxValue: 0,
+				x: 0,
+				isComplete: false
+			}].concat(_toConsumableArray(state));
+		//set calculated aggregator state to time based on click history
+		case _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME:
+			var index = state.findIndex(function (m) {
+				return m.id == action.id;
+			});
+			if (index === -1) return state;
+			return [].concat(_toConsumableArray(state.slice(0, index)), [aggregator(state[index], {
+				type: _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME,
+				time: action.time
+			})], _toConsumableArray(state.slice(index + 1)));
+		case _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR:
+			var index = state.findIndex(function (m) {
+				return m.id == action.id;
+			});
+			if (index === -1) return state;
+			return [].concat(_toConsumableArray(state.slice(0, index)), [aggregator(state[index], {
+				type: _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR,
+				click: action.click
+			})], _toConsumableArray(state.slice(index + 1)));
+		default:
+			return state;
+	}
+}
+
+function aggregator(state, action) {
+	switch (action.type) {
+		case _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME:
+			var newScore = (0, _utilsScorer2['default'])(state.clicks, action.time);
+			return Object.assign({}, state, {
+				x: newScore,
+				maxValue: state.maxValue >= newScore ? state.maxValue : newScore,
+				isComplete: newScore === 100 || newScore === 0 && state.maxValue != 0
+			});
+		case _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR:
+			return Object.assign({}, state, {
+				clicks: [].concat(_toConsumableArray(state.clicks), [action.click])
+			});
+		default:
+			return state;
+	}
+}
+module.exports = exports['default'];
+
+
+},{"../constants/ActionTypes":17,"../utils/scorer":26}],21:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+exports['default'] = chatMessages;
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+var _constantsActionTypes = require('../constants/ActionTypes');
+
+var initialState = [];
+
+function chatMessages(state, action) {
+	if (state === undefined) state = initialState;
+
+	switch (action.type) {
+		case _constantsActionTypes.ADD_CHAT_MESSAGE:
+			return [].concat(_toConsumableArray(state), [{
+				id: state.reduce(function (maxId, todo) {
+					return Math.max(todo.id, maxId);
+				}, -1) + 1,
+				text: action.text,
+				userName: action.user,
+				time: action.time,
+				hasUserVoted: false
+			}]);
+		case _constantsActionTypes.VOTE_CHAT_MESSAGE:
+			var index = state.findIndex(function (m) {
+				return m.id === action.id;
+			});
+			if (index === -1) return state;
+			return [].concat(_toConsumableArray(state.slice(0, index)), [Object.assign({}, state[index], {
+				hasUserVoted: !state[index].hasUserVoted
+			})], _toConsumableArray(state.slice(index + 1)));
+		default:
+			return state;
+	}
+}
+
+module.exports = exports['default'];
+
+
+},{"../constants/ActionTypes":17}],22:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _redux = require('redux');
+
+var _chat = require('./chat');
+
+var _chat2 = _interopRequireDefault(_chat);
+
+var _aggregators = require('./aggregators');
+
+var _aggregators2 = _interopRequireDefault(_aggregators);
+
+var rootReducer = (0, _redux.combineReducers)({
+  chatMessages: _chat2['default'],
+  aggregators: _aggregators2['default']
+});
+
+exports['default'] = rootReducer;
+module.exports = exports['default'];
+
+
+},{"./aggregators":20,"./chat":21,"redux":195}],23:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+	value: true
+});
+
+var _reselect = require('reselect');
+
+var _utilsLevels = require('../utils/levels');
+
+var chatMessagesSelector = function chatMessagesSelector(state) {
+	return state.chatMessages;
+};
+var aggregatorsSelector = function aggregatorsSelector(state) {
+	return state.aggregators;
+};
+
+function mapAggregatedMessages(chatMessages, aggregators) {
+	return aggregators.filter(function (aggregator) {
+		return aggregator.objectType === "message";
+	}).map(function (aggregator) {
+		var chatMessage = chatMessages.find(function (message) {
+			return message.id === aggregator.objectId;
+		});
+		return {
+			id: aggregator.id,
+			maxValue: aggregator.maxValue,
+			clicks: aggregator.clicks,
+			x: aggregator.x,
+			text: chatMessage.text,
+			userName: chatMessage.userName,
+			time: chatMessage.time,
+			hasUserNominated: chatMessage.hasUserNominated,
+			isComplete: aggregator.isComplete
+		};
+	});
+}
+
+//this selector handles the message->aggregator join
+var aggregatedMessagesSelector = (0, _reselect.createSelector)([chatMessagesSelector, aggregatorsSelector], function (chatMessages, aggregators) {
+	return {
+		aggregatedMessages: mapAggregatedMessages(chatMessages, aggregators)
+	};
+});
+
+exports.aggregatedMessagesSelector = aggregatedMessagesSelector;
+function mapDisplayMessages(aggregatedMessages) {
+	return aggregatedMessages.map(function (message) {
+		return {
+			id: message.id,
+			displayText: message.text,
+			barColor: _utilsLevels.levelColors[(0, _utilsLevels.getLevel)(message.x)],
+			barValue: message.x,
+			rightText: new Date(message.time).toLocaleTimeString(),
+			residueValue: message.maxValue,
+			residueColorClass: _utilsLevels.levelColors[(0, _utilsLevels.getLevel)(message.maxValue)],
+			leftText: message.userName,
+			isComplete: message.isComplete
+		};
+	});
+}
+
+//this selector does the calculations to prepare the aggregator for display
+var aggregatedMessagesDisplaySelector = (0, _reselect.createSelector)([aggregatedMessagesSelector], function (state) {
+	return {
+		displayReadyAggregatedMessages: mapDisplayMessages(state.aggregatedMessages)
+	};
+});
+exports.aggregatedMessagesDisplaySelector = aggregatedMessagesDisplaySelector;
+
+
+},{"../utils/levels":25,"reselect":203}],24:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+exports['default'] = configureStore;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _redux = require('redux');
+
+var _reduxThunk = require('redux-thunk');
+
+var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
+var _reducers = require('../reducers');
+
+var _reducers2 = _interopRequireDefault(_reducers);
+
+function logger(_ref) {
+  var getState = _ref.getState;
+
+  return function (next) {
+    return function (action) {
+      //console.log('will dispatch', action);
+
+      // Call the next dispatch method in the middleware chain.
+      var returnValue = next(action);
+
+      //console.log('state after dispatch', getState());
+
+      // This will likely be the action itself, unless
+      // a middleware further in chain changed it.
+      return returnValue;
+    };
+  };
+}
+
+var createStoreWithMiddleware = (0, _redux.applyMiddleware)(_reduxThunk2['default'], logger)(_redux.createStore);
+
+function configureStore(initialState) {
+  var store = createStoreWithMiddleware(_reducers2['default'], initialState);
+  return store;
+}
+
+module.exports = exports['default'];
+
+
+},{"../reducers":22,"redux":195,"redux-thunk":193}],25:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.getLevel = getLevel;
+var levelColors = {
+	0: "default",
+	1: "blue",
+	2: "green",
+	3: "gold"
+};
+
+exports.levelColors = levelColors;
+
+function getLevel(x) {
+	if (x < 30) {
+		return 0;
+	}
+	if (x < 60) {
+		return 1;
+	}
+	if (x < 90) {
+		return 2;
+	}
+	return 3;
+}
+
+
+},{}],26:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var ballisticsParameters = {
+	THRUST_VELOCITY: 300,
+	THRUST_TIME: .2, //ms
+	MASS: 30,
+	GRAVITY_ACCELERATION: -10,
+	DRAG_CONSTANT: 5
+};
+
+var maxX = 100;
+var frameRate = 1 / 60;
+var initialVelocity = 15;
+var initialX = 0;
+
+//takes an array of timestamps and returns 0-100 x position
+//based on physics model at a specific time
+
+exports["default"] = function (clicks, time) {
+	function calculateVelocity(activeClickCount) {
+		//calc accelerations
+		var thrustDV = activeClickCount * ballisticsParameters.THRUST_VELOCITY / ballisticsParameters.MASS;
+		var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity); //only drag on way up to clear off quicker
+		//calc velocity
+		return (thrustDV + ballisticsParameters.GRAVITY_ACCELERATION) * frameRate;
+	}
+
+	function activeClicks(clicks, time) {
+		return clicks.filter(function (click) {
+			return Math.abs(time - click) <= ballisticsParameters.THRUST_TIME;
+		});
+	}
+
+	var t = (time || Date.now()) / 1000;
+	var x = initialX;
+	//if there aren't any clicks
+	if (!clicks || !Array.isArray(clicks) || clicks.length === 0) return x;
+	//throw out clicks newer than t, they are in the future and don't count
+	var filteredClicks = clicks.map(function (click) {
+		return click / 1000;
+	}).filter(function (click) {
+		return click <= t;
+	});
+	//v = v + a * dt
+	//x = x + v * dt
+	var startTime = filteredClicks[0];
+	var frames = Math.floor((t - startTime) / frameRate);
+	var currentVelocity = initialVelocity;
+	for (var i = 0; i < frames; i++) {
+		var activeClickCount = activeClicks(filteredClicks, startTime + i * frameRate).length;
+		currentVelocity = currentVelocity + calculateVelocity(activeClickCount);
+		var dx = currentVelocity * frameRate;
+		x = x + dx;
+		if (x <= 0) {
+			currentVelocity = 0;
+			x = 0;
+		}
+		if (x > maxX) {
+			x = maxX;
+		}
+	};
+	return x;
+};
+
+module.exports = exports["default"];
+
+
+},{}],27:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1599,7 +3164,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],4:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -13955,7 +15520,7 @@ process.umask = function() { return 0; };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],5:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -13979,7 +15544,7 @@ function createAll(React) {
 }
 
 module.exports = exports['default'];
-},{"./createConnect":6,"./createProvider":7}],6:[function(require,module,exports){
+},{"./createConnect":30,"./createProvider":31}],30:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -14255,7 +15820,7 @@ function createConnect(React) {
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"../utils/createStoreShape":9,"../utils/isPlainObject":10,"../utils/shallowEqual":11,"../utils/wrapActionCreators":12,"_process":3,"invariant":13}],7:[function(require,module,exports){
+},{"../utils/createStoreShape":33,"../utils/isPlainObject":34,"../utils/shallowEqual":35,"../utils/wrapActionCreators":36,"_process":27,"invariant":37}],31:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -14383,7 +15948,7 @@ function createProvider(React) {
 }
 
 module.exports = exports['default'];
-},{"../utils/createStoreShape":9}],8:[function(require,module,exports){
+},{"../utils/createStoreShape":33}],32:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -14404,7 +15969,7 @@ var Provider = _createAll.Provider;
 var connect = _createAll.connect;
 exports.Provider = Provider;
 exports.connect = connect;
-},{"./components/createAll":5,"react":168}],9:[function(require,module,exports){
+},{"./components/createAll":29,"react":192}],33:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -14419,7 +15984,7 @@ function createStoreShape(PropTypes) {
 }
 
 module.exports = exports["default"];
-},{}],10:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -14450,7 +16015,7 @@ function isPlainObject(obj) {
 }
 
 module.exports = exports['default'];
-},{}],11:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -14480,7 +16045,7 @@ function shallowEqual(objA, objB) {
 }
 
 module.exports = exports["default"];
-},{}],12:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -14495,7 +16060,7 @@ function wrapActionCreators(actionCreators) {
 }
 
 module.exports = exports['default'];
-},{"redux":171}],13:[function(require,module,exports){
+},{"redux":195}],37:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -14553,7 +16118,7 @@ module.exports = invariant;
 
 }).call(this,require('_process'))
 
-},{"_process":3}],14:[function(require,module,exports){
+},{"_process":27}],38:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -14580,7 +16145,7 @@ var AutoFocusMixin = {
 
 module.exports = AutoFocusMixin;
 
-},{"./focusNode":132}],15:[function(require,module,exports){
+},{"./focusNode":156}],39:[function(require,module,exports){
 /**
  * Copyright 2013-2015 Facebook, Inc.
  * All rights reserved.
@@ -15075,7 +16640,7 @@ var BeforeInputEventPlugin = {
 
 module.exports = BeforeInputEventPlugin;
 
-},{"./EventConstants":27,"./EventPropagators":32,"./ExecutionEnvironment":33,"./FallbackCompositionState":34,"./SyntheticCompositionEvent":106,"./SyntheticInputEvent":110,"./keyOf":154}],16:[function(require,module,exports){
+},{"./EventConstants":51,"./EventPropagators":56,"./ExecutionEnvironment":57,"./FallbackCompositionState":58,"./SyntheticCompositionEvent":130,"./SyntheticInputEvent":134,"./keyOf":178}],40:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -15200,7 +16765,7 @@ var CSSProperty = {
 
 module.exports = CSSProperty;
 
-},{}],17:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -15383,7 +16948,7 @@ module.exports = CSSPropertyOperations;
 
 }).call(this,require('_process'))
 
-},{"./CSSProperty":16,"./ExecutionEnvironment":33,"./camelizeStyleName":121,"./dangerousStyleValue":126,"./hyphenateStyleName":146,"./memoizeStringOnly":156,"./warning":167,"_process":3}],18:[function(require,module,exports){
+},{"./CSSProperty":40,"./ExecutionEnvironment":57,"./camelizeStyleName":145,"./dangerousStyleValue":150,"./hyphenateStyleName":170,"./memoizeStringOnly":180,"./warning":191,"_process":27}],42:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -15484,7 +17049,7 @@ module.exports = CallbackQueue;
 
 }).call(this,require('_process'))
 
-},{"./Object.assign":39,"./PooledClass":40,"./invariant":148,"_process":3}],19:[function(require,module,exports){
+},{"./Object.assign":63,"./PooledClass":64,"./invariant":172,"_process":27}],43:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -15866,7 +17431,7 @@ var ChangeEventPlugin = {
 
 module.exports = ChangeEventPlugin;
 
-},{"./EventConstants":27,"./EventPluginHub":29,"./EventPropagators":32,"./ExecutionEnvironment":33,"./ReactUpdates":100,"./SyntheticEvent":108,"./isEventSupported":149,"./isTextInputElement":151,"./keyOf":154}],20:[function(require,module,exports){
+},{"./EventConstants":51,"./EventPluginHub":53,"./EventPropagators":56,"./ExecutionEnvironment":57,"./ReactUpdates":124,"./SyntheticEvent":132,"./isEventSupported":173,"./isTextInputElement":175,"./keyOf":178}],44:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -15891,7 +17456,7 @@ var ClientReactRootIndex = {
 
 module.exports = ClientReactRootIndex;
 
-},{}],21:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -16030,7 +17595,7 @@ module.exports = DOMChildrenOperations;
 
 }).call(this,require('_process'))
 
-},{"./Danger":24,"./ReactMultiChildUpdateTypes":85,"./invariant":148,"./setTextContent":162,"_process":3}],22:[function(require,module,exports){
+},{"./Danger":48,"./ReactMultiChildUpdateTypes":109,"./invariant":172,"./setTextContent":186,"_process":27}],46:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -16330,7 +17895,7 @@ module.exports = DOMProperty;
 
 }).call(this,require('_process'))
 
-},{"./invariant":148,"_process":3}],23:[function(require,module,exports){
+},{"./invariant":172,"_process":27}],47:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -16523,7 +18088,7 @@ module.exports = DOMPropertyOperations;
 
 }).call(this,require('_process'))
 
-},{"./DOMProperty":22,"./quoteAttributeValueForBrowser":160,"./warning":167,"_process":3}],24:[function(require,module,exports){
+},{"./DOMProperty":46,"./quoteAttributeValueForBrowser":184,"./warning":191,"_process":27}],48:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -16711,7 +18276,7 @@ module.exports = Danger;
 
 }).call(this,require('_process'))
 
-},{"./ExecutionEnvironment":33,"./createNodesFromMarkup":125,"./emptyFunction":127,"./getMarkupWrap":140,"./invariant":148,"_process":3}],25:[function(require,module,exports){
+},{"./ExecutionEnvironment":57,"./createNodesFromMarkup":149,"./emptyFunction":151,"./getMarkupWrap":164,"./invariant":172,"_process":27}],49:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -16750,7 +18315,7 @@ var DefaultEventPluginOrder = [
 
 module.exports = DefaultEventPluginOrder;
 
-},{"./keyOf":154}],26:[function(require,module,exports){
+},{"./keyOf":178}],50:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -16890,7 +18455,7 @@ var EnterLeaveEventPlugin = {
 
 module.exports = EnterLeaveEventPlugin;
 
-},{"./EventConstants":27,"./EventPropagators":32,"./ReactMount":83,"./SyntheticMouseEvent":112,"./keyOf":154}],27:[function(require,module,exports){
+},{"./EventConstants":51,"./EventPropagators":56,"./ReactMount":107,"./SyntheticMouseEvent":136,"./keyOf":178}],51:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -16962,7 +18527,7 @@ var EventConstants = {
 
 module.exports = EventConstants;
 
-},{"./keyMirror":153}],28:[function(require,module,exports){
+},{"./keyMirror":177}],52:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -17053,7 +18618,7 @@ module.exports = EventListener;
 
 }).call(this,require('_process'))
 
-},{"./emptyFunction":127,"_process":3}],29:[function(require,module,exports){
+},{"./emptyFunction":151,"_process":27}],53:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -17332,7 +18897,7 @@ module.exports = EventPluginHub;
 
 }).call(this,require('_process'))
 
-},{"./EventPluginRegistry":30,"./EventPluginUtils":31,"./accumulateInto":118,"./forEachAccumulated":133,"./invariant":148,"_process":3}],30:[function(require,module,exports){
+},{"./EventPluginRegistry":54,"./EventPluginUtils":55,"./accumulateInto":142,"./forEachAccumulated":157,"./invariant":172,"_process":27}],54:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -17613,7 +19178,7 @@ module.exports = EventPluginRegistry;
 
 }).call(this,require('_process'))
 
-},{"./invariant":148,"_process":3}],31:[function(require,module,exports){
+},{"./invariant":172,"_process":27}],55:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -17835,7 +19400,7 @@ module.exports = EventPluginUtils;
 
 }).call(this,require('_process'))
 
-},{"./EventConstants":27,"./invariant":148,"_process":3}],32:[function(require,module,exports){
+},{"./EventConstants":51,"./invariant":172,"_process":27}],56:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -17978,7 +19543,7 @@ module.exports = EventPropagators;
 
 }).call(this,require('_process'))
 
-},{"./EventConstants":27,"./EventPluginHub":29,"./accumulateInto":118,"./forEachAccumulated":133,"_process":3}],33:[function(require,module,exports){
+},{"./EventConstants":51,"./EventPluginHub":53,"./accumulateInto":142,"./forEachAccumulated":157,"_process":27}],57:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18022,7 +19587,7 @@ var ExecutionEnvironment = {
 
 module.exports = ExecutionEnvironment;
 
-},{}],34:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18113,7 +19678,7 @@ PooledClass.addPoolingTo(FallbackCompositionState);
 
 module.exports = FallbackCompositionState;
 
-},{"./Object.assign":39,"./PooledClass":40,"./getTextContentAccessor":143}],35:[function(require,module,exports){
+},{"./Object.assign":63,"./PooledClass":64,"./getTextContentAccessor":167}],59:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18324,7 +19889,7 @@ var HTMLDOMPropertyConfig = {
 
 module.exports = HTMLDOMPropertyConfig;
 
-},{"./DOMProperty":22,"./ExecutionEnvironment":33}],36:[function(require,module,exports){
+},{"./DOMProperty":46,"./ExecutionEnvironment":57}],60:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -18481,7 +20046,7 @@ module.exports = LinkedValueUtils;
 
 }).call(this,require('_process'))
 
-},{"./ReactPropTypes":91,"./invariant":148,"_process":3}],37:[function(require,module,exports){
+},{"./ReactPropTypes":115,"./invariant":172,"_process":27}],61:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -18539,7 +20104,7 @@ module.exports = LocalEventTrapMixin;
 
 }).call(this,require('_process'))
 
-},{"./ReactBrowserEventEmitter":43,"./accumulateInto":118,"./forEachAccumulated":133,"./invariant":148,"_process":3}],38:[function(require,module,exports){
+},{"./ReactBrowserEventEmitter":67,"./accumulateInto":142,"./forEachAccumulated":157,"./invariant":172,"_process":27}],62:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18597,7 +20162,7 @@ var MobileSafariClickEventPlugin = {
 
 module.exports = MobileSafariClickEventPlugin;
 
-},{"./EventConstants":27,"./emptyFunction":127}],39:[function(require,module,exports){
+},{"./EventConstants":51,"./emptyFunction":151}],63:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -18646,7 +20211,7 @@ function assign(target, sources) {
 
 module.exports = assign;
 
-},{}],40:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -18763,7 +20328,7 @@ module.exports = PooledClass;
 
 }).call(this,require('_process'))
 
-},{"./invariant":148,"_process":3}],41:[function(require,module,exports){
+},{"./invariant":172,"_process":27}],65:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -18916,7 +20481,7 @@ module.exports = React;
 
 }).call(this,require('_process'))
 
-},{"./EventPluginUtils":31,"./ExecutionEnvironment":33,"./Object.assign":39,"./ReactChildren":45,"./ReactClass":46,"./ReactComponent":47,"./ReactContext":51,"./ReactCurrentOwner":52,"./ReactDOM":53,"./ReactDOMTextComponent":64,"./ReactDefaultInjection":67,"./ReactElement":70,"./ReactElementValidator":71,"./ReactInstanceHandles":79,"./ReactMount":83,"./ReactPerf":88,"./ReactPropTypes":91,"./ReactReconciler":94,"./ReactServerRendering":97,"./findDOMNode":130,"./onlyChild":157,"_process":3}],42:[function(require,module,exports){
+},{"./EventPluginUtils":55,"./ExecutionEnvironment":57,"./Object.assign":63,"./ReactChildren":69,"./ReactClass":70,"./ReactComponent":71,"./ReactContext":75,"./ReactCurrentOwner":76,"./ReactDOM":77,"./ReactDOMTextComponent":88,"./ReactDefaultInjection":91,"./ReactElement":94,"./ReactElementValidator":95,"./ReactInstanceHandles":103,"./ReactMount":107,"./ReactPerf":112,"./ReactPropTypes":115,"./ReactReconciler":118,"./ReactServerRendering":121,"./findDOMNode":154,"./onlyChild":181,"_process":27}],66:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -18947,7 +20512,7 @@ var ReactBrowserComponentMixin = {
 
 module.exports = ReactBrowserComponentMixin;
 
-},{"./findDOMNode":130}],43:[function(require,module,exports){
+},{"./findDOMNode":154}],67:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -19300,7 +20865,7 @@ var ReactBrowserEventEmitter = assign({}, ReactEventEmitterMixin, {
 
 module.exports = ReactBrowserEventEmitter;
 
-},{"./EventConstants":27,"./EventPluginHub":29,"./EventPluginRegistry":30,"./Object.assign":39,"./ReactEventEmitterMixin":74,"./ViewportMetrics":117,"./isEventSupported":149}],44:[function(require,module,exports){
+},{"./EventConstants":51,"./EventPluginHub":53,"./EventPluginRegistry":54,"./Object.assign":63,"./ReactEventEmitterMixin":98,"./ViewportMetrics":141,"./isEventSupported":173}],68:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -19427,7 +20992,7 @@ var ReactChildReconciler = {
 
 module.exports = ReactChildReconciler;
 
-},{"./ReactReconciler":94,"./flattenChildren":131,"./instantiateReactComponent":147,"./shouldUpdateReactComponent":164}],45:[function(require,module,exports){
+},{"./ReactReconciler":118,"./flattenChildren":155,"./instantiateReactComponent":171,"./shouldUpdateReactComponent":188}],69:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -19581,7 +21146,7 @@ module.exports = ReactChildren;
 
 }).call(this,require('_process'))
 
-},{"./PooledClass":40,"./ReactFragment":76,"./traverseAllChildren":166,"./warning":167,"_process":3}],46:[function(require,module,exports){
+},{"./PooledClass":64,"./ReactFragment":100,"./traverseAllChildren":190,"./warning":191,"_process":27}],70:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -20528,7 +22093,7 @@ module.exports = ReactClass;
 
 }).call(this,require('_process'))
 
-},{"./Object.assign":39,"./ReactComponent":47,"./ReactCurrentOwner":52,"./ReactElement":70,"./ReactErrorUtils":73,"./ReactInstanceMap":80,"./ReactLifeCycle":81,"./ReactPropTypeLocationNames":89,"./ReactPropTypeLocations":90,"./ReactUpdateQueue":99,"./invariant":148,"./keyMirror":153,"./keyOf":154,"./warning":167,"_process":3}],47:[function(require,module,exports){
+},{"./Object.assign":63,"./ReactComponent":71,"./ReactCurrentOwner":76,"./ReactElement":94,"./ReactErrorUtils":97,"./ReactInstanceMap":104,"./ReactLifeCycle":105,"./ReactPropTypeLocationNames":113,"./ReactPropTypeLocations":114,"./ReactUpdateQueue":123,"./invariant":172,"./keyMirror":177,"./keyOf":178,"./warning":191,"_process":27}],71:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -20683,7 +22248,7 @@ module.exports = ReactComponent;
 
 }).call(this,require('_process'))
 
-},{"./ReactUpdateQueue":99,"./invariant":148,"./warning":167,"_process":3}],48:[function(require,module,exports){
+},{"./ReactUpdateQueue":123,"./invariant":172,"./warning":191,"_process":27}],72:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -20730,7 +22295,7 @@ var ReactComponentBrowserEnvironment = {
 
 module.exports = ReactComponentBrowserEnvironment;
 
-},{"./ReactDOMIDOperations":57,"./ReactMount":83}],49:[function(require,module,exports){
+},{"./ReactDOMIDOperations":81,"./ReactMount":107}],73:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -20792,7 +22357,7 @@ module.exports = ReactComponentEnvironment;
 
 }).call(this,require('_process'))
 
-},{"./invariant":148,"_process":3}],50:[function(require,module,exports){
+},{"./invariant":172,"_process":27}],74:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -21706,7 +23271,7 @@ module.exports = ReactCompositeComponent;
 
 }).call(this,require('_process'))
 
-},{"./Object.assign":39,"./ReactComponentEnvironment":49,"./ReactContext":51,"./ReactCurrentOwner":52,"./ReactElement":70,"./ReactElementValidator":71,"./ReactInstanceMap":80,"./ReactLifeCycle":81,"./ReactNativeComponent":86,"./ReactPerf":88,"./ReactPropTypeLocationNames":89,"./ReactPropTypeLocations":90,"./ReactReconciler":94,"./ReactUpdates":100,"./emptyObject":128,"./invariant":148,"./shouldUpdateReactComponent":164,"./warning":167,"_process":3}],51:[function(require,module,exports){
+},{"./Object.assign":63,"./ReactComponentEnvironment":73,"./ReactContext":75,"./ReactCurrentOwner":76,"./ReactElement":94,"./ReactElementValidator":95,"./ReactInstanceMap":104,"./ReactLifeCycle":105,"./ReactNativeComponent":110,"./ReactPerf":112,"./ReactPropTypeLocationNames":113,"./ReactPropTypeLocations":114,"./ReactReconciler":118,"./ReactUpdates":124,"./emptyObject":152,"./invariant":172,"./shouldUpdateReactComponent":188,"./warning":191,"_process":27}],75:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -21785,7 +23350,7 @@ module.exports = ReactContext;
 
 }).call(this,require('_process'))
 
-},{"./Object.assign":39,"./emptyObject":128,"./warning":167,"_process":3}],52:[function(require,module,exports){
+},{"./Object.assign":63,"./emptyObject":152,"./warning":191,"_process":27}],76:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -21819,7 +23384,7 @@ var ReactCurrentOwner = {
 
 module.exports = ReactCurrentOwner;
 
-},{}],53:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -21999,7 +23564,7 @@ module.exports = ReactDOM;
 
 }).call(this,require('_process'))
 
-},{"./ReactElement":70,"./ReactElementValidator":71,"./mapObject":155,"_process":3}],54:[function(require,module,exports){
+},{"./ReactElement":94,"./ReactElementValidator":95,"./mapObject":179,"_process":27}],78:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22063,7 +23628,7 @@ var ReactDOMButton = ReactClass.createClass({
 
 module.exports = ReactDOMButton;
 
-},{"./AutoFocusMixin":14,"./ReactBrowserComponentMixin":42,"./ReactClass":46,"./ReactElement":70,"./keyMirror":153}],55:[function(require,module,exports){
+},{"./AutoFocusMixin":38,"./ReactBrowserComponentMixin":66,"./ReactClass":70,"./ReactElement":94,"./keyMirror":177}],79:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -22574,7 +24139,7 @@ module.exports = ReactDOMComponent;
 
 }).call(this,require('_process'))
 
-},{"./CSSPropertyOperations":17,"./DOMProperty":22,"./DOMPropertyOperations":23,"./Object.assign":39,"./ReactBrowserEventEmitter":43,"./ReactComponentBrowserEnvironment":48,"./ReactMount":83,"./ReactMultiChild":84,"./ReactPerf":88,"./escapeTextContentForBrowser":129,"./invariant":148,"./isEventSupported":149,"./keyOf":154,"./warning":167,"_process":3}],56:[function(require,module,exports){
+},{"./CSSPropertyOperations":41,"./DOMProperty":46,"./DOMPropertyOperations":47,"./Object.assign":63,"./ReactBrowserEventEmitter":67,"./ReactComponentBrowserEnvironment":72,"./ReactMount":107,"./ReactMultiChild":108,"./ReactPerf":112,"./escapeTextContentForBrowser":153,"./invariant":172,"./isEventSupported":173,"./keyOf":178,"./warning":191,"_process":27}],80:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22623,7 +24188,7 @@ var ReactDOMForm = ReactClass.createClass({
 
 module.exports = ReactDOMForm;
 
-},{"./EventConstants":27,"./LocalEventTrapMixin":37,"./ReactBrowserComponentMixin":42,"./ReactClass":46,"./ReactElement":70}],57:[function(require,module,exports){
+},{"./EventConstants":51,"./LocalEventTrapMixin":61,"./ReactBrowserComponentMixin":66,"./ReactClass":70,"./ReactElement":94}],81:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -22792,7 +24357,7 @@ module.exports = ReactDOMIDOperations;
 
 }).call(this,require('_process'))
 
-},{"./CSSPropertyOperations":17,"./DOMChildrenOperations":21,"./DOMPropertyOperations":23,"./ReactMount":83,"./ReactPerf":88,"./invariant":148,"./setInnerHTML":161,"_process":3}],58:[function(require,module,exports){
+},{"./CSSPropertyOperations":41,"./DOMChildrenOperations":45,"./DOMPropertyOperations":47,"./ReactMount":107,"./ReactPerf":112,"./invariant":172,"./setInnerHTML":185,"_process":27}],82:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22837,7 +24402,7 @@ var ReactDOMIframe = ReactClass.createClass({
 
 module.exports = ReactDOMIframe;
 
-},{"./EventConstants":27,"./LocalEventTrapMixin":37,"./ReactBrowserComponentMixin":42,"./ReactClass":46,"./ReactElement":70}],59:[function(require,module,exports){
+},{"./EventConstants":51,"./LocalEventTrapMixin":61,"./ReactBrowserComponentMixin":66,"./ReactClass":70,"./ReactElement":94}],83:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22883,7 +24448,7 @@ var ReactDOMImg = ReactClass.createClass({
 
 module.exports = ReactDOMImg;
 
-},{"./EventConstants":27,"./LocalEventTrapMixin":37,"./ReactBrowserComponentMixin":42,"./ReactClass":46,"./ReactElement":70}],60:[function(require,module,exports){
+},{"./EventConstants":51,"./LocalEventTrapMixin":61,"./ReactBrowserComponentMixin":66,"./ReactClass":70,"./ReactElement":94}],84:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23061,7 +24626,7 @@ module.exports = ReactDOMInput;
 
 }).call(this,require('_process'))
 
-},{"./AutoFocusMixin":14,"./DOMPropertyOperations":23,"./LinkedValueUtils":36,"./Object.assign":39,"./ReactBrowserComponentMixin":42,"./ReactClass":46,"./ReactElement":70,"./ReactMount":83,"./ReactUpdates":100,"./invariant":148,"_process":3}],61:[function(require,module,exports){
+},{"./AutoFocusMixin":38,"./DOMPropertyOperations":47,"./LinkedValueUtils":60,"./Object.assign":63,"./ReactBrowserComponentMixin":66,"./ReactClass":70,"./ReactElement":94,"./ReactMount":107,"./ReactUpdates":124,"./invariant":172,"_process":27}],85:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23114,7 +24679,7 @@ module.exports = ReactDOMOption;
 
 }).call(this,require('_process'))
 
-},{"./ReactBrowserComponentMixin":42,"./ReactClass":46,"./ReactElement":70,"./warning":167,"_process":3}],62:[function(require,module,exports){
+},{"./ReactBrowserComponentMixin":66,"./ReactClass":70,"./ReactElement":94,"./warning":191,"_process":27}],86:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23292,7 +24857,7 @@ var ReactDOMSelect = ReactClass.createClass({
 
 module.exports = ReactDOMSelect;
 
-},{"./AutoFocusMixin":14,"./LinkedValueUtils":36,"./Object.assign":39,"./ReactBrowserComponentMixin":42,"./ReactClass":46,"./ReactElement":70,"./ReactUpdates":100}],63:[function(require,module,exports){
+},{"./AutoFocusMixin":38,"./LinkedValueUtils":60,"./Object.assign":63,"./ReactBrowserComponentMixin":66,"./ReactClass":70,"./ReactElement":94,"./ReactUpdates":124}],87:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23505,7 +25070,7 @@ var ReactDOMSelection = {
 
 module.exports = ReactDOMSelection;
 
-},{"./ExecutionEnvironment":33,"./getNodeForCharacterOffset":141,"./getTextContentAccessor":143}],64:[function(require,module,exports){
+},{"./ExecutionEnvironment":57,"./getNodeForCharacterOffset":165,"./getTextContentAccessor":167}],88:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23622,7 +25187,7 @@ assign(ReactDOMTextComponent.prototype, {
 
 module.exports = ReactDOMTextComponent;
 
-},{"./DOMPropertyOperations":23,"./Object.assign":39,"./ReactComponentBrowserEnvironment":48,"./ReactDOMComponent":55,"./escapeTextContentForBrowser":129}],65:[function(require,module,exports){
+},{"./DOMPropertyOperations":47,"./Object.assign":63,"./ReactComponentBrowserEnvironment":72,"./ReactDOMComponent":79,"./escapeTextContentForBrowser":153}],89:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23763,7 +25328,7 @@ module.exports = ReactDOMTextarea;
 
 }).call(this,require('_process'))
 
-},{"./AutoFocusMixin":14,"./DOMPropertyOperations":23,"./LinkedValueUtils":36,"./Object.assign":39,"./ReactBrowserComponentMixin":42,"./ReactClass":46,"./ReactElement":70,"./ReactUpdates":100,"./invariant":148,"./warning":167,"_process":3}],66:[function(require,module,exports){
+},{"./AutoFocusMixin":38,"./DOMPropertyOperations":47,"./LinkedValueUtils":60,"./Object.assign":63,"./ReactBrowserComponentMixin":66,"./ReactClass":70,"./ReactElement":94,"./ReactUpdates":124,"./invariant":172,"./warning":191,"_process":27}],90:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23836,7 +25401,7 @@ var ReactDefaultBatchingStrategy = {
 
 module.exports = ReactDefaultBatchingStrategy;
 
-},{"./Object.assign":39,"./ReactUpdates":100,"./Transaction":116,"./emptyFunction":127}],67:[function(require,module,exports){
+},{"./Object.assign":63,"./ReactUpdates":124,"./Transaction":140,"./emptyFunction":151}],91:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23996,7 +25561,7 @@ module.exports = {
 
 }).call(this,require('_process'))
 
-},{"./BeforeInputEventPlugin":15,"./ChangeEventPlugin":19,"./ClientReactRootIndex":20,"./DefaultEventPluginOrder":25,"./EnterLeaveEventPlugin":26,"./ExecutionEnvironment":33,"./HTMLDOMPropertyConfig":35,"./MobileSafariClickEventPlugin":38,"./ReactBrowserComponentMixin":42,"./ReactClass":46,"./ReactComponentBrowserEnvironment":48,"./ReactDOMButton":54,"./ReactDOMComponent":55,"./ReactDOMForm":56,"./ReactDOMIDOperations":57,"./ReactDOMIframe":58,"./ReactDOMImg":59,"./ReactDOMInput":60,"./ReactDOMOption":61,"./ReactDOMSelect":62,"./ReactDOMTextComponent":64,"./ReactDOMTextarea":65,"./ReactDefaultBatchingStrategy":66,"./ReactDefaultPerf":68,"./ReactElement":70,"./ReactEventListener":75,"./ReactInjection":77,"./ReactInstanceHandles":79,"./ReactMount":83,"./ReactReconcileTransaction":93,"./SVGDOMPropertyConfig":101,"./SelectEventPlugin":102,"./ServerReactRootIndex":103,"./SimpleEventPlugin":104,"./createFullPageComponent":124,"_process":3}],68:[function(require,module,exports){
+},{"./BeforeInputEventPlugin":39,"./ChangeEventPlugin":43,"./ClientReactRootIndex":44,"./DefaultEventPluginOrder":49,"./EnterLeaveEventPlugin":50,"./ExecutionEnvironment":57,"./HTMLDOMPropertyConfig":59,"./MobileSafariClickEventPlugin":62,"./ReactBrowserComponentMixin":66,"./ReactClass":70,"./ReactComponentBrowserEnvironment":72,"./ReactDOMButton":78,"./ReactDOMComponent":79,"./ReactDOMForm":80,"./ReactDOMIDOperations":81,"./ReactDOMIframe":82,"./ReactDOMImg":83,"./ReactDOMInput":84,"./ReactDOMOption":85,"./ReactDOMSelect":86,"./ReactDOMTextComponent":88,"./ReactDOMTextarea":89,"./ReactDefaultBatchingStrategy":90,"./ReactDefaultPerf":92,"./ReactElement":94,"./ReactEventListener":99,"./ReactInjection":101,"./ReactInstanceHandles":103,"./ReactMount":107,"./ReactReconcileTransaction":117,"./SVGDOMPropertyConfig":125,"./SelectEventPlugin":126,"./ServerReactRootIndex":127,"./SimpleEventPlugin":128,"./createFullPageComponent":148,"_process":27}],92:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -24262,7 +25827,7 @@ var ReactDefaultPerf = {
 
 module.exports = ReactDefaultPerf;
 
-},{"./DOMProperty":22,"./ReactDefaultPerfAnalysis":69,"./ReactMount":83,"./ReactPerf":88,"./performanceNow":159}],69:[function(require,module,exports){
+},{"./DOMProperty":46,"./ReactDefaultPerfAnalysis":93,"./ReactMount":107,"./ReactPerf":112,"./performanceNow":183}],93:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -24468,7 +26033,7 @@ var ReactDefaultPerfAnalysis = {
 
 module.exports = ReactDefaultPerfAnalysis;
 
-},{"./Object.assign":39}],70:[function(require,module,exports){
+},{"./Object.assign":63}],94:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -24777,7 +26342,7 @@ module.exports = ReactElement;
 
 }).call(this,require('_process'))
 
-},{"./Object.assign":39,"./ReactContext":51,"./ReactCurrentOwner":52,"./warning":167,"_process":3}],71:[function(require,module,exports){
+},{"./Object.assign":63,"./ReactContext":75,"./ReactCurrentOwner":76,"./warning":191,"_process":27}],95:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -25243,7 +26808,7 @@ module.exports = ReactElementValidator;
 
 }).call(this,require('_process'))
 
-},{"./ReactCurrentOwner":52,"./ReactElement":70,"./ReactFragment":76,"./ReactNativeComponent":86,"./ReactPropTypeLocationNames":89,"./ReactPropTypeLocations":90,"./getIteratorFn":139,"./invariant":148,"./warning":167,"_process":3}],72:[function(require,module,exports){
+},{"./ReactCurrentOwner":76,"./ReactElement":94,"./ReactFragment":100,"./ReactNativeComponent":110,"./ReactPropTypeLocationNames":113,"./ReactPropTypeLocations":114,"./getIteratorFn":163,"./invariant":172,"./warning":191,"_process":27}],96:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -25339,7 +26904,7 @@ module.exports = ReactEmptyComponent;
 
 }).call(this,require('_process'))
 
-},{"./ReactElement":70,"./ReactInstanceMap":80,"./invariant":148,"_process":3}],73:[function(require,module,exports){
+},{"./ReactElement":94,"./ReactInstanceMap":104,"./invariant":172,"_process":27}],97:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25371,7 +26936,7 @@ var ReactErrorUtils = {
 
 module.exports = ReactErrorUtils;
 
-},{}],74:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25421,7 +26986,7 @@ var ReactEventEmitterMixin = {
 
 module.exports = ReactEventEmitterMixin;
 
-},{"./EventPluginHub":29}],75:[function(require,module,exports){
+},{"./EventPluginHub":53}],99:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25604,7 +27169,7 @@ var ReactEventListener = {
 
 module.exports = ReactEventListener;
 
-},{"./EventListener":28,"./ExecutionEnvironment":33,"./Object.assign":39,"./PooledClass":40,"./ReactInstanceHandles":79,"./ReactMount":83,"./ReactUpdates":100,"./getEventTarget":138,"./getUnboundedScrollPosition":144}],76:[function(require,module,exports){
+},{"./EventListener":52,"./ExecutionEnvironment":57,"./Object.assign":63,"./PooledClass":64,"./ReactInstanceHandles":103,"./ReactMount":107,"./ReactUpdates":124,"./getEventTarget":162,"./getUnboundedScrollPosition":168}],100:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015, Facebook, Inc.
@@ -25790,7 +27355,7 @@ module.exports = ReactFragment;
 
 }).call(this,require('_process'))
 
-},{"./ReactElement":70,"./warning":167,"_process":3}],77:[function(require,module,exports){
+},{"./ReactElement":94,"./warning":191,"_process":27}],101:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25832,7 +27397,7 @@ var ReactInjection = {
 
 module.exports = ReactInjection;
 
-},{"./DOMProperty":22,"./EventPluginHub":29,"./ReactBrowserEventEmitter":43,"./ReactClass":46,"./ReactComponentEnvironment":49,"./ReactDOMComponent":55,"./ReactEmptyComponent":72,"./ReactNativeComponent":86,"./ReactPerf":88,"./ReactRootIndex":96,"./ReactUpdates":100}],78:[function(require,module,exports){
+},{"./DOMProperty":46,"./EventPluginHub":53,"./ReactBrowserEventEmitter":67,"./ReactClass":70,"./ReactComponentEnvironment":73,"./ReactDOMComponent":79,"./ReactEmptyComponent":96,"./ReactNativeComponent":110,"./ReactPerf":112,"./ReactRootIndex":120,"./ReactUpdates":124}],102:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25967,7 +27532,7 @@ var ReactInputSelection = {
 
 module.exports = ReactInputSelection;
 
-},{"./ReactDOMSelection":63,"./containsNode":122,"./focusNode":132,"./getActiveElement":134}],79:[function(require,module,exports){
+},{"./ReactDOMSelection":87,"./containsNode":146,"./focusNode":156,"./getActiveElement":158}],103:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -26304,7 +27869,7 @@ module.exports = ReactInstanceHandles;
 
 }).call(this,require('_process'))
 
-},{"./ReactRootIndex":96,"./invariant":148,"_process":3}],80:[function(require,module,exports){
+},{"./ReactRootIndex":120,"./invariant":172,"_process":27}],104:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -26353,7 +27918,7 @@ var ReactInstanceMap = {
 
 module.exports = ReactInstanceMap;
 
-},{}],81:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 /**
  * Copyright 2015, Facebook, Inc.
  * All rights reserved.
@@ -26390,7 +27955,7 @@ var ReactLifeCycle = {
 
 module.exports = ReactLifeCycle;
 
-},{}],82:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -26438,7 +28003,7 @@ var ReactMarkupChecksum = {
 
 module.exports = ReactMarkupChecksum;
 
-},{"./adler32":119}],83:[function(require,module,exports){
+},{"./adler32":143}],107:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -27330,7 +28895,7 @@ module.exports = ReactMount;
 
 }).call(this,require('_process'))
 
-},{"./DOMProperty":22,"./ReactBrowserEventEmitter":43,"./ReactCurrentOwner":52,"./ReactElement":70,"./ReactElementValidator":71,"./ReactEmptyComponent":72,"./ReactInstanceHandles":79,"./ReactInstanceMap":80,"./ReactMarkupChecksum":82,"./ReactPerf":88,"./ReactReconciler":94,"./ReactUpdateQueue":99,"./ReactUpdates":100,"./containsNode":122,"./emptyObject":128,"./getReactRootElementInContainer":142,"./instantiateReactComponent":147,"./invariant":148,"./setInnerHTML":161,"./shouldUpdateReactComponent":164,"./warning":167,"_process":3}],84:[function(require,module,exports){
+},{"./DOMProperty":46,"./ReactBrowserEventEmitter":67,"./ReactCurrentOwner":76,"./ReactElement":94,"./ReactElementValidator":95,"./ReactEmptyComponent":96,"./ReactInstanceHandles":103,"./ReactInstanceMap":104,"./ReactMarkupChecksum":106,"./ReactPerf":112,"./ReactReconciler":118,"./ReactUpdateQueue":123,"./ReactUpdates":124,"./containsNode":146,"./emptyObject":152,"./getReactRootElementInContainer":166,"./instantiateReactComponent":171,"./invariant":172,"./setInnerHTML":185,"./shouldUpdateReactComponent":188,"./warning":191,"_process":27}],108:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27760,7 +29325,7 @@ var ReactMultiChild = {
 
 module.exports = ReactMultiChild;
 
-},{"./ReactChildReconciler":44,"./ReactComponentEnvironment":49,"./ReactMultiChildUpdateTypes":85,"./ReactReconciler":94}],85:[function(require,module,exports){
+},{"./ReactChildReconciler":68,"./ReactComponentEnvironment":73,"./ReactMultiChildUpdateTypes":109,"./ReactReconciler":118}],109:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27793,7 +29358,7 @@ var ReactMultiChildUpdateTypes = keyMirror({
 
 module.exports = ReactMultiChildUpdateTypes;
 
-},{"./keyMirror":153}],86:[function(require,module,exports){
+},{"./keyMirror":177}],110:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -27901,7 +29466,7 @@ module.exports = ReactNativeComponent;
 
 }).call(this,require('_process'))
 
-},{"./Object.assign":39,"./invariant":148,"_process":3}],87:[function(require,module,exports){
+},{"./Object.assign":63,"./invariant":172,"_process":27}],111:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28014,7 +29579,7 @@ module.exports = ReactOwner;
 
 }).call(this,require('_process'))
 
-},{"./invariant":148,"_process":3}],88:[function(require,module,exports){
+},{"./invariant":172,"_process":27}],112:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28119,7 +29684,7 @@ module.exports = ReactPerf;
 
 }).call(this,require('_process'))
 
-},{"_process":3}],89:[function(require,module,exports){
+},{"_process":27}],113:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28148,7 +29713,7 @@ module.exports = ReactPropTypeLocationNames;
 
 }).call(this,require('_process'))
 
-},{"_process":3}],90:[function(require,module,exports){
+},{"_process":27}],114:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28172,7 +29737,7 @@ var ReactPropTypeLocations = keyMirror({
 
 module.exports = ReactPropTypeLocations;
 
-},{"./keyMirror":153}],91:[function(require,module,exports){
+},{"./keyMirror":177}],115:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28521,7 +30086,7 @@ function getPreciseType(propValue) {
 
 module.exports = ReactPropTypes;
 
-},{"./ReactElement":70,"./ReactFragment":76,"./ReactPropTypeLocationNames":89,"./emptyFunction":127}],92:[function(require,module,exports){
+},{"./ReactElement":94,"./ReactFragment":100,"./ReactPropTypeLocationNames":113,"./emptyFunction":151}],116:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28577,7 +30142,7 @@ PooledClass.addPoolingTo(ReactPutListenerQueue);
 
 module.exports = ReactPutListenerQueue;
 
-},{"./Object.assign":39,"./PooledClass":40,"./ReactBrowserEventEmitter":43}],93:[function(require,module,exports){
+},{"./Object.assign":63,"./PooledClass":64,"./ReactBrowserEventEmitter":67}],117:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28753,7 +30318,7 @@ PooledClass.addPoolingTo(ReactReconcileTransaction);
 
 module.exports = ReactReconcileTransaction;
 
-},{"./CallbackQueue":18,"./Object.assign":39,"./PooledClass":40,"./ReactBrowserEventEmitter":43,"./ReactInputSelection":78,"./ReactPutListenerQueue":92,"./Transaction":116}],94:[function(require,module,exports){
+},{"./CallbackQueue":42,"./Object.assign":63,"./PooledClass":64,"./ReactBrowserEventEmitter":67,"./ReactInputSelection":102,"./ReactPutListenerQueue":116,"./Transaction":140}],118:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28878,7 +30443,7 @@ module.exports = ReactReconciler;
 
 }).call(this,require('_process'))
 
-},{"./ReactElementValidator":71,"./ReactRef":95,"_process":3}],95:[function(require,module,exports){
+},{"./ReactElementValidator":95,"./ReactRef":119,"_process":27}],119:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28949,7 +30514,7 @@ ReactRef.detachRefs = function(instance, element) {
 
 module.exports = ReactRef;
 
-},{"./ReactOwner":87}],96:[function(require,module,exports){
+},{"./ReactOwner":111}],120:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28980,7 +30545,7 @@ var ReactRootIndex = {
 
 module.exports = ReactRootIndex;
 
-},{}],97:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -29063,7 +30628,7 @@ module.exports = {
 
 }).call(this,require('_process'))
 
-},{"./ReactElement":70,"./ReactInstanceHandles":79,"./ReactMarkupChecksum":82,"./ReactServerRenderingTransaction":98,"./emptyObject":128,"./instantiateReactComponent":147,"./invariant":148,"_process":3}],98:[function(require,module,exports){
+},{"./ReactElement":94,"./ReactInstanceHandles":103,"./ReactMarkupChecksum":106,"./ReactServerRenderingTransaction":122,"./emptyObject":152,"./instantiateReactComponent":171,"./invariant":172,"_process":27}],122:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -29176,7 +30741,7 @@ PooledClass.addPoolingTo(ReactServerRenderingTransaction);
 
 module.exports = ReactServerRenderingTransaction;
 
-},{"./CallbackQueue":18,"./Object.assign":39,"./PooledClass":40,"./ReactPutListenerQueue":92,"./Transaction":116,"./emptyFunction":127}],99:[function(require,module,exports){
+},{"./CallbackQueue":42,"./Object.assign":63,"./PooledClass":64,"./ReactPutListenerQueue":116,"./Transaction":140,"./emptyFunction":151}],123:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015, Facebook, Inc.
@@ -29476,7 +31041,7 @@ module.exports = ReactUpdateQueue;
 
 }).call(this,require('_process'))
 
-},{"./Object.assign":39,"./ReactCurrentOwner":52,"./ReactElement":70,"./ReactInstanceMap":80,"./ReactLifeCycle":81,"./ReactUpdates":100,"./invariant":148,"./warning":167,"_process":3}],100:[function(require,module,exports){
+},{"./Object.assign":63,"./ReactCurrentOwner":76,"./ReactElement":94,"./ReactInstanceMap":104,"./ReactLifeCycle":105,"./ReactUpdates":124,"./invariant":172,"./warning":191,"_process":27}],124:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -29759,7 +31324,7 @@ module.exports = ReactUpdates;
 
 }).call(this,require('_process'))
 
-},{"./CallbackQueue":18,"./Object.assign":39,"./PooledClass":40,"./ReactCurrentOwner":52,"./ReactPerf":88,"./ReactReconciler":94,"./Transaction":116,"./invariant":148,"./warning":167,"_process":3}],101:[function(require,module,exports){
+},{"./CallbackQueue":42,"./Object.assign":63,"./PooledClass":64,"./ReactCurrentOwner":76,"./ReactPerf":112,"./ReactReconciler":118,"./Transaction":140,"./invariant":172,"./warning":191,"_process":27}],125:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29853,7 +31418,7 @@ var SVGDOMPropertyConfig = {
 
 module.exports = SVGDOMPropertyConfig;
 
-},{"./DOMProperty":22}],102:[function(require,module,exports){
+},{"./DOMProperty":46}],126:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30048,7 +31613,7 @@ var SelectEventPlugin = {
 
 module.exports = SelectEventPlugin;
 
-},{"./EventConstants":27,"./EventPropagators":32,"./ReactInputSelection":78,"./SyntheticEvent":108,"./getActiveElement":134,"./isTextInputElement":151,"./keyOf":154,"./shallowEqual":163}],103:[function(require,module,exports){
+},{"./EventConstants":51,"./EventPropagators":56,"./ReactInputSelection":102,"./SyntheticEvent":132,"./getActiveElement":158,"./isTextInputElement":175,"./keyOf":178,"./shallowEqual":187}],127:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30079,7 +31644,7 @@ var ServerReactRootIndex = {
 
 module.exports = ServerReactRootIndex;
 
-},{}],104:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -30508,7 +32073,7 @@ module.exports = SimpleEventPlugin;
 
 }).call(this,require('_process'))
 
-},{"./EventConstants":27,"./EventPluginUtils":31,"./EventPropagators":32,"./SyntheticClipboardEvent":105,"./SyntheticDragEvent":107,"./SyntheticEvent":108,"./SyntheticFocusEvent":109,"./SyntheticKeyboardEvent":111,"./SyntheticMouseEvent":112,"./SyntheticTouchEvent":113,"./SyntheticUIEvent":114,"./SyntheticWheelEvent":115,"./getEventCharCode":135,"./invariant":148,"./keyOf":154,"./warning":167,"_process":3}],105:[function(require,module,exports){
+},{"./EventConstants":51,"./EventPluginUtils":55,"./EventPropagators":56,"./SyntheticClipboardEvent":129,"./SyntheticDragEvent":131,"./SyntheticEvent":132,"./SyntheticFocusEvent":133,"./SyntheticKeyboardEvent":135,"./SyntheticMouseEvent":136,"./SyntheticTouchEvent":137,"./SyntheticUIEvent":138,"./SyntheticWheelEvent":139,"./getEventCharCode":159,"./invariant":172,"./keyOf":178,"./warning":191,"_process":27}],129:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30553,7 +32118,7 @@ SyntheticEvent.augmentClass(SyntheticClipboardEvent, ClipboardEventInterface);
 
 module.exports = SyntheticClipboardEvent;
 
-},{"./SyntheticEvent":108}],106:[function(require,module,exports){
+},{"./SyntheticEvent":132}],130:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30598,7 +32163,7 @@ SyntheticEvent.augmentClass(
 
 module.exports = SyntheticCompositionEvent;
 
-},{"./SyntheticEvent":108}],107:[function(require,module,exports){
+},{"./SyntheticEvent":132}],131:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30637,7 +32202,7 @@ SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 
 module.exports = SyntheticDragEvent;
 
-},{"./SyntheticMouseEvent":112}],108:[function(require,module,exports){
+},{"./SyntheticMouseEvent":136}],132:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30803,7 +32368,7 @@ PooledClass.addPoolingTo(SyntheticEvent, PooledClass.threeArgumentPooler);
 
 module.exports = SyntheticEvent;
 
-},{"./Object.assign":39,"./PooledClass":40,"./emptyFunction":127,"./getEventTarget":138}],109:[function(require,module,exports){
+},{"./Object.assign":63,"./PooledClass":64,"./emptyFunction":151,"./getEventTarget":162}],133:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30842,7 +32407,7 @@ SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 
 module.exports = SyntheticFocusEvent;
 
-},{"./SyntheticUIEvent":114}],110:[function(require,module,exports){
+},{"./SyntheticUIEvent":138}],134:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30888,7 +32453,7 @@ SyntheticEvent.augmentClass(
 
 module.exports = SyntheticInputEvent;
 
-},{"./SyntheticEvent":108}],111:[function(require,module,exports){
+},{"./SyntheticEvent":132}],135:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30975,7 +32540,7 @@ SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 
 module.exports = SyntheticKeyboardEvent;
 
-},{"./SyntheticUIEvent":114,"./getEventCharCode":135,"./getEventKey":136,"./getEventModifierState":137}],112:[function(require,module,exports){
+},{"./SyntheticUIEvent":138,"./getEventCharCode":159,"./getEventKey":160,"./getEventModifierState":161}],136:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31056,7 +32621,7 @@ SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 
 module.exports = SyntheticMouseEvent;
 
-},{"./SyntheticUIEvent":114,"./ViewportMetrics":117,"./getEventModifierState":137}],113:[function(require,module,exports){
+},{"./SyntheticUIEvent":138,"./ViewportMetrics":141,"./getEventModifierState":161}],137:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31104,7 +32669,7 @@ SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 
 module.exports = SyntheticTouchEvent;
 
-},{"./SyntheticUIEvent":114,"./getEventModifierState":137}],114:[function(require,module,exports){
+},{"./SyntheticUIEvent":138,"./getEventModifierState":161}],138:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31166,7 +32731,7 @@ SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 
 module.exports = SyntheticUIEvent;
 
-},{"./SyntheticEvent":108,"./getEventTarget":138}],115:[function(require,module,exports){
+},{"./SyntheticEvent":132,"./getEventTarget":162}],139:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31227,7 +32792,7 @@ SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 
 module.exports = SyntheticWheelEvent;
 
-},{"./SyntheticMouseEvent":112}],116:[function(require,module,exports){
+},{"./SyntheticMouseEvent":136}],140:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -31469,7 +33034,7 @@ module.exports = Transaction;
 
 }).call(this,require('_process'))
 
-},{"./invariant":148,"_process":3}],117:[function(require,module,exports){
+},{"./invariant":172,"_process":27}],141:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31498,7 +33063,7 @@ var ViewportMetrics = {
 
 module.exports = ViewportMetrics;
 
-},{}],118:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -31565,7 +33130,7 @@ module.exports = accumulateInto;
 
 }).call(this,require('_process'))
 
-},{"./invariant":148,"_process":3}],119:[function(require,module,exports){
+},{"./invariant":172,"_process":27}],143:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31599,7 +33164,7 @@ function adler32(data) {
 
 module.exports = adler32;
 
-},{}],120:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31631,7 +33196,7 @@ function camelize(string) {
 
 module.exports = camelize;
 
-},{}],121:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -31673,7 +33238,7 @@ function camelizeStyleName(string) {
 
 module.exports = camelizeStyleName;
 
-},{"./camelize":120}],122:[function(require,module,exports){
+},{"./camelize":144}],146:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31717,7 +33282,7 @@ function containsNode(outerNode, innerNode) {
 
 module.exports = containsNode;
 
-},{"./isTextNode":152}],123:[function(require,module,exports){
+},{"./isTextNode":176}],147:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31803,7 +33368,7 @@ function createArrayFromMixed(obj) {
 
 module.exports = createArrayFromMixed;
 
-},{"./toArray":165}],124:[function(require,module,exports){
+},{"./toArray":189}],148:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -31866,7 +33431,7 @@ module.exports = createFullPageComponent;
 
 }).call(this,require('_process'))
 
-},{"./ReactClass":46,"./ReactElement":70,"./invariant":148,"_process":3}],125:[function(require,module,exports){
+},{"./ReactClass":70,"./ReactElement":94,"./invariant":172,"_process":27}],149:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -31957,7 +33522,7 @@ module.exports = createNodesFromMarkup;
 
 }).call(this,require('_process'))
 
-},{"./ExecutionEnvironment":33,"./createArrayFromMixed":123,"./getMarkupWrap":140,"./invariant":148,"_process":3}],126:[function(require,module,exports){
+},{"./ExecutionEnvironment":57,"./createArrayFromMixed":147,"./getMarkupWrap":164,"./invariant":172,"_process":27}],150:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32015,7 +33580,7 @@ function dangerousStyleValue(name, value) {
 
 module.exports = dangerousStyleValue;
 
-},{"./CSSProperty":16}],127:[function(require,module,exports){
+},{"./CSSProperty":40}],151:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32049,7 +33614,7 @@ emptyFunction.thatReturnsArgument = function(arg) { return arg; };
 
 module.exports = emptyFunction;
 
-},{}],128:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -32074,7 +33639,7 @@ module.exports = emptyObject;
 
 }).call(this,require('_process'))
 
-},{"_process":3}],129:[function(require,module,exports){
+},{"_process":27}],153:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32114,7 +33679,7 @@ function escapeTextContentForBrowser(text) {
 
 module.exports = escapeTextContentForBrowser;
 
-},{}],130:[function(require,module,exports){
+},{}],154:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -32188,7 +33753,7 @@ module.exports = findDOMNode;
 
 }).call(this,require('_process'))
 
-},{"./ReactCurrentOwner":52,"./ReactInstanceMap":80,"./ReactMount":83,"./invariant":148,"./isNode":150,"./warning":167,"_process":3}],131:[function(require,module,exports){
+},{"./ReactCurrentOwner":76,"./ReactInstanceMap":104,"./ReactMount":107,"./invariant":172,"./isNode":174,"./warning":191,"_process":27}],155:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -32247,7 +33812,7 @@ module.exports = flattenChildren;
 
 }).call(this,require('_process'))
 
-},{"./traverseAllChildren":166,"./warning":167,"_process":3}],132:[function(require,module,exports){
+},{"./traverseAllChildren":190,"./warning":191,"_process":27}],156:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -32276,7 +33841,7 @@ function focusNode(node) {
 
 module.exports = focusNode;
 
-},{}],133:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32307,7 +33872,7 @@ var forEachAccumulated = function(arr, cb, scope) {
 
 module.exports = forEachAccumulated;
 
-},{}],134:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32336,7 +33901,7 @@ function getActiveElement() /*?DOMElement*/ {
 
 module.exports = getActiveElement;
 
-},{}],135:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32388,7 +33953,7 @@ function getEventCharCode(nativeEvent) {
 
 module.exports = getEventCharCode;
 
-},{}],136:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32493,7 +34058,7 @@ function getEventKey(nativeEvent) {
 
 module.exports = getEventKey;
 
-},{"./getEventCharCode":135}],137:[function(require,module,exports){
+},{"./getEventCharCode":159}],161:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32540,7 +34105,7 @@ function getEventModifierState(nativeEvent) {
 
 module.exports = getEventModifierState;
 
-},{}],138:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32571,7 +34136,7 @@ function getEventTarget(nativeEvent) {
 
 module.exports = getEventTarget;
 
-},{}],139:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32615,7 +34180,7 @@ function getIteratorFn(maybeIterable) {
 
 module.exports = getIteratorFn;
 
-},{}],140:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -32735,7 +34300,7 @@ module.exports = getMarkupWrap;
 
 }).call(this,require('_process'))
 
-},{"./ExecutionEnvironment":33,"./invariant":148,"_process":3}],141:[function(require,module,exports){
+},{"./ExecutionEnvironment":57,"./invariant":172,"_process":27}],165:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32810,7 +34375,7 @@ function getNodeForCharacterOffset(root, offset) {
 
 module.exports = getNodeForCharacterOffset;
 
-},{}],142:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32845,7 +34410,7 @@ function getReactRootElementInContainer(container) {
 
 module.exports = getReactRootElementInContainer;
 
-},{}],143:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32882,7 +34447,7 @@ function getTextContentAccessor() {
 
 module.exports = getTextContentAccessor;
 
-},{"./ExecutionEnvironment":33}],144:[function(require,module,exports){
+},{"./ExecutionEnvironment":57}],168:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32922,7 +34487,7 @@ function getUnboundedScrollPosition(scrollable) {
 
 module.exports = getUnboundedScrollPosition;
 
-},{}],145:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32955,7 +34520,7 @@ function hyphenate(string) {
 
 module.exports = hyphenate;
 
-},{}],146:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32996,7 +34561,7 @@ function hyphenateStyleName(string) {
 
 module.exports = hyphenateStyleName;
 
-},{"./hyphenate":145}],147:[function(require,module,exports){
+},{"./hyphenate":169}],171:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -33135,7 +34700,7 @@ module.exports = instantiateReactComponent;
 
 }).call(this,require('_process'))
 
-},{"./Object.assign":39,"./ReactCompositeComponent":50,"./ReactEmptyComponent":72,"./ReactNativeComponent":86,"./invariant":148,"./warning":167,"_process":3}],148:[function(require,module,exports){
+},{"./Object.assign":63,"./ReactCompositeComponent":74,"./ReactEmptyComponent":96,"./ReactNativeComponent":110,"./invariant":172,"./warning":191,"_process":27}],172:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -33193,7 +34758,7 @@ module.exports = invariant;
 
 }).call(this,require('_process'))
 
-},{"_process":3}],149:[function(require,module,exports){
+},{"_process":27}],173:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33258,7 +34823,7 @@ function isEventSupported(eventNameSuffix, capture) {
 
 module.exports = isEventSupported;
 
-},{"./ExecutionEnvironment":33}],150:[function(require,module,exports){
+},{"./ExecutionEnvironment":57}],174:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33285,7 +34850,7 @@ function isNode(object) {
 
 module.exports = isNode;
 
-},{}],151:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33328,7 +34893,7 @@ function isTextInputElement(elem) {
 
 module.exports = isTextInputElement;
 
-},{}],152:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33353,7 +34918,7 @@ function isTextNode(object) {
 
 module.exports = isTextNode;
 
-},{"./isNode":150}],153:[function(require,module,exports){
+},{"./isNode":174}],177:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -33409,7 +34974,7 @@ module.exports = keyMirror;
 
 }).call(this,require('_process'))
 
-},{"./invariant":148,"_process":3}],154:[function(require,module,exports){
+},{"./invariant":172,"_process":27}],178:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33445,7 +35010,7 @@ var keyOf = function(oneKeyObj) {
 
 module.exports = keyOf;
 
-},{}],155:[function(require,module,exports){
+},{}],179:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33498,7 +35063,7 @@ function mapObject(object, callback, context) {
 
 module.exports = mapObject;
 
-},{}],156:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33531,7 +35096,7 @@ function memoizeStringOnly(callback) {
 
 module.exports = memoizeStringOnly;
 
-},{}],157:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -33572,7 +35137,7 @@ module.exports = onlyChild;
 
 }).call(this,require('_process'))
 
-},{"./ReactElement":70,"./invariant":148,"_process":3}],158:[function(require,module,exports){
+},{"./ReactElement":94,"./invariant":172,"_process":27}],182:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33600,7 +35165,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
 module.exports = performance || {};
 
-},{"./ExecutionEnvironment":33}],159:[function(require,module,exports){
+},{"./ExecutionEnvironment":57}],183:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33628,7 +35193,7 @@ var performanceNow = performance.now.bind(performance);
 
 module.exports = performanceNow;
 
-},{"./performance":158}],160:[function(require,module,exports){
+},{"./performance":182}],184:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33656,7 +35221,7 @@ function quoteAttributeValueForBrowser(value) {
 
 module.exports = quoteAttributeValueForBrowser;
 
-},{"./escapeTextContentForBrowser":129}],161:[function(require,module,exports){
+},{"./escapeTextContentForBrowser":153}],185:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33745,7 +35310,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
 module.exports = setInnerHTML;
 
-},{"./ExecutionEnvironment":33}],162:[function(require,module,exports){
+},{"./ExecutionEnvironment":57}],186:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33787,7 +35352,7 @@ if (ExecutionEnvironment.canUseDOM) {
 
 module.exports = setTextContent;
 
-},{"./ExecutionEnvironment":33,"./escapeTextContentForBrowser":129,"./setInnerHTML":161}],163:[function(require,module,exports){
+},{"./ExecutionEnvironment":57,"./escapeTextContentForBrowser":153,"./setInnerHTML":185}],187:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33831,7 +35396,7 @@ function shallowEqual(objA, objB) {
 
 module.exports = shallowEqual;
 
-},{}],164:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -33936,7 +35501,7 @@ module.exports = shouldUpdateReactComponent;
 
 }).call(this,require('_process'))
 
-},{"./warning":167,"_process":3}],165:[function(require,module,exports){
+},{"./warning":191,"_process":27}],189:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -34009,7 +35574,7 @@ module.exports = toArray;
 
 }).call(this,require('_process'))
 
-},{"./invariant":148,"_process":3}],166:[function(require,module,exports){
+},{"./invariant":172,"_process":27}],190:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -34263,7 +35828,7 @@ module.exports = traverseAllChildren;
 
 }).call(this,require('_process'))
 
-},{"./ReactElement":70,"./ReactFragment":76,"./ReactInstanceHandles":79,"./getIteratorFn":139,"./invariant":148,"./warning":167,"_process":3}],167:[function(require,module,exports){
+},{"./ReactElement":94,"./ReactFragment":100,"./ReactInstanceHandles":103,"./getIteratorFn":163,"./invariant":172,"./warning":191,"_process":27}],191:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -34327,10 +35892,10 @@ module.exports = warning;
 
 }).call(this,require('_process'))
 
-},{"./emptyFunction":127,"_process":3}],168:[function(require,module,exports){
+},{"./emptyFunction":151,"_process":27}],192:[function(require,module,exports){
 module.exports = require('./lib/React');
 
-},{"./lib/React":41}],169:[function(require,module,exports){
+},{"./lib/React":65}],193:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34348,7 +35913,7 @@ function thunkMiddleware(_ref) {
 }
 
 module.exports = exports['default'];
-},{}],170:[function(require,module,exports){
+},{}],194:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34506,7 +36071,7 @@ function createStore(reducer, initialState) {
     replaceReducer: replaceReducer
   };
 }
-},{"./utils/isPlainObject":176}],171:[function(require,module,exports){
+},{"./utils/isPlainObject":200}],195:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34538,7 +36103,7 @@ exports.combineReducers = _utilsCombineReducers2['default'];
 exports.bindActionCreators = _utilsBindActionCreators2['default'];
 exports.applyMiddleware = _utilsApplyMiddleware2['default'];
 exports.compose = _utilsCompose2['default'];
-},{"./createStore":170,"./utils/applyMiddleware":172,"./utils/bindActionCreators":173,"./utils/combineReducers":174,"./utils/compose":175}],172:[function(require,module,exports){
+},{"./createStore":194,"./utils/applyMiddleware":196,"./utils/bindActionCreators":197,"./utils/combineReducers":198,"./utils/compose":199}],196:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34600,7 +36165,7 @@ function applyMiddleware() {
 }
 
 module.exports = exports['default'];
-},{"./compose":175}],173:[function(require,module,exports){
+},{"./compose":199}],197:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34656,7 +36221,7 @@ function bindActionCreators(actionCreators, dispatch) {
 }
 
 module.exports = exports['default'];
-},{"../utils/mapValues":177}],174:[function(require,module,exports){
+},{"../utils/mapValues":201}],198:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -34788,7 +36353,7 @@ function combineReducers(reducers) {
 module.exports = exports['default'];
 }).call(this,require('_process'))
 
-},{"../createStore":170,"../utils/isPlainObject":176,"../utils/mapValues":177,"../utils/pick":178,"_process":3}],175:[function(require,module,exports){
+},{"../createStore":194,"../utils/isPlainObject":200,"../utils/mapValues":201,"../utils/pick":202,"_process":27}],199:[function(require,module,exports){
 /**
  * Composes single-argument functions from right to left.
  *
@@ -34814,9 +36379,9 @@ function compose() {
 }
 
 module.exports = exports["default"];
-},{}],176:[function(require,module,exports){
-arguments[4][10][0].apply(exports,arguments)
-},{"dup":10}],177:[function(require,module,exports){
+},{}],200:[function(require,module,exports){
+arguments[4][34][0].apply(exports,arguments)
+},{"dup":34}],201:[function(require,module,exports){
 /**
  * Applies a function to every key-value pair inside an object.
  *
@@ -34837,7 +36402,7 @@ function mapValues(obj, fn) {
 }
 
 module.exports = exports["default"];
-},{}],178:[function(require,module,exports){
+},{}],202:[function(require,module,exports){
 /**
  * Picks key-value pairs from an object where values satisfy a predicate.
  *
@@ -34860,7 +36425,7 @@ function pick(obj, fn) {
 }
 
 module.exports = exports["default"];
-},{}],179:[function(require,module,exports){
+},{}],203:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34956,1548 +36521,7 @@ function createStructuredSelector(selectors) {
         }, {});
     });
 }
-},{}],180:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.updateAggregatorToTime = updateAggregatorToTime;
-exports.updateAggregatorToNow = updateAggregatorToNow;
-exports.addClickToAggregator = addClickToAggregator;
-exports.addAggregator = addAggregator;
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
-var _constantsActionTypes = require('../constants/ActionTypes');
-
-var types = _interopRequireWildcard(_constantsActionTypes);
-
-function updateAggregatorToTime(id, time) {
-	return {
-		type: types.UPDATE_AGGREGATOR_TO_TIME,
-		id: id,
-		time: time
-	};
-}
-
-function updateAggregatorToNow(id) {
-	return {
-		type: types.UPDATE_AGGREGATOR_TO_TIME,
-		id: id,
-		time: Date.now()
-	};
-}
-
-function addClickToAggregator(id) {
-	return {
-		type: types.ADD_CLICK_TO_AGGREGATOR,
-		id: id,
-		click: Date.now()
-	};
-}
-
-function addAggregator(objectType, objectId) {
-	return {
-		type: types.ADD_AGGREGATOR,
-		createdTime: Date.now(),
-		objectType: objectType,
-		objectId: objectId,
-		user: "ben"
-	};
-}
-
-
-},{"../constants/ActionTypes":194}],181:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.newChatMessage = newChatMessage;
-exports.voteChatMessage = voteChatMessage;
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj["default"] = obj; return newObj; } }
-
-var _constantsActionTypes = require('../constants/ActionTypes');
-
-var types = _interopRequireWildcard(_constantsActionTypes);
-
-function newChatMessage(text) {
-	return {
-		type: types.ADD_CHAT_MESSAGE,
-		text: text,
-		user: "ben",
-		time: Date.now()
-	};
-}
-
-function voteChatMessage(id) {
-	return {
-		type: types.VOTE_CHAT_MESSAGE,
-		id: id
-	};
-}
-
-
-},{"../constants/ActionTypes":194}],182:[function(require,module,exports){
-'use strict';
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _componentsAppJsx = require('./components/App.jsx');
-
-var _componentsAppJsx2 = _interopRequireDefault(_componentsAppJsx);
-
-var _reactRedux = require('react-redux');
-
-var _storeConfigureStore = require('./store/configureStore');
-
-var _storeConfigureStore2 = _interopRequireDefault(_storeConfigureStore);
-
-var _utilsScorer = require('./utils/scorer');
-
-var _utilsScorer2 = _interopRequireDefault(_utilsScorer);
-
-var store = (0, _storeConfigureStore2['default'])();
-
-_react2['default'].render(_react2['default'].createElement(
-	_reactRedux.Provider,
-	{ store: store },
-	function () {
-		return _react2['default'].createElement(_componentsAppJsx2['default'], null);
-	}
-), document.getElementById("react-root"));
-
-
-},{"./components/App.jsx":189,"./store/configureStore":200,"./utils/scorer":202,"react":168,"react-redux":8}],183:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var AggregationSummary = (function (_Component) {
-	_inherits(AggregationSummary, _Component);
-
-	function AggregationSummary(props) {
-		_classCallCheck(this, AggregationSummary);
-
-		_get(Object.getPrototypeOf(AggregationSummary.prototype), "constructor", this).call(this, props);
-		this.state = {
-			componentWidth: 0
-		};
-	}
-
-	_createClass(AggregationSummary, [{
-		key: "componentDidUpdate",
-		value: function componentDidUpdate() {
-			var newWidth = _react2["default"].findDOMNode(this).offsetWidth;
-			if (this.state.componentWidth != newWidth) {
-				this.setState({
-					componentWidth: newWidth
-				});
-			}
-		}
-	}, {
-		key: "render",
-		value: function render() {
-			var styles = { right: this.props.shouldShow ? -this.state.componentWidth : -2 };
-			return _react2["default"].createElement(
-				"div",
-				{ style: styles, className: "aggregation-summary" },
-				_react2["default"].createElement(
-					"p",
-					null,
-					_react2["default"].createElement(
-						"span",
-						{ className: "count" },
-						this.props.clicks
-					),
-					_react2["default"].createElement(
-						"span",
-						{ className: "count-label" },
-						"⇶"
-					)
-				)
-			);
-		}
-	}]);
-
-	return AggregationSummary;
-})(_react.Component);
-
-AggregationSummary.propTypes = {
-	clicks: _react.PropTypes.number.isRequired,
-	shouldShow: _react.PropTypes.bool
-};
-
-exports["default"] = AggregationSummary;
-module.exports = exports["default"];
-
-
-},{"react":168}],184:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _classnames = require("./../../../bower_components/classnames/index.js");
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _AggregatorBarJsx = require('./AggregatorBar.jsx');
-
-var _AggregatorBarJsx2 = _interopRequireDefault(_AggregatorBarJsx);
-
-var _AggregatorTextJsx = require('./AggregatorText.jsx');
-
-var _AggregatorTextJsx2 = _interopRequireDefault(_AggregatorTextJsx);
-
-var _constantsAppJs = require('../constants/App.js');
-
-var _constantsAppJs2 = _interopRequireDefault(_constantsAppJs);
-
-var _utilsLevels = require('../utils/levels');
-
-var Aggregator = (function (_Component) {
-	_inherits(Aggregator, _Component);
-
-	function Aggregator(props) {
-		_classCallCheck(this, Aggregator);
-
-		_get(Object.getPrototypeOf(Aggregator.prototype), 'constructor', this).call(this, props);
-		this.state = {
-			lastMouseDown: false,
-			isClicking: false,
-			frameId: null,
-			lastFrameTime: 0,
-			frame: 0
-		};
-		this.handleOnMouseDown = this.handleOnMouseDown.bind(this);
-		this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
-		this.start = this.start.bind(this);
-		this.stop = this.stop.bind(this);
-	}
-
-	_createClass(Aggregator, [{
-		key: 'componentDidMount',
-		value: function componentDidMount() {
-			this.start(this.props.updateToNow);
-			/*
-   setTimeout(()=>{
-   	this.stop()
-   },3000)
-   */
-		}
-	}, {
-		key: 'start',
-		value: function start(update) {
-			var _this = this;
-
-			if (this.props.isComplete) {
-				this.stop();
-				return;
-			}
-			var fps = 60;
-			var frameId = requestAnimationFrame(function () {
-				return _this.start(update);
-			});
-			if (Date.now() - this.state.lastFrameTime > 1000 / fps) {
-				this.setState({
-					frameId: frameId,
-					frame: this.state.frame + 1,
-					lastFrameTime: Date.now()
-				});
-				update(this.props.id);
-			}
-		}
-	}, {
-		key: 'stop',
-		value: function stop() {
-			cancelAnimationFrame(this.state.frameId);
-			this.setState({ frameId: null, startedAt: null, frame: 0 });
-		}
-	}, {
-		key: 'handleOnMouseDown',
-		value: function handleOnMouseDown() {
-			this.setState({
-				lastMouseDown: Date.now()
-			});
-		}
-	}, {
-		key: 'handleOnMouseUp',
-		value: function handleOnMouseUp() {
-			var _this2 = this;
-
-			if (!this.state.lastMouseDown || this.props.isComplete) return;
-			var timeSinceLastMouseDown = Date.now() - this.state.lastMouseDown;
-			if (timeSinceLastMouseDown > _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT) {
-				return;
-			}
-			this.setState({
-				isClicking: true
-			});
-			this.refs.aggregatorBar.flash();
-			setTimeout(function () {
-				if (Date.now() - _this2.state.lastMouseDown < _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT) return;
-				_this2.setState({
-					isClicking: false
-				});
-			}, _constantsAppJs2['default'].Aggregator.CLICKTIMEOUT);
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var aggregatorClassNames = (0, _classnames2['default'])('aggregator', this.props.isComplete ? 'aggregator-level-' + _utilsLevels.levelColors[(0, _utilsLevels.getLevel)(this.props.residueValue)] : '', {
-				'aggregator-user-clicking': this.state.isClicking,
-				'aggregator-complete': this.props.isComplete
-			});
-			return _react2['default'].createElement(
-				'div',
-				{ onClick: this.props.aggregatorClicked, onMouseDown: this.handleOnMouseDown, onMouseUp: this.handleOnMouseUp, className: aggregatorClassNames },
-				_react2['default'].createElement(_AggregatorBarJsx2['default'], {
-					ref: 'aggregatorBar',
-					barColorClass: "bar-" + this.props.barColor,
-					barValue: this.props.barValue,
-					rightText: this.props.rightText,
-					leftText: this.props.leftText,
-					residueValue: this.props.residueValue,
-					residueColorClass: "bar-residue-" + this.props.residueColorClass }),
-				_react2['default'].createElement(_AggregatorTextJsx2['default'], { displayText: this.props.displayText })
-			);
-		}
-	}]);
-
-	return Aggregator;
-})(_react.Component);
-
-Aggregator.propTypes = {
-	aggregatorClicked: _react.PropTypes.func,
-	isComplete: _react.PropTypes.bool.isRequired
-};
-
-exports['default'] = Aggregator;
-module.exports = exports['default'];
-
-
-},{"../constants/App.js":195,"../utils/levels":201,"./../../../bower_components/classnames/index.js":1,"./AggregatorBar.jsx":185,"./AggregatorText.jsx":188,"react":168}],185:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _AggregatorBarTextJsx = require('./AggregatorBarText.jsx');
-
-var _AggregatorBarTextJsx2 = _interopRequireDefault(_AggregatorBarTextJsx);
-
-var _classnames = require("./../../../bower_components/classnames/index.js");
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _constantsAppJs = require('../constants/App.js');
-
-var _constantsAppJs2 = _interopRequireDefault(_constantsAppJs);
-
-var AggregatorBar = (function (_Component) {
-	_inherits(AggregatorBar, _Component);
-
-	function AggregatorBar(props) {
-		_classCallCheck(this, AggregatorBar);
-
-		_get(Object.getPrototypeOf(AggregatorBar.prototype), 'constructor', this).call(this, props);
-		this.state = {
-			flashes: []
-		};
-	}
-
-	_createClass(AggregatorBar, [{
-		key: 'flash',
-		value: function flash() {
-			var _this = this;
-
-			this.setState(function (previousState) {
-				previousState.flashes.push("flash:" + Date.now());
-				return {
-					flashes: previousState.flashes
-				};
-			});
-			setTimeout(function () {
-				_this.setState({
-					flashes: _lodash2['default'].rest(_this.state.flashes) //get array except oldest
-				});
-			}, _constantsAppJs2['default'].Aggregator.FLASHLENGTH);
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var width = this.props.barValue;
-
-			//add optional text
-			var rightText;
-			if (this.props.rightText) {
-				rightText = _react2['default'].createElement(_AggregatorBarTextJsx2['default'], { key: 'rightText', text: this.props.rightText, position: 'right' });
-			}
-			var leftText;
-			if (this.props.leftText) {
-				leftText = _react2['default'].createElement(_AggregatorBarTextJsx2['default'], { key: 'leftText', text: this.props.leftText, position: 'left' });
-			}
-
-			//add optional residue marker
-			var residue;
-			if (this.props.residueValue && this.props.residueColorClass) {
-				var classes = (0, _classnames2['default'])('bar-residue', this.props.residueColorClass);
-				residue = _react2['default'].createElement('div', { className: classes, style: { width: this.props.residueValue + '%' } });
-			}
-
-			//determine wrap class names
-			var colorClass = false;
-			if (this.props.barColorClass) {
-				colorClass = this.props.barColorClass;
-			}
-			var barWrapClasses = (0, _classnames2['default'])('bar-wrap', colorClass, {
-				'bar-almost-full': this.props.barValue > 85
-			});
-
-			return _react2['default'].createElement(
-				'div',
-				{ className: 'bar' },
-				_react2['default'].createElement(
-					'div',
-					{ className: barWrapClasses },
-					this.state.flashes.map(function (flashKey) {
-						return _react2['default'].createElement('div', { key: flashKey, style: { width: '100%', right: 100 - width + '%' }, className: 'bar-leader' });
-					}),
-					residue,
-					_react2['default'].createElement('div', { className: 'bar-inner', style: { width: width + '%' } }),
-					rightText,
-					leftText
-				)
-			);
-		}
-	}]);
-
-	return AggregatorBar;
-})(_react.Component);
-
-AggregatorBar.propTypes = {
-	rightText: _react.PropTypes.string,
-	leftText: _react.PropTypes.string,
-	barValue: _react.PropTypes.number.isRequired,
-	residueValue: _react.PropTypes.number,
-	residueColorClass: _react.PropTypes.string,
-	barColorClass: _react.PropTypes.string
-};
-
-exports['default'] = AggregatorBar;
-module.exports = exports['default'];
-
-
-},{"../constants/App.js":195,"./../../../bower_components/classnames/index.js":1,"./AggregatorBarText.jsx":186,"lodash":4,"react":168}],186:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var AggregatorBarText = (function (_Component) {
-	_inherits(AggregatorBarText, _Component);
-
-	function AggregatorBarText() {
-		_classCallCheck(this, AggregatorBarText);
-
-		_get(Object.getPrototypeOf(AggregatorBarText.prototype), "constructor", this).apply(this, arguments);
-	}
-
-	_createClass(AggregatorBarText, [{
-		key: "render",
-		value: function render() {
-			return _react2["default"].createElement(
-				"span",
-				{ className: this.props.position + "-text" },
-				this.props.text
-			);
-		}
-	}]);
-
-	return AggregatorBarText;
-})(_react.Component);
-
-AggregatorBarText.propTypes = {
-	position: _react2["default"].PropTypes.string.isRequired,
-	text: _react2["default"].PropTypes.string.isRequired
-};
-
-exports["default"] = AggregatorBarText;
-module.exports = exports["default"];
-
-
-},{"react":168}],187:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _AggregatorJsx = require('./Aggregator.jsx');
-
-var _AggregatorJsx2 = _interopRequireDefault(_AggregatorJsx);
-
-var _reactRedux = require('react-redux');
-
-var _selectorsAggregatorSelectorsJs = require('../selectors/AggregatorSelectors.js');
-
-var _actionsAggregators = require('../actions/aggregators');
-
-var AggregatorActions = _interopRequireWildcard(_actionsAggregators);
-
-var _redux = require('redux');
-
-var AggregatorList = (function (_Component) {
-	_inherits(AggregatorList, _Component);
-
-	function AggregatorList(props) {
-		_classCallCheck(this, AggregatorList);
-
-		_get(Object.getPrototypeOf(AggregatorList.prototype), 'constructor', this).call(this, props);
-		this.actions = (0, _redux.bindActionCreators)(AggregatorActions, this.props.dispatch);
-		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this);
-	}
-
-	_createClass(AggregatorList, [{
-		key: 'handleAggregatorClicked',
-		value: function handleAggregatorClicked(e, rawId) {
-			var id = parseInt(rawId.substr(rawId.indexOf("$") + 1), 10);
-			this.actions.addClickToAggregator(id);
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var _this = this;
-
-			return _react2['default'].createElement(
-				'div',
-				{ className: 'aggregator-list' },
-				this.props.displayReadyAggregatedMessages.map(function (aggregatorData) {
-					return _react2['default'].createElement(_AggregatorJsx2['default'], _extends({ updateToNow: _this.actions.updateAggregatorToNow, aggregatorClicked: _this.handleAggregatorClicked, key: aggregatorData.id }, aggregatorData));
-				})
-			);
-		}
-	}]);
-
-	return AggregatorList;
-})(_react.Component);
-
-exports['default'] = (0, _reactRedux.connect)(_selectorsAggregatorSelectorsJs.aggregatedMessagesDisplaySelector)(AggregatorList);
-module.exports = exports['default'];
-
-
-},{"../actions/aggregators":180,"../selectors/AggregatorSelectors.js":199,"./Aggregator.jsx":184,"react":168,"react-redux":8,"redux":171}],188:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var AggregatorText = (function (_Component) {
-	_inherits(AggregatorText, _Component);
-
-	function AggregatorText() {
-		_classCallCheck(this, AggregatorText);
-
-		_get(Object.getPrototypeOf(AggregatorText.prototype), "constructor", this).apply(this, arguments);
-	}
-
-	_createClass(AggregatorText, [{
-		key: "render",
-		value: function render() {
-			return _react2["default"].createElement(
-				"div",
-				{ className: "text-display" },
-				_react2["default"].createElement(
-					"p",
-					null,
-					this.props.displayText
-				)
-			);
-		}
-	}]);
-
-	return AggregatorText;
-})(_react.Component);
-
-AggregatorText.propTypes = {
-	displayText: _react2["default"].PropTypes.string.isRequired
-};
-
-exports["default"] = AggregatorText;
-module.exports = exports["default"];
-
-
-},{"react":168}],189:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _AggregatorListJsx = require('./AggregatorList.jsx');
-
-var _AggregatorListJsx2 = _interopRequireDefault(_AggregatorListJsx);
-
-var _ChatJsx = require('./Chat.jsx');
-
-var _ChatJsx2 = _interopRequireDefault(_ChatJsx);
-
-var App = (function (_Component) {
-	_inherits(App, _Component);
-
-	function App(props) {
-		_classCallCheck(this, App);
-
-		_get(Object.getPrototypeOf(App.prototype), 'constructor', this).call(this, props);
-	}
-
-	_createClass(App, [{
-		key: 'render',
-		value: function render() {
-			return _react2['default'].createElement(
-				'div',
-				{ className: 'app-wrap clearfix' },
-				_react2['default'].createElement(_ChatJsx2['default'], null),
-				_react2['default'].createElement(_AggregatorListJsx2['default'], null)
-			);
-		}
-	}]);
-
-	return App;
-})(_react.Component);
-
-exports['default'] = App;
-module.exports = exports['default'];
-
-
-},{"./AggregatorList.jsx":187,"./Chat.jsx":190,"react":168}],190:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _classnames = require("./../../../bower_components/classnames/index.js");
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _ChatMessageListJsx = require('./ChatMessageList.jsx');
-
-var _ChatMessageListJsx2 = _interopRequireDefault(_ChatMessageListJsx);
-
-var _ChatMessageFormJsx = require('./ChatMessageForm.jsx');
-
-var _ChatMessageFormJsx2 = _interopRequireDefault(_ChatMessageFormJsx);
-
-var _actionsChat = require('../actions/chat');
-
-var ChatActions = _interopRequireWildcard(_actionsChat);
-
-var _actionsAggregators = require('../actions/aggregators');
-
-var AggregatorActions = _interopRequireWildcard(_actionsAggregators);
-
-var _reactRedux = require('react-redux');
-
-var _redux = require('redux');
-
-var Chat = (function (_Component) {
-	_inherits(Chat, _Component);
-
-	function Chat(props) {
-		_classCallCheck(this, Chat);
-
-		_get(Object.getPrototypeOf(Chat.prototype), 'constructor', this).call(this, props);
-		this.handleChatMessageClick = this.handleChatMessageClick.bind(this);
-		this.chatActions = (0, _redux.bindActionCreators)(ChatActions, this.props.dispatch);
-		this.aggregatorActions = (0, _redux.bindActionCreators)(AggregatorActions, this.props.dispatch);
-	}
-
-	_createClass(Chat, [{
-		key: 'handleChatMessageClick',
-		value: function handleChatMessageClick(e, rawId) {
-			var id = parseInt(rawId.substr(rawId.indexOf("$") + 1), 10);
-			this.chatActions.voteChatMessage(id);
-			this.aggregatorActions.addAggregator("message", id);
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var chatMessages = this.props.chatMessages;
-
-			return _react2['default'].createElement(
-				'div',
-				{ className: 'chat' },
-				_react2['default'].createElement(_ChatMessageListJsx2['default'], { messages: chatMessages, handleChatMessageClick: this.handleChatMessageClick }),
-				_react2['default'].createElement(_ChatMessageFormJsx2['default'], { onNewMessage: this.chatActions.newChatMessage })
-			);
-		}
-	}]);
-
-	return Chat;
-})(_react.Component);
-
-function mapStateToProps(state) {
-	return {
-		chatMessages: state.chatMessages
-	};
-}
-
-exports['default'] = (0, _reactRedux.connect)(mapStateToProps)(Chat);
-module.exports = exports['default'];
-
-
-},{"../actions/aggregators":180,"../actions/chat":181,"./../../../bower_components/classnames/index.js":1,"./ChatMessageForm.jsx":192,"./ChatMessageList.jsx":193,"react":168,"react-redux":8,"redux":171}],191:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _classnames = require("./../../../bower_components/classnames/index.js");
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _AggregationSummaryJsx = require('./AggregationSummary.jsx');
-
-var _AggregationSummaryJsx2 = _interopRequireDefault(_AggregationSummaryJsx);
-
-var ChatMessage = (function (_Component) {
-	_inherits(ChatMessage, _Component);
-
-	function ChatMessage(props) {
-		_classCallCheck(this, ChatMessage);
-
-		_get(Object.getPrototypeOf(ChatMessage.prototype), 'constructor', this).call(this, props);
-		this.state = {
-			shouldShowAggregationSummary: false
-		};
-		this.handleMouseEnter = this.handleMouseEnter.bind(this);
-		this.handleMouseLeave = this.handleMouseLeave.bind(this);
-	}
-
-	_createClass(ChatMessage, [{
-		key: 'handleMouseEnter',
-		value: function handleMouseEnter() {
-			this.setState({
-				shouldShowAggregationSummary: true
-			});
-		}
-	}, {
-		key: 'handleMouseLeave',
-		value: function handleMouseLeave() {
-			this.setState({
-				shouldShowAggregationSummary: false
-			});
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var aggregationSummary;
-			if (this.props.isAggregated) {
-				aggregationSummary = _react2['default'].createElement(_AggregationSummaryJsx2['default'], { shouldShow: this.state.shouldShowAggregationSummary, clicks: this.props.clicks });
-			}
-			var commentClasses = (0, _classnames2['default'])('comment', 'clearfix', {
-				'comment-aggregated': this.props.isAggregated,
-				'has-clicked': this.props.hasUserVoted
-			});
-			return _react2['default'].createElement(
-				'div',
-				{ onMouseEnter: this.handleMouseEnter, onMouseLeave: this.handleMouseLeave, onClick: this.props.onClick, className: commentClasses },
-				aggregationSummary,
-				_react2['default'].createElement(
-					'span',
-					{ className: 'comment-time' },
-					new Date(this.props.time).toLocaleTimeString()
-				),
-				_react2['default'].createElement(
-					'p',
-					{ className: 'comment-text' },
-					_react2['default'].createElement(
-						'span',
-						{ className: 'comment-meta' },
-						_react2['default'].createElement(
-							'span',
-							{ className: 'author' },
-							this.props.userName,
-							':'
-						)
-					),
-					this.props.text
-				)
-			);
-		}
-	}]);
-
-	return ChatMessage;
-})(_react.Component);
-
-ChatMessage.propTypes = {
-	userName: _react.PropTypes.string.isRequired,
-	text: _react.PropTypes.string.isRequired,
-	time: _react.PropTypes.number.isRequired,
-	hasUserVoted: _react.PropTypes.bool,
-	isAggregated: _react.PropTypes.bool,
-	clicks: _react.PropTypes.number,
-	aggregationLevel: _react.PropTypes.string
-};
-
-ChatMessage.defaultProps = {
-	hasUserClicked: false,
-	isAggregated: false
-};
-
-exports['default'] = ChatMessage;
-module.exports = exports['default'];
-
-
-},{"./../../../bower_components/classnames/index.js":1,"./AggregationSummary.jsx":183,"react":168}],192:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _classnames = require("./../../../bower_components/classnames/index.js");
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _jquery = require("./../../../bower_components/jquery/dist/jquery.js");
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-var ChatMessageForm = (function (_Component) {
-	_inherits(ChatMessageForm, _Component);
-
-	function ChatMessageForm(props) {
-		_classCallCheck(this, ChatMessageForm);
-
-		_get(Object.getPrototypeOf(ChatMessageForm.prototype), 'constructor', this).call(this, props);
-		this.state = {
-			hasSpaceConflict: false,
-			userInput: ''
-		};
-		this.handleChange = this.handleChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-	}
-
-	_createClass(ChatMessageForm, [{
-		key: 'handleChange',
-		value: function handleChange(e) {
-			var hasConflict = false;
-			var inputText = e.target.value;
-
-			var submitInstructionsWidth = (0, _jquery2['default'])(_react2['default'].findDOMNode(this.refs.submitInstructions)).width();
-			var textWidth = (0, _jquery2['default'])(_react2['default'].findDOMNode(this.refs.hiddenCommentMirror)).width() || 0;
-			var inputWidth = (0, _jquery2['default'])(_react2['default'].findDOMNode(e.target)).width();
-
-			if (inputWidth - submitInstructionsWidth <= textWidth + 60) {
-				hasConflict = true;
-			}
-
-			this.setState({
-				userInput: inputText,
-				hasSpaceConflict: hasConflict
-			});
-		}
-	}, {
-		key: 'handleSubmit',
-		value: function handleSubmit(e) {
-			var text = e.target.value.trim();
-			if (e.which === 13) {
-				e.preventDefault();
-				this.props.onNewMessage(text);
-				this.setState({ userInput: '' });
-			}
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var classNames = (0, _classnames2['default'])('comment-form', {
-				'has-entered-text': !!this.state.userInput,
-				'space-conflict': this.state.hasSpaceConflict
-			});
-			var hiddenCommentMirror;
-			if (!!this.state.userInput) {
-				hiddenCommentMirror = _react2['default'].createElement(
-					'span',
-					{ ref: 'hiddenCommentMirror', className: 'hidden-comment-mirror' },
-					this.state.userInput
-				);
-			}
-
-			return _react2['default'].createElement(
-				'form',
-				{ className: classNames },
-				hiddenCommentMirror,
-				_react2['default'].createElement('input', {
-					type: 'text',
-					value: this.state.userInput,
-					ref: 'commentBox',
-					onChange: this.handleChange,
-					onKeyDown: this.handleSubmit.bind(this),
-					className: 'comment-box',
-					placeholder: 'Enter a comment here...' }),
-				_react2['default'].createElement(
-					'span',
-					{ ref: 'submitInstructions', className: 'submit-instructions' },
-					'Press Enter To Submit'
-				)
-			);
-		}
-	}]);
-
-	return ChatMessageForm;
-})(_react.Component);
-
-exports['default'] = ChatMessageForm;
-module.exports = exports['default'];
-
-
-},{"./../../../bower_components/classnames/index.js":1,"./../../../bower_components/jquery/dist/jquery.js":2,"react":168}],193:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _classnames = require("./../../../bower_components/classnames/index.js");
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-var _ChatMessageJsx = require('./ChatMessage.jsx');
-
-var _ChatMessageJsx2 = _interopRequireDefault(_ChatMessageJsx);
-
-var ChatMessageList = (function (_Component) {
-	_inherits(ChatMessageList, _Component);
-
-	function ChatMessageList() {
-		_classCallCheck(this, ChatMessageList);
-
-		_get(Object.getPrototypeOf(ChatMessageList.prototype), 'constructor', this).apply(this, arguments);
-	}
-
-	_createClass(ChatMessageList, [{
-		key: 'componentDidUpdate',
-		value: function componentDidUpdate() {
-			var chatList = _react2['default'].findDOMNode(this.refs.chatMessageList);
-			chatList.scrollTop = chatList.scrollHeight;
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			return _react2['default'].createElement(
-				'div',
-				{ className: 'chat-message-list', ref: 'chatMessageList' },
-				Object.keys(this.props.messages).map(function (key, i) {
-					return _react2['default'].createElement(_ChatMessageJsx2['default'], _extends({ hasUserClicked: this.props.messages[key].hasUserClicked, onClick: this.props.handleChatMessageClick, key: this.props.messages[key].id }, this.props.messages[key]));
-				}, this)
-			);
-		}
-	}]);
-
-	return ChatMessageList;
-})(_react.Component);
-
-exports['default'] = ChatMessageList;
-module.exports = exports['default'];
-
-
-},{"./../../../bower_components/classnames/index.js":1,"./ChatMessage.jsx":191,"react":168}],194:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-var ADD_CHAT_MESSAGE = 'ADD_CHAT_MESSAGE';
-exports.ADD_CHAT_MESSAGE = ADD_CHAT_MESSAGE;
-var VOTE_CHAT_MESSAGE = 'VOTE_CHAT_MESSAGE';
-
-exports.VOTE_CHAT_MESSAGE = VOTE_CHAT_MESSAGE;
-var ADD_AGGREGATOR = 'ADD_AGGREGATOR';
-exports.ADD_AGGREGATOR = ADD_AGGREGATOR;
-var ADD_CLICK_TO_AGGREGATOR = 'ADD_CLICK_TO_AGGREGATOR';
-exports.ADD_CLICK_TO_AGGREGATOR = ADD_CLICK_TO_AGGREGATOR;
-var UPDATE_AGGREGATOR_TO_TIME = 'UPDATE_AGGREGATOR_TO_TIME';
-exports.UPDATE_AGGREGATOR_TO_TIME = UPDATE_AGGREGATOR_TO_TIME;
-
-
-},{}],195:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports["default"] = {
-	Aggregator: {
-		CLICKTIMEOUT: 300,
-		FLASHLENGTH: 300
-	}
-};
-module.exports = exports["default"];
-
-
-},{}],196:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-exports['default'] = aggregators;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-
-var _constantsActionTypes = require('../constants/ActionTypes');
-
-var _utilsScorer = require('../utils/scorer');
-
-var _utilsScorer2 = _interopRequireDefault(_utilsScorer);
-
-var initialState = [];
-
-function aggregators(state, action) {
-	if (state === undefined) state = initialState;
-
-	switch (action.type) {
-		case _constantsActionTypes.ADD_AGGREGATOR:
-			//if an aggregator already exists for the object, don't add it
-			if (state.some(function (aggregator) {
-				return aggregator.objectId === action.objectId;
-			})) return state;
-			return [{
-				id: state.reduce(function (maxId, todo) {
-					return Math.max(todo.id, maxId);
-				}, -1) + 1,
-				createdTime: action.createdTime,
-				userName: action.user,
-				objectType: action.objectType,
-				objectId: action.objectId,
-				clicks: [action.createdTime],
-				maxValue: 0,
-				x: 0,
-				isComplete: false
-			}].concat(_toConsumableArray(state));
-		//set calculated aggregator state to time based on click history
-		case _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME:
-			var index = state.findIndex(function (m) {
-				return m.id == action.id;
-			});
-			if (index === -1) return state;
-			return [].concat(_toConsumableArray(state.slice(0, index)), [aggregator(state[index], {
-				type: _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME,
-				time: action.time
-			})], _toConsumableArray(state.slice(index + 1)));
-		case _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR:
-			var index = state.findIndex(function (m) {
-				return m.id == action.id;
-			});
-			if (index === -1) return state;
-			return [].concat(_toConsumableArray(state.slice(0, index)), [aggregator(state[index], {
-				type: _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR,
-				click: action.click
-			})], _toConsumableArray(state.slice(index + 1)));
-		default:
-			return state;
-	}
-}
-
-function aggregator(state, action) {
-	switch (action.type) {
-		case _constantsActionTypes.UPDATE_AGGREGATOR_TO_TIME:
-			var newScore = (0, _utilsScorer2['default'])(state.clicks, action.time);
-			return Object.assign({}, state, {
-				x: newScore,
-				maxValue: state.maxValue >= newScore ? state.maxValue : newScore,
-				isComplete: newScore === 100 || newScore === 0 && state.maxValue != 0
-			});
-		case _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR:
-			return Object.assign({}, state, {
-				clicks: [].concat(_toConsumableArray(state.clicks), [action.click])
-			});
-		default:
-			return state;
-	}
-}
-module.exports = exports['default'];
-
-
-},{"../constants/ActionTypes":194,"../utils/scorer":202}],197:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-exports['default'] = chatMessages;
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
-
-var _constantsActionTypes = require('../constants/ActionTypes');
-
-var initialState = [];
-
-function chatMessages(state, action) {
-	if (state === undefined) state = initialState;
-
-	switch (action.type) {
-		case _constantsActionTypes.ADD_CHAT_MESSAGE:
-			return [].concat(_toConsumableArray(state), [{
-				id: state.reduce(function (maxId, todo) {
-					return Math.max(todo.id, maxId);
-				}, -1) + 1,
-				text: action.text,
-				userName: action.user,
-				time: action.time,
-				hasUserVoted: false
-			}]);
-		case _constantsActionTypes.VOTE_CHAT_MESSAGE:
-			var index = state.findIndex(function (m) {
-				return m.id === action.id;
-			});
-			if (index === -1) return state;
-			return [].concat(_toConsumableArray(state.slice(0, index)), [Object.assign({}, state[index], {
-				hasUserVoted: !state[index].hasUserVoted
-			})], _toConsumableArray(state.slice(index + 1)));
-		default:
-			return state;
-	}
-}
-
-module.exports = exports['default'];
-
-
-},{"../constants/ActionTypes":194}],198:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _redux = require('redux');
-
-var _chat = require('./chat');
-
-var _chat2 = _interopRequireDefault(_chat);
-
-var _aggregators = require('./aggregators');
-
-var _aggregators2 = _interopRequireDefault(_aggregators);
-
-var rootReducer = (0, _redux.combineReducers)({
-  chatMessages: _chat2['default'],
-  aggregators: _aggregators2['default']
-});
-
-exports['default'] = rootReducer;
-module.exports = exports['default'];
-
-
-},{"./aggregators":196,"./chat":197,"redux":171}],199:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-	value: true
-});
-
-var _reselect = require('reselect');
-
-var _utilsLevels = require('../utils/levels');
-
-var chatMessagesSelector = function chatMessagesSelector(state) {
-	return state.chatMessages;
-};
-var aggregatorsSelector = function aggregatorsSelector(state) {
-	return state.aggregators;
-};
-
-function mapAggregatedMessages(chatMessages, aggregators) {
-	return aggregators.filter(function (aggregator) {
-		return aggregator.objectType === "message";
-	}).map(function (aggregator) {
-		var chatMessage = chatMessages.find(function (message) {
-			return message.id === aggregator.objectId;
-		});
-		return {
-			id: aggregator.id,
-			maxValue: aggregator.maxValue,
-			clicks: aggregator.clicks,
-			x: aggregator.x,
-			text: chatMessage.text,
-			userName: chatMessage.userName,
-			time: chatMessage.time,
-			hasUserNominated: chatMessage.hasUserNominated,
-			isComplete: aggregator.isComplete
-		};
-	});
-}
-
-//this selector handles the message->aggregator join
-var aggregatedMessagesSelector = (0, _reselect.createSelector)([chatMessagesSelector, aggregatorsSelector], function (chatMessages, aggregators) {
-	return {
-		aggregatedMessages: mapAggregatedMessages(chatMessages, aggregators)
-	};
-});
-
-exports.aggregatedMessagesSelector = aggregatedMessagesSelector;
-function mapDisplayMessages(aggregatedMessages) {
-	return aggregatedMessages.map(function (message) {
-		return {
-			id: message.id,
-			displayText: message.text,
-			barColor: _utilsLevels.levelColors[(0, _utilsLevels.getLevel)(message.x)],
-			barValue: message.x,
-			rightText: new Date(message.time).toLocaleTimeString(),
-			residueValue: message.maxValue,
-			residueColorClass: _utilsLevels.levelColors[(0, _utilsLevels.getLevel)(message.maxValue)],
-			leftText: message.userName,
-			isComplete: message.isComplete
-		};
-	});
-}
-
-//this selector does the calculations to prepare the aggregator for display
-var aggregatedMessagesDisplaySelector = (0, _reselect.createSelector)([aggregatedMessagesSelector], function (state) {
-	return {
-		displayReadyAggregatedMessages: mapDisplayMessages(state.aggregatedMessages)
-	};
-});
-exports.aggregatedMessagesDisplaySelector = aggregatedMessagesDisplaySelector;
-
-
-},{"../utils/levels":201,"reselect":179}],200:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-exports['default'] = configureStore;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _redux = require('redux');
-
-var _reduxThunk = require('redux-thunk');
-
-var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
-
-var _reducers = require('../reducers');
-
-var _reducers2 = _interopRequireDefault(_reducers);
-
-function logger(_ref) {
-  var getState = _ref.getState;
-
-  return function (next) {
-    return function (action) {
-      //console.log('will dispatch', action);
-
-      // Call the next dispatch method in the middleware chain.
-      var returnValue = next(action);
-
-      //console.log('state after dispatch', getState());
-
-      // This will likely be the action itself, unless
-      // a middleware further in chain changed it.
-      return returnValue;
-    };
-  };
-}
-
-var createStoreWithMiddleware = (0, _redux.applyMiddleware)(_reduxThunk2['default'], logger)(_redux.createStore);
-
-function configureStore(initialState) {
-  var store = createStoreWithMiddleware(_reducers2['default'], initialState);
-  return store;
-}
-
-module.exports = exports['default'];
-
-
-},{"../reducers":198,"redux":171,"redux-thunk":169}],201:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.getLevel = getLevel;
-var levelColors = {
-	0: "default",
-	1: "blue",
-	2: "green",
-	3: "gold"
-};
-
-exports.levelColors = levelColors;
-
-function getLevel(x) {
-	if (x < 30) {
-		return 0;
-	}
-	if (x < 60) {
-		return 1;
-	}
-	if (x < 90) {
-		return 2;
-	}
-	return 3;
-}
-
-
-},{}],202:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var ballisticsParameters = {
-	THRUST_VELOCITY: 300,
-	THRUST_TIME: .2, //ms
-	MASS: 30,
-	GRAVITY_ACCELERATION: -10,
-	DRAG_CONSTANT: 5
-};
-
-var maxX = 100;
-var frameRate = 1 / 60;
-var initialVelocity = 15;
-var initialX = 0;
-
-//takes an array of timestamps and returns 0-100 x position
-//based on physics model at a specific time
-
-exports["default"] = function (clicks, time) {
-	function calculateVelocity(activeClickCount) {
-		//calc accelerations
-		var thrustDV = activeClickCount * ballisticsParameters.THRUST_VELOCITY / ballisticsParameters.MASS;
-		var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity); //only drag on way up to clear off quicker
-		//calc velocity
-		return (thrustDV + ballisticsParameters.GRAVITY_ACCELERATION) * frameRate;
-	}
-
-	function activeClicks(clicks, time) {
-		return clicks.filter(function (click) {
-			return Math.abs(time - click) <= ballisticsParameters.THRUST_TIME;
-		});
-	}
-
-	var t = (time || Date.now()) / 1000;
-	var x = initialX;
-	//if there aren't any clicks
-	if (!clicks || !Array.isArray(clicks) || clicks.length === 0) return x;
-	//throw out clicks newer than t, they are in the future and don't count
-	var filteredClicks = clicks.map(function (click) {
-		return click / 1000;
-	}).filter(function (click) {
-		return click <= t;
-	});
-	//v = v + a * dt
-	//x = x + v * dt
-	var startTime = filteredClicks[0];
-	var frames = Math.floor((t - startTime) / frameRate);
-	var currentVelocity = initialVelocity;
-	for (var i = 0; i < frames; i++) {
-		var activeClickCount = activeClicks(filteredClicks, startTime + i * frameRate).length;
-		currentVelocity = currentVelocity + calculateVelocity(activeClickCount);
-		var dx = currentVelocity * frameRate;
-		x = x + dx;
-		if (x <= 0) {
-			currentVelocity = 0;
-			x = 0;
-		}
-		if (x > maxX) {
-			x = maxX;
-		}
-	};
-	return x;
-};
-
-module.exports = exports["default"];
-
-
-},{}]},{},[182])
+},{}]},{},[3])
 
 
 //# sourceMappingURL=bundle.js.map

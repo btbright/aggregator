@@ -1,5 +1,4 @@
 var gulp = require('gulp'),
-    connect = require('gulp-connect'),
     livereload = require('gulp-livereload'),
     assign = require('lodash').assign,
     uglify = require('gulp-uglify'),
@@ -16,27 +15,10 @@ var gulp = require('gulp'),
 
 
 
-gulp.task('default', ['styles','scripts','html'], function(){
-    livereload.listen();
-    gulp.watch(packageConfig.paths.html,['reload']);
+gulp.task('default', ['styles','scripts'], function(){
     gulp.watch(packageConfig.paths.sass,['reload']);
     gulp.watch(packageConfig.paths.js,['reload']);
     gulp.watch(packageConfig.paths.jsx,['reload']);
-
-    connect.server({
-      port: 8888,
-      root: packageConfig.dest.dist
-    });
-});
-
-gulp.task('html', function() {
-  return gulp.src(packageConfig.paths.html)
-    .pipe(gulp.dest(packageConfig.dest.dist));
-});
-
-gulp.task('reload',['styles','scripts','html'],function(){
-    gulp.src('./dist/index.html').pipe(livereload());
-    livereload();
 });
 
 gulp.task('styles', function() {
