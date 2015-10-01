@@ -348,9 +348,6 @@ body {
     cursor: pointer;
     transition: background .2s, border .2s;
     box-sizing: border-box;
-    animation-name: coolFadeIn;
-    animation-duration: .4s;
-    animation-timing-function: ease-in;
 
     &:hover {
         background:rgba(0,0,0,.03);
