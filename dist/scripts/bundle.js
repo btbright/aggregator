@@ -2381,7 +2381,7 @@ var AggregatorList = (function (_Component) {
 			return _react2['default'].createElement(
 				'div',
 				{ className: 'aggregator-list' },
-				this.props.displayReadyAggregatedMessages.map(this.prepareAggregator)
+				this.props.packagedAggregators.map(this.prepareAggregator)
 			);
 		}
 	}]);
@@ -2389,7 +2389,7 @@ var AggregatorList = (function (_Component) {
 	return AggregatorList;
 })(_react.Component);
 
-exports['default'] = (0, _reactRedux.connect)(_selectorsAggregatorSelectorsJs.aggregatedMessagesDisplaySelector)(AggregatorList);
+exports['default'] = (0, _reactRedux.connect)(_selectorsAggregatorSelectorsJs.packagedAggregatorSelector)(AggregatorList);
 module.exports = exports['default'];
 
 
@@ -3695,7 +3695,8 @@ var aggregatorsListSlotsSelector = function aggregatorsListSlotsSelector(state) 
 	return state.aggregatorListSlots;
 };
 
-function joinWithMessages(chatMessages, aggregators) {
+//this selector handles the message->aggregator join
+var joinedMessageAggregatorSelector = (0, _reselect.createSelector)(chatMessagesSelector, aggregatorsSelector, function (chatMessages, aggregators) {
 	return aggregators.filter(function (aggregator) {
 		return aggregator.objectType === "message";
 	}).map(function (aggregator) {
@@ -3715,28 +3716,11 @@ function joinWithMessages(chatMessages, aggregators) {
 			isRetired: aggregator.isRetired
 		};
 	});
-}
-
-//this selector handles the message->aggregator join
-var aggregatedMessagesSelector = (0, _reselect.createSelector)([chatMessagesSelector, aggregatorsSelector, aggregatorsListSlotsSelector], function (chatMessages, aggregators, slots) {
-	return {
-		slots: slots,
-		aggregatedMessages: joinWithMessages(chatMessages, aggregators)
-	};
 });
 
-exports.aggregatedMessagesSelector = aggregatedMessagesSelector;
-function mapAggregatorsToSlots(aggregators, slots) {
-	return slots.map(function (slot) {
-		var aggregator = aggregators.find(function (a) {
-			return a.id === slot.id;
-		});
-		return aggregator;
-	});
-}
-
-function mapDisplayMessages(aggregatedMessages) {
-	return aggregatedMessages.map(function (message) {
+//this selector does the calculations to transform the raw aggregator for display
+var preparedForDisplaySelector = (0, _reselect.createSelector)(joinedMessageAggregatorSelector, function (joinedAggregators) {
+	return joinedAggregators.map(function (message) {
 		return {
 			id: message.id,
 			displayText: message.text,
@@ -3750,15 +3734,25 @@ function mapDisplayMessages(aggregatedMessages) {
 			isRetired: message.isRetired
 		};
 	});
-}
+});
 
-//this selector does the calculations to prepare the aggregator for display
-var aggregatedMessagesDisplaySelector = (0, _reselect.createSelector)([aggregatedMessagesSelector, aggregatorsListSlotsSelector], function (state, slots) {
+//this selector maps aggregators to slots so they don't shift around
+var mappedToSlotsSelector = (0, _reselect.createSelector)(preparedForDisplaySelector, aggregatorsListSlotsSelector, function (aggregators, slots) {
+	return slots.map(function (slot) {
+		var aggregator = aggregators.find(function (a) {
+			return a.id === slot.id;
+		});
+		return aggregator;
+	});
+});
+
+//this just wraps the calculations in an object
+var packagedAggregatorSelector = (0, _reselect.createSelector)(mappedToSlotsSelector, function (packagedAggregators) {
 	return {
-		displayReadyAggregatedMessages: mapAggregatorsToSlots(mapDisplayMessages(state.aggregatedMessages), slots)
+		packagedAggregators: packagedAggregators
 	};
 });
-exports.aggregatedMessagesDisplaySelector = aggregatedMessagesDisplaySelector;
+exports.packagedAggregatorSelector = packagedAggregatorSelector;
 
 
 },{"../utils/levels":41,"reselect":220}],39:[function(require,module,exports){

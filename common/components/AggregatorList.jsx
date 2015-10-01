@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import Aggregator from './Aggregator.jsx'
 import { connect } from 'react-redux';
-import { aggregatedMessagesDisplaySelector } from '../selectors/AggregatorSelectors.js';
+import { packagedAggregatorSelector } from '../selectors/AggregatorSelectors.js';
 import * as AggregatorActions from '../actions/aggregators'
 import { bindActionCreators } from 'redux'
 import { bindAggregatorListeners } from '../apiutils/aggregators'
@@ -24,10 +24,10 @@ class AggregatorList extends Component {
 	render(){
 		return (
 			<div className="aggregator-list">
-				{this.props.displayReadyAggregatedMessages.map(this.prepareAggregator)}
+				{this.props.packagedAggregators.map(this.prepareAggregator)}
 			</div>
 			)
 	}
 }
 
-export default connect(aggregatedMessagesDisplaySelector)(AggregatorList)
+export default connect(packagedAggregatorSelector)(AggregatorList)
