@@ -1,6 +1,7 @@
 import { RETIRE_AGGREGATOR, UPDATE_AGGREGATOR_TO_TIME, ADD_AGGREGATOR, ADD_CLICK_TO_AGGREGATOR, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
 import scorer from '../utils/scorer'
 import { newListWithReplacementFromSubreducer, newListWithReplacementFields } from '../utils/reducerTools'
+import constants from '../constants/App'
 
 const initialState = [];
 
@@ -34,6 +35,7 @@ function aggregator(state, action){
 			isComplete : newScore === 100 || (newScore === 0 && state.maxValue != 0)
 		});
 	case ADD_CLICK_TO_AGGREGATOR:
+		if (!shouldAddClick(state.clicks,action.click)) return state;
 		return Object.assign({},state,{
 			clicks : [...state.clicks, action.click]
 		});
@@ -48,4 +50,10 @@ function aggregator(state, action){
 	default:
 		return state;
 	}
+}
+
+//rate limit clicks to prevent scripting massive clickrates
+function shouldAddClick(clicks, click){
+	if (clicks.length === 0) return true;
+	return click - clicks[clicks.length-1] > constants.Aggregator.CLICKTHRESHOLD;
 }

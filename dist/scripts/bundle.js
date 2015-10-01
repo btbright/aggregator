@@ -1756,6 +1756,7 @@ Object.defineProperty(exports, '__esModule', {
 	value: true
 });
 exports.updateUserName = updateUserName;
+exports.removeUserName = removeUserName;
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
@@ -1763,15 +1764,24 @@ var _constantsActionTypes = require('../constants/ActionTypes');
 
 var types = _interopRequireWildcard(_constantsActionTypes);
 
+var _apiutilsRoom = require('../apiutils/room');
+
 function updateUserName(userName) {
+	(0, _apiutilsRoom.requestNameChange)(userName);
 	return {
 		type: types.UPDATE_USER_NAME,
 		userName: userName
 	};
 }
 
+function removeUserName() {
+	return {
+		type: types.REMOVE_USER_NAME
+	};
+}
 
-},{"../constants/ActionTypes":25}],9:[function(require,module,exports){
+
+},{"../apiutils/room":11,"../constants/ActionTypes":25}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -1848,6 +1858,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.bindRoomListeners = bindRoomListeners;
 exports.requestNewRoom = requestNewRoom;
+exports.requestNameChange = requestNameChange;
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 
@@ -1857,11 +1868,25 @@ var _actionsRoom = require('../actions/room');
 
 var RoomActions = _interopRequireWildcard(_actionsRoom);
 
+var _actionsUser = require('../actions/user');
+
+var UserActions = _interopRequireWildcard(_actionsUser);
+
+var _actionsNotifications = require('../actions/notifications');
+
+var NotificationActions = _interopRequireWildcard(_actionsNotifications);
+
 function bindRoomListeners(dispatch) {
 	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
 	var actions = (0, _redux.bindActionCreators)(RoomActions, dispatch);
+	var userActions = (0, _redux.bindActionCreators)(UserActions, dispatch);
+	var notificationActions = (0, _redux.bindActionCreators)(NotificationActions, dispatch);
 	var socket = io();
-	socket.on('userCount:update', actions.updateUserCount);
+	socket.on('roomInfo:userCount:update', actions.updateUserCount);
+	socket.on('error:user:name:change', function (error) {
+		userActions.removeUserName();
+		notificationActions.addNotification(error, "error");
+	});
 }
 
 function requestNewRoom(newRoom, oldRoom) {
@@ -1869,8 +1894,13 @@ function requestNewRoom(newRoom, oldRoom) {
 	io().emit("room:change", { newRoom: newRoom, oldRoom: oldRoom });
 }
 
+function requestNameChange(name) {
+	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
+	io().emit("user:name:change", name);
+}
 
-},{"../actions/room":7,"redux":212}],12:[function(require,module,exports){
+
+},{"../actions/notifications":6,"../actions/room":7,"../actions/user":8,"redux":212}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3250,8 +3280,10 @@ var UPDATE_ROOM = 'UPDATE_ROOM';
 
 exports.UPDATE_ROOM = UPDATE_ROOM;
 var UPDATE_USER_NAME = 'UPDATE_USER_NAME';
-
 exports.UPDATE_USER_NAME = UPDATE_USER_NAME;
+var REMOVE_USER_NAME = 'REMOVE_USER_NAME';
+
+exports.REMOVE_USER_NAME = REMOVE_USER_NAME;
 var ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 exports.ADD_NOTIFICATION = ADD_NOTIFICATION;
 var CURRENT_NOTIFICATION_COMPLETE = 'CURRENT_NOTIFICATION_COMPLETE';
@@ -3270,7 +3302,8 @@ exports["default"] = {
 	},
 	Aggregator: {
 		CLICKTIMEOUT: 300,
-		FLASHLENGTH: 300
+		FLASHLENGTH: 300,
+		CLICKTHRESHOLD: 200
 	}
 };
 module.exports = exports["default"];
@@ -3430,6 +3463,10 @@ var _utilsScorer2 = _interopRequireDefault(_utilsScorer);
 
 var _utilsReducerTools = require('../utils/reducerTools');
 
+var _constantsApp = require('../constants/App');
+
+var _constantsApp2 = _interopRequireDefault(_constantsApp);
+
 var initialState = [];
 
 function aggregators(state, action) {
@@ -3466,6 +3503,7 @@ function aggregator(state, action) {
 				isComplete: newScore === 100 || newScore === 0 && state.maxValue != 0
 			});
 		case _constantsActionTypes.ADD_CLICK_TO_AGGREGATOR:
+			if (!shouldAddClick(state.clicks, action.click)) return state;
 			return Object.assign({}, state, {
 				clicks: [].concat(_toConsumableArray(state.clicks), [action.click])
 			});
@@ -3481,10 +3519,16 @@ function aggregator(state, action) {
 			return state;
 	}
 }
+
+//rate limit clicks to prevent scripting massive clickrates
+function shouldAddClick(clicks, click) {
+	if (clicks.length === 0) return true;
+	return click - clicks[clicks.length - 1] > _constantsApp2['default'].Aggregator.CLICKTHRESHOLD;
+}
 module.exports = exports['default'];
 
 
-},{"../constants/ActionTypes":25,"../utils/reducerTools":42,"../utils/scorer":43}],33:[function(require,module,exports){
+},{"../constants/ActionTypes":25,"../constants/App":26,"../utils/reducerTools":42,"../utils/scorer":43}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -3665,6 +3709,10 @@ function user(state, action) {
 		case _constantsActionTypes.UPDATE_USER_NAME:
 			return Object.assign({}, state, {
 				userName: action.userName
+			});
+		case _constantsActionTypes.REMOVE_USER_NAME:
+			return Object.assign({}, state, {
+				userName: ""
 			});
 		default:
 			return state;
