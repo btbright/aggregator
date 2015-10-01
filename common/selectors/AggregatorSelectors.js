@@ -3,8 +3,9 @@ import { levelColors, getLevel } from '../utils/levels'
 
 const chatMessagesSelector = (state) => state.chatMessages
 const aggregatorsSelector = (state) => state.aggregators
+const aggregatorsListSlotsSelector = (state) => state.aggregatorListSlots
 
-function mapAggregatedMessages(chatMessages, aggregators){
+function joinWithMessages(chatMessages, aggregators){
 	return aggregators
 		.filter((aggregator) => aggregator.objectType === "message")
 		.map((aggregator) => {
@@ -18,20 +19,29 @@ function mapAggregatedMessages(chatMessages, aggregators){
 				userName : chatMessage.userName,
 				time : chatMessage.time,
 				hasUserNominated : chatMessage.hasUserNominated,
-				isComplete : aggregator.isComplete
+				isComplete : aggregator.isComplete,
+				isRetired : aggregator.isRetired
 			}
 		})
 }
 
 //this selector handles the message->aggregator join
 export const aggregatedMessagesSelector = createSelector(
-	[chatMessagesSelector,aggregatorsSelector],
-	(chatMessages, aggregators) => {
+	[chatMessagesSelector,aggregatorsSelector, aggregatorsListSlotsSelector],
+	(chatMessages, aggregators, slots) => {
 		return {
-			aggregatedMessages : mapAggregatedMessages(chatMessages, aggregators)
+			slots : slots,
+			aggregatedMessages : joinWithMessages(chatMessages, aggregators)
 		}
 	});
 
+function mapAggregatorsToSlots(aggregators, slots){
+	return slots
+			.map((slot) => {
+				var aggregator = aggregators.find(a => a.id === slot.id);
+				return aggregator;
+			});
+}
 
 function mapDisplayMessages(aggregatedMessages){
 	return aggregatedMessages
@@ -45,7 +55,8 @@ function mapDisplayMessages(aggregatedMessages){
 				residueValue : message.maxValue,
 				residueColorClass : levelColors[getLevel(message.maxValue)],
 				leftText : message.userName,
-				isComplete : message.isComplete
+				isComplete : message.isComplete,
+				isRetired : message.isRetired
 			}
 		});
 }
@@ -53,9 +64,9 @@ function mapDisplayMessages(aggregatedMessages){
 
 //this selector does the calculations to prepare the aggregator for display
 export const aggregatedMessagesDisplaySelector = createSelector(
-	[aggregatedMessagesSelector],
-	(state) => {
+	[aggregatedMessagesSelector, aggregatorsListSlotsSelector],
+	(state, slots) => {
 		return {
-			displayReadyAggregatedMessages : mapDisplayMessages(state.aggregatedMessages)
+			displayReadyAggregatedMessages : mapAggregatorsToSlots(mapDisplayMessages(state.aggregatedMessages),slots)
 		}
 	});

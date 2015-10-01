@@ -11,18 +11,21 @@ class AggregatorList extends Component {
 		super(props)
 		this.actions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this)
+		this.prepareAggregator = this.prepareAggregator.bind(this)
 		bindAggregatorListeners(this.props.dispatch);
 	}
 	handleAggregatorClicked(e,rawId){
 		var id = rawId.substr(rawId.indexOf("$")+1);
 		this.actions.newAggregatorClick(id)
 	}
+	prepareAggregator(aggregatorData){
+		return <Aggregator updateToNow={this.actions.updateAggregatorToNow} retireAggregator={this.actions.retireAggregator} aggregatorClicked={this.handleAggregatorClicked} key={aggregatorData.id} {...aggregatorData} />;
+	}
 	render(){
+		console.log(this.props)
 		return (
 			<div className="aggregator-list">
-				{this.props.displayReadyAggregatedMessages.map((aggregatorData)=>{
-					return <Aggregator updateToNow={this.actions.updateAggregatorToNow} aggregatorClicked={this.handleAggregatorClicked} key={aggregatorData.id} {...aggregatorData} />
-				})}
+				{this.props.displayReadyAggregatedMessages.map(this.prepareAggregator)}
 			</div>
 			)
 	}

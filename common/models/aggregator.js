@@ -10,6 +10,7 @@ export function createAggregator(props){
 		clicks : [props.createdTime || Date.now()],
 		maxValue : 0,
 		x : 0,
-		isComplete : false
+		isComplete : false,
+		isRetired : false
 	}
 }

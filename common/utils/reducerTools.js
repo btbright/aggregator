@@ -7,11 +7,19 @@ export function newListWithReplacementFromSubreducer(state, action, reducer, act
 export function newListWithReplacement(list, searchId, transform){
 	var index = list.findIndex(m => m.id === searchId);
 	if (index === -1) return list;
+	return newListWithReplacementAtIndex(list, index, transform);
+}
+
+export function newListWithReplacementAtIndex(list, index, transform){
+	return newListWithReplacementObjectAtIndex(list, index, transform(list[index]));
+}
+
+export function newListWithReplacementObjectAtIndex(list, index, newObject){
 	return [
 	  ...list.slice(0, index),
-	  transform(list[index]),
+	  newObject,
 	  ...list.slice(index + 1)
-	]
+	];
 }
 
 //takes a transform function of the form:

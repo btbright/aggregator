@@ -206,8 +206,29 @@ body {
         }
         &.comment-aggregation-complete {
             cursor: default;
-            &:hover {
-                background: transparent;
+            &.comment-aggregation-level-gold {
+                background-color:$levelBackgroundGold;
+                &:hover {
+                    background-color:$levelBackgroundGold;
+                }
+            }
+            &.comment-aggregation-level-blue {
+                background-color:$levelBackgroundBlue;
+                &:hover {
+                    background-color:$levelBackgroundBlue;
+                }
+            }
+            &.comment-aggregation-level-green {
+                background-color:$levelBackgroundGreen;
+                &:hover {
+                    background-color:$levelBackgroundGreen;
+                }
+            }
+            &.comment-aggregation-level-default {
+                background-color:$levelBackgroundDefault;
+                &:hover {
+                    background-color:$levelBackgroundDefault;
+                }
             }
         }
         &:hover {
@@ -390,7 +411,7 @@ body {
     position: relative;
     background:rgba(0,0,0,.04);
     cursor: pointer;
-    transition: background .2s;
+    transition: background .2s, opacity .4s;
     box-sizing: border-box;
 
     &:hover {
@@ -450,6 +471,10 @@ body {
         .bar-residue {
             opacity: 0 !important;
         }
+    }
+
+    &.aggregator-retired {
+        opacity: 0;
     }
 
     .bar {
@@ -598,7 +623,7 @@ body {
     }
 
     .text-display {
-        padding:10px 0;
+        padding:10px 0 11px;
 
         p {
             text-align: center;

@@ -17,6 +17,7 @@ class Aggregator extends Component {
 		}
 		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
 		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
+		this.prepareAggregatorRetirement = this.prepareAggregatorRetirement.bind(this)
 		this.start = this.start.bind(this)
 		this.stop = this.stop.bind(this)
 	}
@@ -28,9 +29,15 @@ class Aggregator extends Component {
 	componentWillUnmount(){
 		this.stop()
 	}
+	prepareAggregatorRetirement(){
+		setTimeout(()=>{
+			this.props.retireAggregator(this.props.id);
+		},3500);
+	}
 	start(update) {
 		if (this.props.isComplete){
 			this.stop()
+			this.prepareAggregatorRetirement()
 			return
 		}
 		var fps = 60;
@@ -75,7 +82,8 @@ class Aggregator extends Component {
 	render(){
 		var aggregatorClassNames = classnames('aggregator', this.props.isComplete ? 'aggregator-level-'+levelColors[getLevel(this.props.residueValue)] : '' ,{
 			'aggregator-user-clicking' : this.state.isClicking,
-			'aggregator-complete' : this.props.isComplete
+			'aggregator-complete' : this.props.isComplete,
+			'aggregator-retired' : this.props.isRetired
 		});
 		return (
 			<div onClick={this.props.aggregatorClicked} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>

@@ -2,6 +2,13 @@ import * as types from '../constants/ActionTypes'
 import { createAggregator } from '../models/aggregator'
 import { submitAggregator, submitAggregatorClick } from '../apiutils/aggregators'
 
+export function retireAggregator(id){
+	return {
+		type : types.RETIRE_AGGREGATOR,
+		id
+	}
+}
+
 export function updateAggregatorToTime(id, time){
 	return {
 		type : types.UPDATE_AGGREGATOR_TO_TIME,
