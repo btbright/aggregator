@@ -3118,6 +3118,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = require('react-redux');
 
+var _classnames = require("./../../bower_components/classnames/index.js");
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
 var _redux = require('redux');
 
 var _actionsNotifications = require('../actions/notifications');
@@ -3132,7 +3136,9 @@ var UpperNotificationBar = (function (_Component) {
 
 		_get(Object.getPrototypeOf(UpperNotificationBar.prototype), 'constructor', this).call(this, props);
 		this.state = {
-			notificationTimeoutHandle: false
+			notificationTimeoutHandle: false,
+			fadeoutTimeoutHandle: false,
+			shouldFadeOut: false
 		};
 		this.actions = (0, _redux.bindActionCreators)(NotificationActions, this.props.dispatch);
 	}
@@ -3148,18 +3154,39 @@ var UpperNotificationBar = (function (_Component) {
 					notificationTimeoutHandle: false
 				});
 			}
+			if (this.state.fadeoutTimeoutHandle) {
+				clearTimeout(this.state.fadeoutTimeoutHandle);
+				this.setState({
+					fadeoutTimeoutHandle: false
+				});
+			}
 			if (nextProps.notification) {
+				//remove message
 				var timeAlreadyShown = Date.now() - nextProps.notification.timeMadeCurrent;
 				var timeoutLength = nextProps.notification.timeToShow - timeAlreadyShown;
 				var newHandle = setTimeout(function () {
 					_this.setState({
-						notificationTimeoutHandle: false
+						notificationTimeoutHandle: false,
+						shouldFadeOut: false
 					});
 					_this.actions.currentNotificationComplete(Date.now());
 				}, timeoutLength);
 				this.setState({
 					notificationTimeoutHandle: newHandle
 				});
+
+				var fadeOutLength = 300;
+				if (timeoutLength > fadeOutLength) {
+					var fadeHandle = setTimeout(function () {
+						_this.setState({
+							fadeoutTimeoutHandle: false,
+							shouldFadeOut: true
+						});
+					}, timeoutLength - fadeOutLength);
+					this.setState({
+						fadeoutTimeoutHandle: fadeHandle
+					});
+				}
 			}
 		}
 	}, {
@@ -3167,9 +3194,10 @@ var UpperNotificationBar = (function (_Component) {
 		value: function render() {
 			var notification;
 			if (this.props.notification) {
+				var classes = (0, _classnames2['default'])('notification', { 'notification-fade': this.state.shouldFadeOut });
 				notification = _react2['default'].createElement(
 					'span',
-					null,
+					{ className: classes },
 					this.props.notification.text
 				);
 			}
@@ -3194,7 +3222,7 @@ exports['default'] = (0, _reactRedux.connect)(mapStateToProps)(UpperNotification
 module.exports = exports['default'];
 
 
-},{"../actions/notifications":6,"react":209,"react-redux":49,"redux":212}],25:[function(require,module,exports){
+},{"../actions/notifications":6,"./../../bower_components/classnames/index.js":1,"react":209,"react-redux":49,"redux":212}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {

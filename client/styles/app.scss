@@ -114,6 +114,7 @@ body {
 .app-wrap {
     width:1000px;
     margin:0 auto;
+    position: relative;
 }
 
 .room-info {
@@ -148,6 +149,24 @@ body {
     }
 }
 
+.upper-notification-bar {
+    width:100%;
+    height:40px;
+    position:relative;
+    .notification {
+        position: absolute;
+        top: 50%;
+        margin-top: -9px;
+        left: 0%;
+        animation-name: coolFadeIn;
+        animation-duration: .3s;
+        &.notification-fade {
+            transition: opacity .3s;
+            opacity: 0;
+        }
+    }
+}
+
 @keyframes coolFadeIn {
     0% {
         opacity: 0;
@@ -159,18 +178,12 @@ body {
 
 .primary-content-wrap {
     position: relative;
-    top: 60px;
+    margin-top: 25px;
     .aggregator-list,
     .chat {
         width:48%;
         margin:0px 0px 0;
         padding-bottom: 50px;
-    }
-    .notifications {
-        width:100%;
-        height:40px;
-        position:absolute;
-        background:#eee;
     }
 }
 
