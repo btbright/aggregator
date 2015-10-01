@@ -39,7 +39,7 @@ function mapDisplayMessages(aggregatedMessages){
 			return {
 				id : message.id,
 				displayText : message.text,
-				barColor : levelColors[getLevel(message.x)],
+				barColor : levelColors[getLevel(message.maxValue)],
 				barValue : message.x,
 				rightText : new Date(message.time).toLocaleTimeString(),
 				residueValue : message.maxValue,

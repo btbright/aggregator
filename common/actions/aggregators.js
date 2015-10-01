@@ -33,6 +33,7 @@ export function addClickToAggregator(id, click){
 }
 
 export function updateAggregatorId(originalId, newId){
+	console.log(originalId, newId);
 	return {
 		type: types.UPDATE_AGGREGATOR_ID,
 		originalId,

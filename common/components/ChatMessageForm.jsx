@@ -57,7 +57,7 @@ class ChatMessageForm extends Component {
               	onChange={this.handleChange} 
               	onKeyDown={this.handleSubmit.bind(this)}
               	className="comment-box" 
-              	placeholder="Enter a comment here..." />
+              	placeholder={this.props.placeholder} />
               <span ref="submitInstructions" className="submit-instructions">Press Enter To Submit</span>
             </form>
 			);

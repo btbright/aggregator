@@ -17,10 +17,10 @@ export function addChatMessage(message){
 	}
 }
 
-export function newChatMessage(text){
+export function newChatMessage(text, userName){
 	var newMessage = createChatMessage({
 		text,
-		userName : "ben",
+		userName,
 		time : Date.now()
 	});
 	submitMessage(newMessage);

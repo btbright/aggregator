@@ -10,10 +10,22 @@ class RoomInfo extends Component {
 		this.props.dispatch(requestUpdateRoom(this.props.name))
 	}
 	render(){
+		var userName;
+		if (this.props.userName){
+			userName = <span className="user-name">{this.props.userName}</span>
+		}
+		var userCount;
+		if (this.props.userCount){
+			userCount = <span className="user-count">{this.props.userCount} users</span>
+		}
+
 		return (
 			<div className="room-info">
-			  <span className="room-name">#{this.props.name}</span>
-			  <span className="user-count">{this.props.userCount} users</span>
+				<div className="right-info">
+					{userCount}
+					{userName}
+				</div>
+				<span className="room-name">#{this.props.name}</span>
 			</div>
 			);
 	}
@@ -22,7 +34,8 @@ class RoomInfo extends Component {
 function mapStateToProps(state) {
   return {
     userCount: state.room.userCount,
-    name: state.room.name
+    name: state.room.name,
+    userName : state.user.userName
   };
 }
 

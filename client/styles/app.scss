@@ -118,13 +118,42 @@ body {
 
 .room-info {
     margin-top:20px;
+    position:relative;
+    .right-info {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        margin-top: -14px;
+    }
     .room-name {
         font-size: 45px;
         font-family: "Poppins";
+        animation-name: coolFadeIn;
+        animation-duration: .7s;
     }
-    .user-count {
-        float:right;
+    .user-count,
+    .user-name {
         font-size:12px;
+        display: block;
+        text-align: right;
+        animation-name: coolFadeIn;
+        animation-duration: .3s;
+    }
+    .user-name {
+        cursor: pointer;
+        transition:color .15s;
+        &:hover {
+            color:rgba(0,0,0,.7);
+        }
+    }
+}
+
+@keyframes coolFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
     }
 }
 
@@ -255,19 +284,54 @@ body {
         .submit-instructions {
           position:absolute;
           right:10px;
-          top:50%;
+          top:200%;
           margin-top:-.5em;
           font-size: 13px;
           color:rgba(0,0,0,.2);
           opacity: 0;
-          transition:opacity .4s;
         }
         &.has-entered-text .submit-instructions {
+          animation-name:showSubmitInstructions;
+          animation-duration:.4s;
           opacity: 1;
+          top:50%;
         }
         &.space-conflict .submit-instructions {
+          animation-name:hideSubmitInstructions;
+          animation-duration:.4s;
           opacity: 0;
+          top:200%;
         }
+    }
+}
+
+@keyframes showSubmitInstructions {
+    0% {
+        opacity: 0;
+        top:200%;
+    }
+    1% {
+        opacity: 0;
+        top:50%;
+    }
+    100% {
+        opacity: 1;
+        top:50%;
+    }
+}
+
+@keyframes hideSubmitInstructions {
+    0% {
+        top:50%;
+        opacity: 1;
+    }
+    99% {
+        top:50%;
+        opacity: 0;
+    }
+    100% {
+        top:200%;
+        opacity: 0;
     }
 }
 
@@ -284,6 +348,9 @@ body {
     cursor: pointer;
     transition: background .2s, border .2s;
     box-sizing: border-box;
+    animation-name: coolFadeIn;
+    animation-duration: .4s;
+    animation-timing-function: ease-in;
 
     &:hover {
         background:rgba(0,0,0,.03);

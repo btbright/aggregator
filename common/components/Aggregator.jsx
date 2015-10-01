@@ -21,7 +21,9 @@ class Aggregator extends Component {
 		this.stop = this.stop.bind(this)
 	}
 	componentDidMount() {
-		this.start(this.props.updateToNow)
+		if (!this.props.isComplete){
+			this.start(this.props.updateToNow)
+		}
 	}
 	componentWillUnmount(){
 		this.stop()
@@ -33,9 +35,11 @@ class Aggregator extends Component {
 		}
 		var fps = 60;
 		var frameId = requestAnimationFrame(() => this.start(update));
+		this.setState({
+		  frameId: frameId
+		});
 		if (Date.now() - this.state.lastFrameTime > (1000/fps)){
 			this.setState({
-			  frameId: frameId,
 			  frame: this.state.frame + 1,
 			  lastFrameTime : Date.now()
 			});

@@ -1,6 +1,6 @@
 import { UPDATE_AGGREGATOR_TO_TIME, ADD_AGGREGATOR, ADD_CLICK_TO_AGGREGATOR, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
 import scorer from '../utils/scorer'
-import { newListWithReplacementFromSubreducer } from '../utils/reducerTools'
+import { newListWithReplacementFromSubreducer, newListWithReplacementFields } from '../utils/reducerTools'
 
 const initialState = [];
 
