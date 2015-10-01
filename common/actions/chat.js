@@ -29,10 +29,3 @@ export function newChatMessage(text, userName){
 		message : newMessage
 	}
 }
-
-export function voteChatMessage(id){
-	return {
-		type : types.VOTE_CHAT_MESSAGE,
-		id : id
-	}
-}

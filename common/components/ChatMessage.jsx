@@ -5,34 +5,22 @@ import AggregationSummary from './AggregationSummary.jsx'
 class ChatMessage extends Component {
 	constructor(props) {
       	super(props);
-		this.state = {
-		  shouldShowAggregationSummary : false
+		this.state = {}
+		this.handleClick = this.handleClick.bind(this)
+	}
+	handleClick(e, rawId){
+		if (!this.props.isComplete){
+			var id = rawId.substr(rawId.indexOf("$")+1);
+			this.props.onClick(id,this.props);
 		}
-		this.handleMouseEnter = this.handleMouseEnter.bind(this)
-		this.handleMouseLeave = this.handleMouseLeave.bind(this)
-	}
-	handleMouseEnter(){
-		this.setState({
-			shouldShowAggregationSummary : true
-		})
-	}
-	handleMouseLeave(){
-		this.setState({
-			shouldShowAggregationSummary : false
-		})
 	}
 	render(){
-		var aggregationSummary;
-		if (this.props.isAggregated){
-			aggregationSummary = <AggregationSummary shouldShow={this.state.shouldShowAggregationSummary} clicks={this.props.clicks} />
-		}
-		var commentClasses = cx('comment','clearfix',{
-			'comment-aggregated' : this.props.isAggregated,
-			'has-clicked' : this.props.hasUserVoted
+		var commentClasses = cx('comment','clearfix',this.props.aggregationLevel ? 'comment-aggregation-level-'+this.props.aggregationLevel : '',{
+			'comment-aggregation-complete' : this.props.isComplete,
+			'comment-aggregating' : !!this.props.aggregationLevel && !this.props.isComplete
 		});
 		return (
-			<div onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.props.onClick} className={commentClasses}>
-			  {aggregationSummary}
+			<div onClick={this.handleClick} className={commentClasses}>
 			  <span className="comment-time">{new Date(this.props.time).toLocaleTimeString()}</span>
 			  <p className="comment-text">
 			  	<span className="comment-meta">
@@ -49,15 +37,13 @@ ChatMessage.propTypes = {
 	userName : PropTypes.string.isRequired,
 	text : PropTypes.string.isRequired,
 	time : PropTypes.number.isRequired,
-	hasUserVoted : PropTypes.bool,
-	isAggregated : PropTypes.bool,
-	clicks : PropTypes.number,
 	aggregationLevel : PropTypes.string
 }
 
 ChatMessage.defaultProps = {
-	hasUserClicked : false,
-	isAggregated : false
+	isAggregated : false,
+	isComplete : false,
+	aggregationLevel : ''
 }
 
 export default ChatMessage
