@@ -59,20 +59,27 @@ class Chat extends Component {
 		if (!text) return;
 		if (this.props.user.userName){
 			var message = this.props.chatMessages.filter((m)=>!m.isComplete).find((m) => m.text.toLowerCase() === text.toLowerCase());
-			//if a message already exists, but it's not aggregating
-			if (message && !message.aggregationLevel){
-				this.aggregatorActions.newAggregator("message",message.id);
-				//TODO - notify user that his message has been aggregated
-				console.log("your message has been combined with "+message.userName+"'s");
-			//if the message exists but it's already aggregating
-			} else if (message) {
-				this.aggregatorActions.newAggregatorClick(message.aggregatorId);
-				//TODO - notify user that his message has been counted as a click for the active aggregator
-				console.log("your message has been counted as support for "+message.userName+"'s");
-			//then it's just a new message	
-			} else {
-				this.chatActions.newChatMessage(text, this.props.user.userName)
+			if (message){
+				var secondsSinceMessage = (Date.now() - message.time) / 1000;
+				const messageTimeoutSeconds = 60;
+				var isMessageFresh = secondsSinceMessage <= messageTimeoutSeconds;
+				if (isMessageFresh){
+					//if a message already exists, but it's not aggregating
+					if (!message.aggregationLevel){
+						this.aggregatorActions.newAggregator("message",message.id);
+						//TODO - notify user that his message has been aggregated
+						console.log("your message has been combined with "+message.userName+"'s");
+					//if the message exists but it's already aggregating
+					} else {
+						this.aggregatorActions.newAggregatorClick(message.aggregatorId);
+						//TODO - notify user that his message has been counted as a click for the active aggregator
+						console.log("your message has been counted as support for "+message.userName+"'s");
+					}
+					return;
+				}
 			}
+
+			this.chatActions.newChatMessage(text, this.props.user.userName)
 		} else {
 			this.userActions.updateUserName(text);
 		}

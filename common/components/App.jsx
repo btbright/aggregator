@@ -12,8 +12,10 @@ class App extends Component {
 		return (
 			<div className="app-wrap clearfix">
 				<RoomInfo />
-				<AggregatorList />
-				<Chat />
+				<div className="primary-content-wrap clearfix">
+					<AggregatorList />
+					<Chat />
+				</div>
 			</div>
 			)
 	}
