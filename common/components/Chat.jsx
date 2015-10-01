@@ -5,6 +5,7 @@ import ChatMessageList from './ChatMessageList.jsx'
 import ChatMessageForm from './ChatMessageForm.jsx'
 import * as ChatActions from '../actions/chat'
 import * as AggregatorActions from '../actions/aggregators'
+import * as NotificationActions from '../actions/notifications'
 import * as UserActions from '../actions/user'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -25,6 +26,7 @@ class Chat extends Component {
 		this.chatActions = bindActionCreators(ChatActions, this.props.dispatch);
 		this.aggregatorActions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.userActions = bindActionCreators(UserActions, this.props.dispatch);
+		this.notificationActions = bindActionCreators(NotificationActions, this.props.dispatch);
 		bindChatListeners(this.props.dispatch);
 	}
 	handleOnMouseDown(){
@@ -67,13 +69,13 @@ class Chat extends Component {
 					//if a message already exists, but it's not aggregating
 					if (!message.aggregationLevel){
 						this.aggregatorActions.newAggregator("message",message.id);
-						//TODO - notify user that his message has been aggregated
-						console.log("your message has been combined with "+message.userName+"'s");
+						this.notificationActions.addNotification(`Your message has been combined with ${message.userName}'s: ${message.text}`,"informative");
+						console.log();
 					//if the message exists but it's already aggregating
 					} else {
 						this.aggregatorActions.newAggregatorClick(message.aggregatorId);
-						//TODO - notify user that his message has been counted as a click for the active aggregator
-						console.log("your message has been counted as support for "+message.userName+"'s");
+						this.notificationActions.addNotification(`Your message has been counted as support for ${message.userName}'s: ${message.text}`,"informative");
+						console.log();
 					}
 					return;
 				}

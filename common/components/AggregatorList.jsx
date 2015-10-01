@@ -22,7 +22,6 @@ class AggregatorList extends Component {
 		return <Aggregator updateToNow={this.actions.updateAggregatorToNow} retireAggregator={this.actions.retireAggregator} aggregatorClicked={this.handleAggregatorClicked} key={aggregatorData.id} {...aggregatorData} />;
 	}
 	render(){
-		console.log(this.props)
 		return (
 			<div className="aggregator-list">
 				{this.props.displayReadyAggregatedMessages.map(this.prepareAggregator)}

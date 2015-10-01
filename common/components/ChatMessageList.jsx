@@ -3,9 +3,12 @@ import cx from 'classnames'
 import ChatMessage from './ChatMessage.jsx'
 
 class ChatMessageList extends Component {
-	componentDidUpdate(){
-		let chatList = React.findDOMNode(this.refs.chatMessageList);
-		chatList.scrollTop = chatList.scrollHeight;
+	componentDidUpdate(prevProps){
+		//if a message has been added, scroll to bottom of message list
+		if (prevProps.messages.length !== this.props.messages.length){
+			let chatList = React.findDOMNode(this.refs.chatMessageList);
+			chatList.scrollTop = chatList.scrollHeight;
+		}
 	}
 	render(){
 		return (
