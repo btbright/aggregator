@@ -20,7 +20,7 @@ var server = http.Server(app);
 
 var io = socketio(server);
 
-app.use(Express.static('dist'));
+app.use(Express.static('public'));
 app.use('/room/:id',handleRender);
 
 ChatAPI(io)
