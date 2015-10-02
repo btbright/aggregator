@@ -28,11 +28,12 @@ export default function aggregators(state = initialState, action) {
 function aggregator(state, action){
 	switch(action.type){
 	case UPDATE_AGGREGATOR_TO_TIME:
-		var newScore = scorer(state.clicks, action.time, action.clicksPerMin);
+		var scoreResults = scorer(state.clicks, action.time, state.x, state.velocity);
 		return Object.assign({},state,{
-			x : newScore,
-			maxValue : state.maxValue >= newScore ? state.maxValue : newScore,
-			isComplete : newScore === 100 || (newScore === 0 && state.maxValue != 0)
+			x : scoreResults.x,
+			velocity : scoreResults.velocity,
+			maxValue : state.maxValue >= scoreResults.x ? state.maxValue : scoreResults.x,
+			isComplete : scoreResults.x === 100 || (scoreResults.x === 0 && state.maxValue != 0)
 		});
 	case ADD_CLICK_TO_AGGREGATOR:
 		if (!shouldAddClick(state.clicks,action.click)) return state;

@@ -40,18 +40,11 @@ class Aggregator extends Component {
 			this.prepareAggregatorRetirement()
 			return
 		}
-		var fps = 60;
 		var frameId = requestAnimationFrame(() => this.start(update));
 		this.setState({
 		  frameId: frameId
 		});
-		if (Date.now() - this.state.lastFrameTime > (1000/fps)){
-			this.setState({
-			  frame: this.state.frame + 1,
-			  lastFrameTime : Date.now()
-			});
-			update(this.props.id);
-		}
+		update(this.props.id);
 	}
 	stop() {
 		cancelAnimationFrame(this.state.frameId);
