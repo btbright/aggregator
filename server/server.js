@@ -21,7 +21,7 @@ var server = http.Server(app);
 var io = socketio(server);
 
 app.use(Express.static('public'));
-app.use('/room/:id',handleRender);
+app.use('/r/:id',handleRender);
 
 ChatAPI(io)
 RoomAPI(io)
