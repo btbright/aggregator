@@ -28,7 +28,7 @@ export default function aggregators(state = initialState, action) {
 function aggregator(state, action){
 	switch(action.type){
 	case UPDATE_AGGREGATOR_TO_TIME:
-		var newScore = scorer(state.clicks, action.time);
+		var newScore = scorer(state.clicks, action.time, action.clicksPerMin);
 		return Object.assign({},state,{
 			x : newScore,
 			maxValue : state.maxValue >= newScore ? state.maxValue : newScore,

@@ -1,6 +1,7 @@
 import * as types from '../constants/ActionTypes'
 import { createAggregator } from '../models/aggregator'
 import { submitAggregator, submitAggregatorClick } from '../apiutils/aggregators'
+import { clicksPerMinSelector } from '../selectors/StatsSelectors.js'
 
 export function retireAggregator(id){
 	return {
@@ -10,19 +11,23 @@ export function retireAggregator(id){
 }
 
 export function updateAggregatorToTime(id, time){
+	return function(dispatch, getState){
+		//var clicksPerMin = clicksPerMinSelector(getState())
+		dispatch(makeUpdateAggregatorToTimeAction(id, time, 10));
+	}
+}
+
+function makeUpdateAggregatorToTimeAction(id, time, clicksPerMin){
 	return {
 		type : types.UPDATE_AGGREGATOR_TO_TIME,
 		id,
-		time
+		time,
+		clicksPerMin
 	}
 }
 
 export function updateAggregatorToNow(id){
-	return {
-		type : types.UPDATE_AGGREGATOR_TO_TIME,
-		id,
-		time : Date.now()
-	}
+	return updateAggregatorToTime(id, Date.now());
 }
 
 export function newAggregatorClick(id){

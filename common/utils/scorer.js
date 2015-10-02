@@ -10,16 +10,23 @@ const maxX = 100
 const frameRate = 1/60
 const initialVelocity = 15
 const initialX = 0
+const clickRateWeight = 1000
 
 //takes an array of timestamps and returns 0-100 x position
 //based on physics model at a specific time
-export default function(clicks, time){
+export default function(clicks, time, globalClicksPerMin){
 	function calculateVelocity(activeClickCount){
 		//calc accelerations
 		var thrustDV = (activeClickCount * ballisticsParameters.THRUST_VELOCITY)/ballisticsParameters.MASS;
 		var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity); //only drag on way up to clear off quicker
 		//calc velocity
-		return (thrustDV + ballisticsParameters.GRAVITY_ACCELERATION)*frameRate;
+		var clickrateMulitplier = calculateClickrateMulitplier(globalClicksPerMin);
+		console.log("clickrateMulitplier",clickrateMulitplier)
+		return (thrustDV + (ballisticsParameters.GRAVITY_ACCELERATION*clickrateMulitplier))*frameRate;
+	}
+
+	function calculateClickrateMulitplier(globalClicksPerMin){
+		return (clickRateWeight + globalClicksPerMin) / clickRateWeight;
 	}
 
 	function activeClicks(clicks,time){
