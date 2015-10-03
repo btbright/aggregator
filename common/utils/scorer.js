@@ -56,5 +56,9 @@ function calculateClickrateMulitplier(globalClicksPerMin){
 }
 
 function activeClicks(clicks, time){
-	return clicks.filter((click) => Math.abs(time-click) <= ballisticsParameters.THRUST_TIME);
+	return clicks.filter(activeClickFilter);
+
+	function activeClickFilter(click){
+		return time-click <= ballisticsParameters.THRUST_TIME;
+	}
 }

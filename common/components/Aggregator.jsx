@@ -10,45 +10,10 @@ class Aggregator extends Component {
 		super(props)
 		this.state = {
 			lastMouseDown : false,
-			isClicking : false,
-			frameId : null,
-			lastFrameTime : 0,
-			frame : 0
+			isClicking : false
 		}
 		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
 		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
-		this.prepareAggregatorRetirement = this.prepareAggregatorRetirement.bind(this)
-		this.start = this.start.bind(this)
-		this.stop = this.stop.bind(this)
-	}
-	componentDidMount() {
-		if (!this.props.isComplete){
-			this.start(this.props.updateToNow)
-		}
-	}
-	componentWillUnmount(){
-		this.stop()
-	}
-	prepareAggregatorRetirement(){
-		setTimeout(()=>{
-			this.props.retireAggregator(this.props.id);
-		},3500);
-	}
-	start(update) {
-		if (this.props.isComplete){
-			this.stop()
-			this.prepareAggregatorRetirement()
-			return
-		}
-		var frameId = requestAnimationFrame(() => this.start(update));
-		this.setState({
-		  frameId: frameId
-		});
-		update(this.props.id);
-	}
-	stop() {
-		cancelAnimationFrame(this.state.frameId);
-		this.setState({ frameId: null, startedAt: null, frame: 0 });
 	}
 	handleOnMouseDown(){
 		this.setState({
