@@ -11,6 +11,7 @@ export function createAggregator(props){
 		maxValue : 0,
 		x : 0,
 		isComplete : false,
-		isRetired : false
+		isRetired : false,
+		completedTime : 0
 	}
 }

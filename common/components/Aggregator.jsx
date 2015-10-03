@@ -10,7 +10,8 @@ class Aggregator extends Component {
 		super(props)
 		this.state = {
 			lastMouseDown : false,
-			isClicking : false
+			isClicking : false,
+			hasRetired : false
 		}
 		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
 		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
@@ -37,11 +38,21 @@ class Aggregator extends Component {
 			});
 		},constants.Aggregator.CLICKTIMEOUT);
 	}
+	componentWillReceiveProps(nextProps){
+		if (nextProps.isComplete && !this.state.hasRetired){
+			setTimeout(()=>{
+				this.props.retire(this.props.id)
+			},3500)
+			this.setState({
+				hasRetired : true
+			})
+		}
+	}
 	render(){
 		var aggregatorClassNames = classnames('aggregator', this.props.isComplete ? 'aggregator-level-'+levelColors[getLevel(this.props.residueValue)] : '' ,{
 			'aggregator-user-clicking' : this.state.isClicking,
 			'aggregator-complete' : this.props.isComplete,
-			'aggregator-retired' : this.props.isRetired
+			'aggregator-retired' : this.props.isRetired && (Date.now()-this.props.completedTime > 3500)
 		});
 		return (
 			<div onClick={this.props.aggregatorClicked} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>

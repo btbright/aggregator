@@ -24,7 +24,8 @@ const joinedMessageAggregatorSelector = createSelector(
 				time : chatMessage.time,
 				hasUserNominated : chatMessage.hasUserNominated,
 				isComplete : aggregator.isComplete,
-				isRetired : aggregator.isRetired
+				isRetired : aggregator.isRetired,
+				completedTime : aggregator.completedTime
 			}
 		});
 	});
@@ -45,7 +46,8 @@ const preparedForDisplaySelector = createSelector(
 				residueColorClass : levelColors[getLevel(message.maxValue)],
 				leftText : message.userName,
 				isComplete : message.isComplete,
-				isRetired : message.isRetired
+				isRetired : message.isRetired,
+				completedTime : message.completedTime
 			}
 		});
 	});
@@ -61,6 +63,8 @@ const mappedToSlotsSelector = createSelector(
 				return aggregator;
 			});
 	});
+
+
 
 
 //this just wraps the calculations in an object

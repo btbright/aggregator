@@ -1,7 +1,8 @@
-import { RETIRE_AGGREGATOR, UPDATE_AGGREGATOR_TO_TIME, ADD_AGGREGATOR, ADD_CLICK_TO_AGGREGATOR, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
-import scorer from '../utils/scorer'
+import { RETIRE_AGGREGATOR, UPDATE_AGGREGATOR_TO_TIME,UPDATE_AGGREGATORS_TO_TIME,ADD_AGGREGATOR, ADD_CLICK_TO_AGGREGATOR, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
+import { scorer } from '../utils/scorer'
 import { newListWithReplacementFromSubreducer, newListWithReplacementFields } from '../utils/reducerTools'
 import constants from '../constants/App'
+
 
 const initialState = [];
 
@@ -14,6 +15,19 @@ export default function aggregators(state = initialState, action) {
 	//set calculated aggregator state to time based on click history
 	case UPDATE_AGGREGATOR_TO_TIME:
 		return newListWithReplacementFromSubreducer(state, action, aggregator);
+	case UPDATE_AGGREGATORS_TO_TIME:
+
+		var newList = [...state];
+		action.updatedAggregators.forEach(updatedAggregator => {
+			var index = state.findIndex(a => a.id === updatedAggregator.id);
+			newList = [
+			  ...newList.slice(0, index),
+			  updatedAggregator,
+			  ...newList.slice(index + 1)
+			]
+		});
+		return newList;
+
 	case ADD_CLICK_TO_AGGREGATOR:
 		return newListWithReplacementFromSubreducer(state, action, aggregator);
 	case UPDATE_AGGREGATOR_ID:

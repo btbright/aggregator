@@ -11,11 +11,14 @@ class AggregatorList extends Component {
 		super(props)
 		this.state = {
 			frameId : null,
-			retiredAggregators : []
+			retiredAggregators : [],
+		  	performanceTime : 0
 		}
 		this.actions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this)
 		this.prepareAggregator = this.prepareAggregator.bind(this)
+		this.getActiveAggregatorIds = this.getActiveAggregatorIds.bind(this)
+		this.retireAggregator = this.retireAggregator.bind(this)
 		bindAggregatorListeners(this.props.dispatch);
 		this.start = this.start.bind(this)
 		this.stop = this.stop.bind(this)
@@ -31,32 +34,26 @@ class AggregatorList extends Component {
 		this.actions.newAggregatorClick(id)
 	}
 	prepareAggregator(aggregatorData){
-		return <Aggregator aggregatorClicked={this.handleAggregatorClicked} key={aggregatorData.id} {...aggregatorData} />;
+		return <Aggregator retire={this.retireAggregator} aggregatorClicked={this.handleAggregatorClicked} key={aggregatorData.id} {...aggregatorData} />;
 	}
-	maybeUpdateAggregator(aggregator){
-		if (aggregator.isComplete){
-			if (!this.state.retiredAggregators.find(id => id === aggregator.id)){
-				setTimeout(this.retireAggregator.bind(this, aggregator.id),3500);		
-				this.setState({
-					retiredAggregators : [...this.state.retiredAggregators, aggregator.id]
-				});
-			}
-			return;
-		}
-		this.actions.updateAggregatorToNow(aggregator.id);
+	getActiveAggregatorIds(){
+		return this.props.packagedAggregators.filter(aggregator => !aggregator.isRetired).map(aggregator => aggregator.id);
 	}
 	retireAggregator(id){
 		this.actions.retireAggregator(id)
 	}
 	start() {
 		var frameId = requestAnimationFrame(() => this.start());
+		var startTime = performance.now();
+		var lastTime = this.state.performanceTime;
 		this.setState({
-		  frameId: frameId
+		  frameId: frameId,
+		  performanceTime : startTime
 		});
 
-		var startTime = performance.now()
 		//run animations on in progresss aggregators
-		this.props.packagedAggregators.filter(aggregator => !aggregator.isRetired).forEach(this.maybeUpdateAggregator.bind(this));
+		var activeIds = this.getActiveAggregatorIds();
+		if (activeIds.length > 0) this.actions.updateAggregatorsToNow(activeIds, lastTime ? (startTime - lastTime)/1000 : 1/60);
 		var timeTook = Math.floor((performance.now() - startTime));
 		if (timeTook > 16){
 			console.warn("took: "+timeTook+" milliseconds")

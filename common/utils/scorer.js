@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-const ballisticsParameters = {
+export const ballisticsParameters = {
 	THRUST_VELOCITY : 5,
 	THRUST_TIME : 200, //ms
 	MASS : 30,
@@ -8,57 +8,53 @@ const ballisticsParameters = {
 	DRAG_CONSTANT : 5
 }
 
-const maxX = 100
-const frameRate = 1/60
-const gravityVelocity = ballisticsParameters.GRAVITY_ACCELERATION*frameRate;
-const initialVelocity = 15
-const clickRateWeight = 1000
-var counter = 0;
-var times = [];
+export const maxX = 100
+export const frameRate = 1/60
+export const gravityVelocity = ballisticsParameters.GRAVITY_ACCELERATION*frameRate;
+
 
 //takes an array of timestamps and returns 0-100 x position
 //based on physics model at a specific time
-export default function(clicks, time, initialX, initialVelocity){
-	var startTime = performance.now()
+export function scorer(clicks, time, frameRateNew, initialX, initialVelocity){
 	if (!clicks || !Array.isArray(clicks)) throw new Error("Malformed 'clicks' array");
 	//throw out clicks newer than t, they are in the future and don't count
 	var filteredClicks = clicks.filter((click) => click <= time);
 	var activeClickCount = activeClicks(filteredClicks, time).length;
-	var scoreResults = generateScore(activeClickCount, initialX, initialVelocity)
+	var scoreResults = generateScore(activeClickCount, frameRateNew, initialX, initialVelocity)
 	return scoreResults;
 }
 
-function generateScore(activeClickCount, initialX = 0, initialVelocity = 15){
+export function generateScore(activeClickCount, frameRateNew, initialX = 0, initialVelocity = 15){
 	//v = v + a * dt
 	let velocity = initialVelocity + calculateVelocity(activeClickCount);
 	//x = x + v * dt
-	let x = initialX + velocity * frameRate;
+	let x = initialX + velocity * 1/60;
 	if (x <= 0){
 		velocity = 0;
 		x = 0;
 	}
-	if (x > maxX){
-		x = maxX
+	if (x > 100){
+		x = 100
 	}
-	return { x, velocity };
+	return { x : x, velocity : velocity };
 }
 
-const calculateVelocity = _.memoize(function (activeClickCount){
+export function calculateVelocity(activeClickCount){
 	//calc velocity vector
-	var thrustDV = (activeClickCount * ballisticsParameters.THRUST_VELOCITY)/ballisticsParameters.MASS;
+	var thrustDV = (activeClickCount * 5)/30;
 	//var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity); //only drag on way up to clear off quicker
 	//calc velocity
-	return thrustDV + gravityVelocity;
-});
+	return thrustDV - 1/6;
+};
 
-function calculateClickrateMulitplier(globalClicksPerMin){
+export function calculateClickrateMulitplier(globalClicksPerMin){
 	return (clickRateWeight + globalClicksPerMin) / clickRateWeight;
 }
 
-function activeClicks(clicks, time){
+export function activeClicks(clicks, time){
 	return clicks.filter(activeClickFilter);
 
 	function activeClickFilter(click){
-		return time-click <= ballisticsParameters.THRUST_TIME;
+		return time-click <= .2;
 	}
 }
