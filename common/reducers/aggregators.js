@@ -50,7 +50,6 @@ function aggregator(state, action){
 			isComplete : scoreResults.x === 100 || (scoreResults.x === 0 && state.maxValue != 0)
 		});
 	case ADD_CLICK_TO_AGGREGATOR:
-		if (!shouldAddClick(state.clicks,action.click)) return state;
 		return Object.assign({},state,{
 			clicks : [...state.clicks, action.click]
 		});
@@ -65,10 +64,4 @@ function aggregator(state, action){
 	default:
 		return state;
 	}
-}
-
-//rate limit clicks to prevent scripting massive clickrates
-function shouldAddClick(clicks, click){
-	if (clicks.length === 0) return true;
-	return click - clicks[clicks.length-1] > constants.Aggregator.CLICKTHRESHOLD;
 }

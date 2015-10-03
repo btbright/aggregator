@@ -3,6 +3,7 @@ import { createAggregator } from '../models/aggregator'
 import { submitAggregator, submitAggregatorClick } from '../apiutils/aggregators'
 import { clicksPerMinSelector } from '../selectors/StatsSelectors.js'
 import { scorer, generateScore, calculateVelocity, calculateClickrateMulitplier, activeClicks } from '../utils/scorer'
+import constants from '../constants/App'
 import Parallel from 'paralleljs'
 
 export function retireAggregator(id){
@@ -109,9 +110,21 @@ export function updateAggregatorsToNow(ids, frameRate){
 }
 
 export function newAggregatorClick(id){
-	var click = Date.now();
-	submitAggregatorClick(id, click);
-	return addClickToAggregator(id, click);
+	return function(dispatch, getState){
+		var click = Date.now();
+		var aggregators = getState().aggregators;
+		var index = getState().aggregators.findIndex(a => a.id === id);
+		var shouldAdd = shouldAddClick(aggregators[index].clicks,click)
+		if (!shouldAdd) return
+		submitAggregatorClick(id, click);	
+		dispatch(addClickToAggregator(id, click))
+	}
+}
+
+//rate limit clicks to prevent scripting massive clickrates
+function shouldAddClick(clicks, click){
+	if (clicks.length === 0) return true;
+	return click - clicks[clicks.length-1] > constants.Aggregator.CLICKTHRESHOLD;
 }
 
 export function addClickToAggregator(id, click){

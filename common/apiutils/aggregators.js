@@ -7,7 +7,9 @@ export function bindAggregatorListeners(dispatch){
 	var socket = io();
 	socket.on('aggregator:accepted', actions.updateAggregatorId);
 	socket.on('aggregator:new', actions.addAggregator);
-	socket.on('aggregator:click:new', actions.addClickToAggregator)
+	socket.on('aggregator:click:new', function(id, click){
+		actions.addClickToAggregator(id, Date.now())
+	})
 }
 
 export function submitAggregator(aggregator){

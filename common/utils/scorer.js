@@ -41,7 +41,7 @@ export function generateScore(activeClickCount, frameRateNew, initialX = 0, init
 
 export function calculateVelocity(activeClickCount){
 	//calc velocity vector
-	var thrustDV = (activeClickCount * 5)/30;
+	var thrustDV = (activeClickCount * 15)/30;
 	//var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity); //only drag on way up to clear off quicker
 	//calc velocity
 	return thrustDV - 1/6;
@@ -55,6 +55,6 @@ export function activeClicks(clicks, time){
 	return clicks.filter(activeClickFilter);
 
 	function activeClickFilter(click){
-		return time-click <= .2;
+		return time-click <= 200;
 	}
 }
