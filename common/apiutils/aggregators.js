@@ -10,6 +10,7 @@ export function bindAggregatorListeners(dispatch){
 	socket.on('aggregator:click:new', function(id, click){
 		actions.addClickToAggregator(id, Date.now())
 	})
+	socket.on('aggregators:update', actions.makeUpdateAggregatorsAction);
 }
 
 export function submitAggregator(aggregator){

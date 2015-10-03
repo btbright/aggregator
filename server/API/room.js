@@ -38,7 +38,7 @@ function Room(io){
 
 		socket.on('disconnect', function () {
 			if (!roomInfo[socket.currentRoom]) return;
-			roomInfo[socket.currentRoom].names.splice(roomInfo[socket.currentRoom].names.indexOf(socket.userName),1);
+			if (roomInfo[socket.currentRoom].names) roomInfo[socket.currentRoom].names.splice(roomInfo[socket.currentRoom].names.indexOf(socket.userName),1);
 			roomInfo[socket.currentRoom].userCount--;
 			io.to(socket.currentRoom).emit('roomInfo:userCount:update', roomInfo[socket.currentRoom].userCount);
 		});

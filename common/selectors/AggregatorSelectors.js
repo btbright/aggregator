@@ -12,6 +12,7 @@ const joinedMessageAggregatorSelector = createSelector(
 	(chatMessages, aggregators) => {
 		return aggregators
 		.filter((aggregator) => aggregator.objectType === "message")
+		.filter(aggregator => !!chatMessages.find(message => message.id === aggregator.objectId))
 		.map((aggregator) => {
 			var chatMessage = chatMessages.find((message) => message.id === aggregator.objectId);
 			return {

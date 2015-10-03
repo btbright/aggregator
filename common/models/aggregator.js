@@ -12,6 +12,18 @@ export function createAggregator(props){
 		x : 0,
 		isComplete : false,
 		isRetired : false,
-		completedTime : 0
+		completedTime : 0,
+		lastServerUpdate : false
+	}
+}
+
+export function createAggregatorServerUpdate({id,x,maxValue,isComplete,completedTime,lastServerUpdate}){
+	return {
+		id,
+		x,
+		maxValue,
+		isComplete,
+		completedTime,
+		lastServerUpdate
 	}
 }

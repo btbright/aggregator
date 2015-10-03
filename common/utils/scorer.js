@@ -26,9 +26,9 @@ export function scorer(clicks, time, frameRateNew, initialX, initialVelocity){
 
 export function generateScore(activeClickCount, frameRateNew, initialX = 0, initialVelocity = 15){
 	//v = v + a * dt
-	let velocity = initialVelocity + calculateVelocity(activeClickCount);
+	let velocity = initialVelocity + calculateVelocity(activeClickCount, frameRateNew);
 	//x = x + v * dt
-	let x = initialX + velocity * 1/60;
+	let x = initialX + velocity * frameRateNew;
 	if (x <= 0){
 		velocity = 0;
 		x = 0;
@@ -39,12 +39,12 @@ export function generateScore(activeClickCount, frameRateNew, initialX = 0, init
 	return { x : x, velocity : velocity };
 }
 
-export function calculateVelocity(activeClickCount){
+export function calculateVelocity(activeClickCount, frameRateNew){
 	//calc velocity vector
 	var thrustDV = (activeClickCount * 15)/30;
 	//var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity); //only drag on way up to clear off quicker
 	//calc velocity
-	return thrustDV - 1/6;
+	return thrustDV - 10*frameRateNew;
 };
 
 export function calculateClickrateMulitplier(globalClicksPerMin){

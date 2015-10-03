@@ -22,32 +22,11 @@ export function updateAggregatorToTime(id, time){
 
 export function updateAggregatorsToTime(ids, time, frameRate){
 	return function(dispatch, getState){
-		
 		var updatedAggregators = []
 		ids.forEach(function(id){
 			updatedAggregators.push(generateUpdatedAggregator(id, getState().aggregators, time, frameRate))
 		})
-		dispatch(makeUpdateAggregatorsToTimeAction(updatedAggregators, time, 10))
-		/*
-		var workers = new Parallel(ids, {
-			env: {
-				state : getState().aggregators,
-				time
-			}
-		});
-
-		workers
-			.require(scorer)
-			.require(generateScore)
-			.require(calculateVelocity)
-			.require(calculateClickrateMulitplier)
-			.require(activeClicks)
-			.map(generateFunction)
-			.then(updatedAggregators => {
-				dispatch(makeUpdateAggregatorsToTimeAction(updatedAggregators, time, 10));
-			});
-
-*/
+		dispatch(makeUpdateAggregatorsAction(updatedAggregators, time, 10))
 	}
 }
 
@@ -66,28 +45,9 @@ function generateUpdatedAggregator(id, state, time, frameRate){
 	});
 }
 
-function generateFunction(){}
-generateFunction.toString = function(){
-	return `
-	function(id){
-				var index = global.env.state.findIndex(m => m.id === id);
-				if (index === -1) return 0;
-				var storedAggregator = global.env.state[index];
-				var scoreResults = scorer(storedAggregator.clicks, global.env.time, storedAggregator.x, storedAggregator.velocity);
-				console.log(scoreResults)
-				return Object.assign({},storedAggregator,{
-					x : scoreResults.x,
-					velocity : scoreResults.velocity,
-					maxValue : storedAggregator.maxValue >= scoreResults.x ? storedAggregator.maxValue : scoreResults.x,
-					isComplete : scoreResults.x === 100 || (scoreResults.x === 0 && storedAggregator.maxValue != 0)
-				});
-			}
-	`
-}
-
-function makeUpdateAggregatorsToTimeAction(updatedAggregators){
+export function makeUpdateAggregatorsAction(updatedAggregators){
 	return {
-		type : types.UPDATE_AGGREGATORS_TO_TIME,
+		type : types.UPDATE_AGGREGATORS,
 		updatedAggregators
 	}
 }
