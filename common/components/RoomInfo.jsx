@@ -19,21 +19,16 @@ class RoomInfo extends Component {
 		if (this.props.userCount){
 			userCount = <span className="user-count">{this.props.userCount} users</span>
 		}
-		var clickRate;
-		if (this.props.clickRate){
-			clickRate = <span className="user-count">{this.props.clickRate} clicks/min</span>
-		}
-		var messageRate;
-		if (this.props.messageRate){
-			messageRate = <span className="user-count">{this.props.messageRate} messages/min</span>
+		var clickers;
+		if (this.props.clickers){
+			clickers = <span className="user-count">{this.props.clickers} active clickers</span>
 		}
 		return (
 			<div className="room-info">
 				<div className="right-info">
 					{userCount}
 					{userName}
-					{clickRate}
-					{messageRate}
+					{clickers}
 				</div>
 				<span className="room-name">#{this.props.name}</span>
 			</div>
@@ -46,8 +41,7 @@ function mapStateToProps(state) {
     userCount: state.room.userCount,
     name: state.room.name,
     userName : state.user.userName,
-    clickRate : 10,
-    messageRate : 10
+    clickers : state.room.activeClickerCount,
   };
 }
 

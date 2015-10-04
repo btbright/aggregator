@@ -13,6 +13,8 @@ import ChatAPI from './API/chat'
 import RoomAPI from './API/room'
 import AggregatorAPI from './API/aggregator'
 
+import { EventEmitter } from 'events'
+
 const app = new Express();
 const port = 3000;
 
@@ -23,9 +25,11 @@ var io = socketio(server);
 app.use(Express.static('public'));
 app.use('/r/:id',handleRender);
 
-ChatAPI(io)
-RoomAPI(io)
-AggregatorAPI(io)
+var messenger = new EventEmitter();
+
+ChatAPI(io, messenger)
+RoomAPI(io, messenger)
+AggregatorAPI(io, messenger)
 
 server.listen(port, (error) => {
   if (error) {

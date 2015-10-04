@@ -1,5 +1,26 @@
-function Room(io){
-	var roomInfo = {};
+function Room(io, messenger){
+
+	var roomInfo = {}
+
+	setInterval(updateActiveClickers,1000)
+	function updateActiveClickers(){
+		var timeToCheck = Date.now()
+		var threshold = 1000 * 60 * 2;
+		Object.keys(roomInfo).forEach(roomId => {
+			if (!roomInfo[roomId].activeClickers) return;
+			var oldCount = Object.keys(roomInfo[roomId].activeClickers).length;
+			Object.keys(roomInfo[roomId].activeClickers).forEach(socketId => {
+				if (timeToCheck - roomInfo[roomId].activeClickers[socketId] > threshold){
+					delete roomInfo[roomId].activeClickers[socketId];
+				}
+			})
+			var newCount = Object.keys(roomInfo[roomId].activeClickers).length;
+			if (oldCount != newCount){
+				messenger.emit('roomInfo:activeClickers:update', roomId, newCount)
+				io.to(roomId).emit('roomInfo:activeClickers:update',newCount)
+			}
+		})
+	}
 
 	io.on('connection', function (socket) {
 		socket.on("room:change",function(requestInfo){
@@ -36,10 +57,35 @@ function Room(io){
 			socket.userName = name;
 		});
 
+		socket.on('aggregator:new',addActiveClicker);
+		socket.on('aggregator:click:new',addActiveClicker);
+
+		function addActiveClicker(){
+			if (!roomInfo[socket.currentRoom].activeClickers){
+				roomInfo[socket.currentRoom].activeClickers = {}
+			}
+			var update = false;
+			if (!roomInfo[socket.currentRoom].activeClickers[socket.id]){
+				update = true;
+			}
+			roomInfo[socket.currentRoom].activeClickers[socket.id] = Date.now();
+			if (update){
+				var activeClickerCount = Object.keys(roomInfo[socket.currentRoom].activeClickers).length
+				messenger.emit('roomInfo:activeClickers:update', socket.currentRoom, activeClickerCount)
+				io.to(socket.currentRoom).emit('roomInfo:activeClickers:update',activeClickerCount)
+			}
+		}
+
 		socket.on('disconnect', function () {
 			if (!roomInfo[socket.currentRoom]) return;
 			if (roomInfo[socket.currentRoom].names) roomInfo[socket.currentRoom].names.splice(roomInfo[socket.currentRoom].names.indexOf(socket.userName),1);
 			roomInfo[socket.currentRoom].userCount--;
+			if (roomInfo[socket.currentRoom].activeClickers && roomInfo[socket.currentRoom].activeClickers[socket.id]){
+				delete roomInfo[socket.currentRoom].activeClickers[socket.id];
+				var activeClickerCount = roomInfo[socket.currentRoom].activeClickers.length;
+				messenger.emit('roomInfo:activeClickers:update', socket.currentRoom, activeClickerCount)
+				io.to(socket.currentRoom).emit('roomInfo:activeClickers:update', activeClickerCount)
+			}
 			io.to(socket.currentRoom).emit('roomInfo:userCount:update', roomInfo[socket.currentRoom].userCount);
 		});
 	});

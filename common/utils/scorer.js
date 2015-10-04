@@ -1,32 +1,31 @@
 import _ from 'lodash'
 
 export const ballisticsParameters = {
-	THRUST_VELOCITY : 5,
+	THRUST_VELOCITY : 10,
 	THRUST_TIME : 200, //ms
 	MASS : 30,
-	GRAVITY_ACCELERATION : -10,
-	DRAG_CONSTANT : 5
+	MIN_GRAVITY : 0.12
 }
 
 export const maxX = 100
 export const frameRate = 1/60
-export const gravityVelocity = ballisticsParameters.GRAVITY_ACCELERATION*frameRate;
 
 
 //takes an array of timestamps and returns 0-100 x position
 //based on physics model at a specific time
-export function scorer(clicks, time, frameRateNew, initialX, initialVelocity){
+export function scorer(clicks, time, frameRateNew, initialX, initialVelocity, globalActivityModifier){
 	if (!clicks || !Array.isArray(clicks)) throw new Error("Malformed 'clicks' array");
 	//throw out clicks newer than t, they are in the future and don't count
 	var filteredClicks = clicks.filter((click) => click <= time);
 	var activeClickCount = activeClicks(filteredClicks, time).length;
-	var scoreResults = generateScore(activeClickCount, frameRateNew, initialX, initialVelocity)
+	var actualModifier = globalActivityModifier === 0 ? 1 : globalActivityModifier;
+	var scoreResults = generateScore(activeClickCount, frameRateNew, initialX, initialVelocity, actualModifier)
 	return scoreResults;
 }
 
-export function generateScore(activeClickCount, frameRateNew, initialX = 0, initialVelocity = 15){
+export function generateScore(activeClickCount, frameRateNew, initialX = 0, initialVelocity = 15, globalActivityModifier = 1){
 	//v = v + a * dt
-	let velocity = initialVelocity + calculateVelocity(activeClickCount, frameRateNew);
+	let velocity = initialVelocity + calculateVelocity(initialX, initialVelocity, activeClickCount, frameRateNew, globalActivityModifier);
 	//x = x + v * dt
 	let x = initialX + velocity * frameRateNew;
 	if (x <= 0){
@@ -39,12 +38,13 @@ export function generateScore(activeClickCount, frameRateNew, initialX = 0, init
 	return { x : x, velocity : velocity };
 }
 
-export function calculateVelocity(activeClickCount, frameRateNew){
+export function calculateVelocity(x, currentVelocity, activeClickCount, frameRateNew, globalActivityModifier){
+	var thrustVelocity = 1;
 	//calc velocity vector
-	var thrustDV = (activeClickCount * 15)/30;
-	//var dragDV = -Math.abs(ballisticsParameters.DRAG_CONSTANT * currentVelocity); //only drag on way up to clear off quicker
+	var thrustDV = (activeClickCount * (thrustVelocity/globalActivityModifier));
+
 	//calc velocity
-	return thrustDV - 10*frameRateNew;
+	return thrustDV - (x < 20 ? ballisticsParameters.MIN_GRAVITY : (x/100)) * 100 * thrustVelocity * frameRateNew;
 };
 
 export function calculateClickrateMulitplier(globalClicksPerMin){
@@ -58,3 +58,6 @@ export function activeClicks(clicks, time){
 		return time-click <= 200;
 	}
 }
+
+//https://en.wikipedia.org/wiki/Logistic_function
+function gentleSigmoidCurve(x, midX, maxVal){return maxVal/(1+Math.pow(Math.E,(-0.2*(x-midX))))}

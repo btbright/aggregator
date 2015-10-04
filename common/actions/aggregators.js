@@ -23,19 +23,22 @@ export function updateAggregatorToTime(id, time){
 export function updateAggregatorsToTime(ids, time, frameRate){
 	return function(dispatch, getState){
 		var updatedAggregators = []
+		var aggregators = getState().aggregators
+		var activeClickerCount = getState().room.activeClickerCount
 		ids.forEach(function(id){
-			updatedAggregators.push(generateUpdatedAggregator(id, getState().aggregators, time, frameRate))
+			updatedAggregators.push(generateUpdatedAggregator(id, aggregators, time, frameRate, activeClickerCount))
 		})
 		dispatch(makeUpdateAggregatorsAction(updatedAggregators, time, 10))
+		
 	}
 }
 
-function generateUpdatedAggregator(id, state, time, frameRate){
+function generateUpdatedAggregator(id, state, time, frameRate, activeClickerCount){
 	var index = state.findIndex(m => m.id === id);
 	if (index === -1) return 0;
 	var storedAggregator = state[index];
-	var scoreResults = scorer(storedAggregator.clicks, time, frameRate, storedAggregator.x, storedAggregator.velocity);
-	var isComplete = scoreResults.x === 100 || (scoreResults.x === 0 && storedAggregator.maxValue != 0);
+	var scoreResults = scorer(storedAggregator.clicks, time, frameRate, storedAggregator.x, storedAggregator.velocity, activeClickerCount);
+	var isComplete = storedAggregator.isComplete || scoreResults.x === 100 || (scoreResults.x === 0 && storedAggregator.maxValue != 0);
 	return Object.assign({},storedAggregator,{
 		x : scoreResults.x,
 		velocity : scoreResults.velocity,
@@ -111,14 +114,17 @@ export function addAggregator(aggregator){
 }
 
 export function newAggregator(objectType, objectId){
-	var aggregator = createAggregator({
+	return function(dispatch, getState){
+		var userName = getState().user.userName;
+		var aggregator = createAggregator({
 		objectId,
 		objectType,
-		user : "ben"
-	});
-	submitAggregator(aggregator);
-	return {
-		type : types.ADD_AGGREGATOR,
-		aggregator : aggregator
+		user : userName
+		});
+		submitAggregator(aggregator);
+		dispatch({
+			type : types.ADD_AGGREGATOR,
+			aggregator : aggregator
+		})
 	}
 }

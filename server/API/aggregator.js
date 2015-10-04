@@ -2,8 +2,15 @@ import shortid from 'shortid'
 import { createAggregator, createAggregatorServerUpdate } from '../../common/models/aggregator'
 import constants from '../../common/constants/App'
 import { scorer } from '../../common/utils/scorer'
+import { roomInfo } from './room'
 
-function Aggregators(io){
+function Aggregators(io, messenger){
+
+	var activeClickers = {}
+
+	messenger.on('roomInfo:activeClickers:update', function(roomId, activeClickerCount){
+		activeClickers[roomId] = activeClickerCount;
+	})
 
 	var aggregatorState = {};
 	var frameRate = 1/60;
@@ -17,7 +24,8 @@ function Aggregators(io){
 				if (storedAggregator.isComplete) return;
 				var time = Date.now();
 				var calculatedFrameRate = !storedAggregator.lastServerUpdate ? frameRate : (Date.now() - storedAggregator.lastServerUpdate)/1000;
-				var scoreResults = scorer(storedAggregator.clicks, time, calculatedFrameRate, storedAggregator.x, storedAggregator.velocity);
+				if (!activeClickers[roomId]) activeClickers[roomId] = 1
+				var scoreResults = scorer(storedAggregator.clicks, time, calculatedFrameRate, storedAggregator.x, storedAggregator.velocity, activeClickers[roomId]);
 				var isComplete = scoreResults.x === 100 || (scoreResults.x === 0 && storedAggregator.maxValue != 0);
 				var updateObject = {
 					id : aggregatorId,
@@ -34,8 +42,7 @@ function Aggregators(io){
 		});
 	}
 
-	setInterval(sendUpdatedAggregators, 250)
-
+	setInterval(sendUpdatedAggregators, 100)
 	function sendUpdatedAggregators(){
 		Object.keys(aggregatorState).forEach(roomId => {
 			var updateObjects = [];
@@ -70,6 +77,7 @@ function Aggregators(io){
 			if (aggregatorState[socket.currentRoom] && aggregatorState[socket.currentRoom][requestedAggregatorId]){
 				aggregatorState[socket.currentRoom][requestedAggregatorId].clicks.push(click);
 			}
+			updateAggregators()
 			socket.broadcast.to(socket.currentRoom).emit('aggregator:click:new',requestedAggregatorId, click);
 		});
 	});

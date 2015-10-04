@@ -14,6 +14,7 @@ export function bindRoomListeners(dispatch){
 		userActions.removeUserName();
 		notificationActions.addNotification(error, "error");
 	});
+	socket.on('roomInfo:activeClickers:update', actions.updateActiveClickerCount)
 }
 
 export function requestNewRoom(newRoom, oldRoom){

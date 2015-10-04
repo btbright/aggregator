@@ -8,6 +8,13 @@ export function updateUserCount(userCount){
 	}
 }
 
+export function updateActiveClickerCount(activeClickerCount){
+	return {
+		type: types.UPDATE_ACTIVE_CLICKER_COUNT,
+		activeClickerCount
+	}
+}
+
 export function requestUpdateRoom(newRoom){
 	requestNewRoom(newRoom);
 	return {
