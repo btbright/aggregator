@@ -16,13 +16,6 @@ export default function aggregatorListSlots(state = [], action){
 		  ({active : false, id : action.id }),
 		  ...state.slice(index + 1)
 		]
-	case UPDATE_AGGREGATOR_ID:
-		var index = state.findIndex(slot => slot.id === action.originalId);
-		return [
-		  ...state.slice(0, index),
-		  ({ active : state[index].active, id : action.newId }),
-		  ...state.slice(index + 1)
-		]
 	default:
 		return state;
 	}

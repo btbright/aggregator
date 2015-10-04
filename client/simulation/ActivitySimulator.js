@@ -59,4 +59,15 @@ export default class ActivitySimulator {
 		var commentIndex = Math.floor(Math.random()*simulationData.debateComments.length);
 		this.chatActions.newChatMessage(simulationData.debateComments[commentIndex], this.fakeName);
 	}
+
+	supportAggregator(){
+		var currentTime = Date.now();
+		var aggregators = this.getState().aggregators.filter(a => {
+			return !a.isComplete;
+		});
+		if (aggregators.length > 0){
+			var aggregatorIndex = Math.floor(Math.random() * aggregators.length);
+			this.aggregatorActions.newAggregatorClick(aggregators[aggregatorIndex].id);
+		}
+	}
 }

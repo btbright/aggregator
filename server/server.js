@@ -67,7 +67,7 @@ function renderFullPage(html, initialState, reactRootId) {
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>Aggregators</title>
-        <link href='https://fonts.googleapis.com/css?family=Poppins:500' rel='stylesheet' type='text/css'>
+        <!--<link href='https://fonts.googleapis.com/css?family=Poppins:500' rel='stylesheet' type='text/css'>-->
         <link rel="stylesheet" media="all" href="/css/normalize.css" />
         <link rel="stylesheet" media="all" href="/css/app.css" />
       </head>

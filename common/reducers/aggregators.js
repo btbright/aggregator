@@ -30,8 +30,6 @@ export default function aggregators(state = initialState, action) {
 
 	case ADD_CLICK_TO_AGGREGATOR:
 		return newListWithReplacementFromSubreducer(state, action, aggregator);
-	case UPDATE_AGGREGATOR_ID:
-		return newListWithReplacementFromSubreducer(state, action, aggregator, "originalId");
 	case RETIRE_AGGREGATOR:
 		return newListWithReplacementFromSubreducer(state, action, aggregator);
 	default:
@@ -52,10 +50,6 @@ function aggregator(state, action){
 	case ADD_CLICK_TO_AGGREGATOR:
 		return Object.assign({},state,{
 			clicks : [...state.clicks, action.click]
-		});
-	case UPDATE_AGGREGATOR_ID:
-		return Object.assign({},state,{
-			id : action.newId
 		});
 	case RETIRE_AGGREGATOR:
 		return Object.assign({},state,{

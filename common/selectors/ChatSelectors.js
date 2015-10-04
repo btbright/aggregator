@@ -14,6 +14,7 @@ function mapAggregatedMessages(chatMessages, aggregators){
 				text : message.text,
 				userName : message.userName,
 				time : message.time,
+				formattedTime : new Date(message.time).toLocaleTimeString(),
 				aggregationLevel : '',
 				isComplete : false,
 				aggregatorId : 0

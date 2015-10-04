@@ -26,7 +26,8 @@ const joinedMessageAggregatorSelector = createSelector(
 				hasUserNominated : chatMessage.hasUserNominated,
 				isComplete : aggregator.isComplete,
 				isRetired : aggregator.isRetired,
-				completedTime : aggregator.completedTime
+				completedTime : aggregator.completedTime,
+				velocity : aggregator.velocity
 			}
 		});
 	});
@@ -48,7 +49,9 @@ const preparedForDisplaySelector = createSelector(
 				leftText : message.userName,
 				isComplete : message.isComplete,
 				isRetired : message.isRetired,
-				completedTime : message.completedTime
+				completedTime : message.completedTime,
+				clicks : message.clicks,
+				velocity : message.velocity
 			}
 		});
 	});
@@ -65,14 +68,17 @@ const mappedToSlotsSelector = createSelector(
 			});
 	});
 
+const activeAggregatorSelector = aggregators => aggregators.filter(a => !a.isRetired)
 
-
+const activeClickCountSelector = (state) => state.room.activeClickerCount
 
 //this just wraps the calculations in an object
 export const packagedAggregatorSelector = createSelector(
-	mappedToSlotsSelector,
-	(packagedAggregators) => {
+	mappedToSlotsSelector, activeClickCountSelector,
+	(packagedAggregators, activeClickerCount) => {
 		return {
-			packagedAggregators
+			activeClickerCount,
+			packagedAggregators,
+			activeAggregators : activeAggregatorSelector(packagedAggregators)
 		}
 	});

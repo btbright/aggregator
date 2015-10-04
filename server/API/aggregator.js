@@ -1,4 +1,3 @@
-import shortid from 'shortid'
 import { createAggregator, createAggregatorServerUpdate } from '../../common/models/aggregator'
 import constants from '../../common/constants/App'
 import { scorer } from '../../common/utils/scorer'
@@ -42,7 +41,7 @@ function Aggregators(io, messenger){
 		});
 	}
 
-	setInterval(sendUpdatedAggregators, 100)
+	setInterval(sendUpdatedAggregators, 250)
 	function sendUpdatedAggregators(){
 		Object.keys(aggregatorState).forEach(roomId => {
 			var updateObjects = [];
@@ -58,7 +57,6 @@ function Aggregators(io, messenger){
 	io.on('connection', function (socket) {
 		socket.on('aggregator:new',function(requestedAggregator){
 			var aggregator = createAggregator(requestedAggregator);
-			aggregator.id = shortid.generate();
 
 			if (!aggregatorState[socket.currentRoom]){
 				aggregatorState[socket.currentRoom] = {}
@@ -66,7 +64,6 @@ function Aggregators(io, messenger){
 			aggregatorState[socket.currentRoom][aggregator.id] = aggregator;
 
 			socket.broadcast.to(socket.currentRoom).emit('aggregator:new',aggregator);
-			socket.emit('aggregator:accepted', requestedAggregator.id, aggregator.id);
 			updateAggregators()
 		});
 		//TODO - compare to last click instead of Date.now(), but haven't implemented state on server yet

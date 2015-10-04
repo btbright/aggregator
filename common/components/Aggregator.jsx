@@ -11,10 +11,13 @@ class Aggregator extends Component {
 		this.state = {
 			lastMouseDown : false,
 			isClicking : false,
-			hasRetired : false
+			hasScheduledRetirement : false
 		}
 		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
 		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
+	}
+	shouldComponentUpdate(nextProps,prevProps){
+		return !this.props.isRetired;
 	}
 	handleOnMouseDown(){
 		this.setState({
@@ -39,12 +42,12 @@ class Aggregator extends Component {
 		},constants.Aggregator.CLICKTIMEOUT);
 	}
 	componentWillReceiveProps(nextProps){
-		if (nextProps.isComplete && !this.state.hasRetired){
+		if (nextProps.isComplete && !this.state.hasScheduledRetirement){
 			setTimeout(()=>{
 				this.props.retire(this.props.id)
 			},3500)
 			this.setState({
-				hasRetired : true
+				hasScheduledRetirement : true
 			})
 		}
 	}
@@ -52,7 +55,7 @@ class Aggregator extends Component {
 		var aggregatorClassNames = classnames('aggregator', this.props.isComplete ? 'aggregator-level-'+levelColors[getLevel(this.props.residueValue)] : '' ,{
 			'aggregator-user-clicking' : this.state.isClicking,
 			'aggregator-complete' : this.props.isComplete,
-			'aggregator-retired' : this.props.isRetired && (Date.now()-this.props.completedTime > 3500)
+			'aggregator-retired' : this.props.isRetired
 		});
 		return (
 			<div onClick={this.props.aggregatorClicked} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>

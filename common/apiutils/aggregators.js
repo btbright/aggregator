@@ -5,12 +5,11 @@ export function bindAggregatorListeners(dispatch){
 	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
 	var actions = bindActionCreators(AggregatorActions, dispatch);
 	var socket = io();
-	socket.on('aggregator:accepted', actions.updateAggregatorId);
 	socket.on('aggregator:new', actions.addAggregator);
 	socket.on('aggregator:click:new', function(id, click){
 		actions.addClickToAggregator(id, Date.now())
 	})
-	socket.on('aggregators:update', actions.makeUpdateAggregatorsAction);
+	//socket.on('aggregators:update', actions.makeUpdateAggregatorsAction);
 }
 
 export function submitAggregator(aggregator){

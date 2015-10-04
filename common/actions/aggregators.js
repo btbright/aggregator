@@ -20,29 +20,23 @@ export function updateAggregatorToTime(id, time){
 	}
 }
 
-export function updateAggregatorsToTime(ids, time, frameRate){
+export function updateAggregatorsToTime(aggregators, time, frameRate, activeClickerCount){
 	return function(dispatch, getState){
 		var updatedAggregators = []
-		var aggregators = getState().aggregators
-		var activeClickerCount = getState().room.activeClickerCount
-		ids.forEach(function(id){
-			updatedAggregators.push(generateUpdatedAggregator(id, aggregators, time, frameRate, activeClickerCount))
+		aggregators.forEach(function(aggregator){
+			updatedAggregators.push(generateUpdatedAggregator(aggregator, time, frameRate, activeClickerCount))
 		})
 		dispatch(makeUpdateAggregatorsAction(updatedAggregators, time, 10))
-		
 	}
 }
 
-function generateUpdatedAggregator(id, state, time, frameRate, activeClickerCount){
-	var index = state.findIndex(m => m.id === id);
-	if (index === -1) return 0;
-	var storedAggregator = state[index];
-	var scoreResults = scorer(storedAggregator.clicks, time, frameRate, storedAggregator.x, storedAggregator.velocity, activeClickerCount);
+function generateUpdatedAggregator(storedAggregator, time, frameRate, activeClickerCount){
+	var scoreResults = scorer(storedAggregator.clicks, time, frameRate, storedAggregator.barValue, storedAggregator.velocity, activeClickerCount);
 	var isComplete = storedAggregator.isComplete || scoreResults.x === 100 || (scoreResults.x === 0 && storedAggregator.maxValue != 0);
 	return Object.assign({},storedAggregator,{
 		x : scoreResults.x,
 		velocity : scoreResults.velocity,
-		maxValue : storedAggregator.maxValue >= scoreResults.x ? storedAggregator.maxValue : scoreResults.x,
+		maxValue : storedAggregator.residueValue >= scoreResults.x ? storedAggregator.residueValue : scoreResults.x,
 		isComplete : isComplete,
 		completedTime : time
 	});
@@ -68,8 +62,8 @@ export function updateAggregatorToNow(id){
 	return updateAggregatorToTime(id, Date.now());
 }
 
-export function updateAggregatorsToNow(ids, frameRate){
-	return updateAggregatorsToTime(ids, Date.now(), frameRate);
+export function updateAggregatorsToNow(ids, frameRate, activeClickerCount){
+	return updateAggregatorsToTime(ids, Date.now(), frameRate, activeClickerCount);
 }
 
 export function newAggregatorClick(id){
@@ -95,14 +89,6 @@ export function addClickToAggregator(id, click){
 		type : types.ADD_CLICK_TO_AGGREGATOR,
 		id,
 		click
-	}
-}
-
-export function updateAggregatorId(originalId, newId){
-	return {
-		type: types.UPDATE_AGGREGATOR_ID,
-		originalId,
-		newId
 	}
 }
 

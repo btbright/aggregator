@@ -9,8 +9,6 @@ export default function chatMessages(state = initialState, action) {
 		return [...state,action.message]
 	case VOTE_CHAT_MESSAGE:
 		return newListWithReplacementFields(state, action.id, (oldMessage) => ({ hasUserVoted: !oldMessage.hasUserVoted }));
-	case UPDATE_CHAT_MESSAGE_ID:
-		return newListWithReplacementFields(state, action.originalId, () => ({ id: action.newId }));
 	default:
     	return state;
   	}

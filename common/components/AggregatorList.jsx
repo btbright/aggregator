@@ -17,7 +17,7 @@ class AggregatorList extends Component {
 		this.actions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this)
 		this.prepareAggregator = this.prepareAggregator.bind(this)
-		this.getActiveAggregatorIds = this.getActiveAggregatorIds.bind(this)
+		this.getActiveAggregators = this.getActiveAggregators.bind(this)
 		this.retireAggregator = this.retireAggregator.bind(this)
 		bindAggregatorListeners(this.props.dispatch);
 		this.start = this.start.bind(this)
@@ -36,24 +36,19 @@ class AggregatorList extends Component {
 	prepareAggregator(aggregatorData){
 		return <Aggregator retire={this.retireAggregator} aggregatorClicked={this.handleAggregatorClicked} key={aggregatorData.id} {...aggregatorData} />;
 	}
-	getActiveAggregatorIds(){
-		return this.props.packagedAggregators.filter(aggregator => !aggregator.isRetired).map(aggregator => aggregator.id);
+	getActiveAggregators(){
+		return this.props.packagedAggregators.filter(aggregator => !aggregator.isRetired);
 	}
 	retireAggregator(id){
 		this.actions.retireAggregator(id)
 	}
 	start() {
 		var frameId = requestAnimationFrame(() => this.start());
-		var startTime = performance.now();
 		var lastTime = this.state.performanceTime;
-		this.setState({
-		  frameId: frameId,
-		  performanceTime : startTime
-		});
 
 		//run animations on in progresss aggregators
-		var activeIds = this.getActiveAggregatorIds();
-		if (activeIds.length > 0) this.actions.updateAggregatorsToNow(activeIds, lastTime ? (startTime - lastTime)/1000 : 1/60);
+		var startTime = performance.now();
+		if (this.props.activeAggregators.length > 0) this.actions.updateAggregatorsToNow(this.props.activeAggregators, lastTime ? (startTime - lastTime)/1000 : 1/60, this.props.activeClickerCount);
 		var timeTook = Math.floor((performance.now() - startTime));
 		if (timeTook > 16){
 			console.warn("took: "+timeTook+" milliseconds")

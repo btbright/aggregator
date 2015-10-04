@@ -61,6 +61,9 @@ function Room(io, messenger){
 		socket.on('aggregator:click:new',addActiveClicker);
 
 		function addActiveClicker(){
+			if (!roomInfo[socket.currentRoom]){
+				roomInfo[socket.currentRoom] = {}
+			}
 			if (!roomInfo[socket.currentRoom].activeClickers){
 				roomInfo[socket.currentRoom].activeClickers = {}
 			}
