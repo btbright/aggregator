@@ -34,6 +34,9 @@ class Chat extends Component {
 			lastMouseDown : Date.now()
 		})
 	}
+	shouldComponentUpdate(nextProps, nextState){
+		return this.props !== nextProps || this.state !== nextState;
+	}
 	handleOnMouseUp(){
 		if (!this.state.lastMouseDown) return;
 		var timeSinceLastMouseDown = Date.now() - this.state.lastMouseDown;
@@ -50,29 +53,35 @@ class Chat extends Component {
 			});
 		},constants.Aggregator.CLICKTIMEOUT);
 	}
-	handleChatMessageClick(id, messageProps){
-		if (messageProps.aggregationLevel){
-			this.aggregatorActions.newAggregatorClick(messageProps.aggregatorId);
+	handleChatMessageClick(isAggregating, messageId, aggregatorId){
+		if (isAggregating){
+			this.aggregatorActions.newAggregatorClick(aggregatorId);
 		} else {
-			this.aggregatorActions.newAggregator("message",id);
+			this.aggregatorActions.newAggregator("message",messageId);
 		}
 	}
 	handleMessageFormSubmit(text){
 		if (!text) return;
+
 		if (this.props.user.userName){
-			var message = this.props.chatMessages.filter((m)=>!m.isComplete).find((m) => m.text.toLowerCase() === text.toLowerCase());
+			var message = this.props.chatMessages.find((m) => m.text.toLowerCase() === text.toLowerCase());
 			if (message){
+				var messageAggregator = this.props.aggregatorData.find(a => a.messageId === message.id);
+				if (messageAggregator && messageAggregator.isComplete){
+					this.chatActions.newChatMessage(text, this.props.user.userName)
+					return;
+				}
 				var secondsSinceMessage = (Date.now() - message.time) / 1000;
 				const messageTimeoutSeconds = 60;
 				var isMessageFresh = secondsSinceMessage <= messageTimeoutSeconds;
 				if (isMessageFresh){
 					//if a message already exists, but it's not aggregating
-					if (!message.aggregationLevel){
+					if (!messageAggregator){
 						this.aggregatorActions.newAggregator("message",message.id);
 						this.notificationActions.addNotification(`Your message has been combined with ${message.userName}'s: ${message.text}`,"informative");
 					//if the message exists but it's already aggregating
 					} else {
-						this.aggregatorActions.newAggregatorClick(message.aggregatorId);
+						this.aggregatorActions.newAggregatorClick(messageAggregator.aggregatorId);
 						this.notificationActions.addNotification(`Your message has been counted as support for ${message.userName}'s: ${message.text}`,"informative");
 					}
 					return;
@@ -91,19 +100,11 @@ class Chat extends Component {
 		});
 		return (
 			<div className={chatClassNames} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp}>
-			  <ChatMessageList messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
+			  <ChatMessageList aggregatorData={this.props.aggregatorData} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
 			  <ChatMessageForm placeholder={ this.props.user.userName ? 'Enter a comment...' : 'Enter a user name here to comment...' } onNewMessage={this.handleMessageFormSubmit} />
 			</div>
 			);
 	}
 }
 
-function mapStateToProps(state) {
-  var selectedState = chatMessagesWithAggregationInfoSelector(state);
-  return {
-    chatMessages: selectedState.messagesWithAggregationInfo,
-    user : selectedState.user
-  };
-}
-
-export default connect(mapStateToProps)(Chat);
+export default connect(chatMessagesWithAggregationInfoSelector)(Chat);

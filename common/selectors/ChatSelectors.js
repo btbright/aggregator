@@ -1,40 +1,40 @@
-import { createSelector } from 'reselect'
+import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
 import { levelColors, getLevel } from '../utils/levels'
+import _ from 'lodash';
 
 const chatMessagesSelector = (state) => state.chatMessages
 const aggregatorsSelector = (state) => state.aggregators
 const userSelectorSelector = (state) => state.user
 
-function mapAggregatedMessages(chatMessages, aggregators){
-	return chatMessages
-		.map((message) => {
-			var aggregator = aggregators.find((aggregator) => message.id === aggregator.objectId);
-			var newMessage = {
-				id : message.id,
-				text : message.text,
-				userName : message.userName,
-				time : message.time,
-				formattedTime : new Date(message.time).toLocaleTimeString(),
-				aggregationLevel : '',
-				isComplete : false,
-				aggregatorId : 0
-			};
-			if (aggregator){
-				newMessage.aggregatorId = aggregator.id;
-				newMessage.aggregationLevel = levelColors[getLevel(aggregator.maxValue)];
-				newMessage.isComplete = aggregator.isComplete;
-			}
-			return newMessage;
-		})
-}
 
+const chatRelevantAggregatorDataSelector = createSelector(
+	aggregatorsSelector,
+	(aggregators) => {
+		return aggregators
+		.filter(aggregator => aggregator.objectType === 'message')
+		.map(aggregator => {
+			return {
+				aggregatorId : aggregator.id,
+				aggregationLevel : levelColors[getLevel(aggregator.maxValue)],
+				isComplete : aggregator.isComplete,
+				messageId : aggregator.objectId
+			}
+		})
+	});
+
+const createDeepEqualSelector = createSelectorCreator(
+  defaultMemoize,
+  _.isEqual
+);
 
 //this selector handles the message->aggregator join
-export const chatMessagesWithAggregationInfoSelector = createSelector(
-	[chatMessagesSelector,aggregatorsSelector,userSelectorSelector],
+export const chatMessagesWithAggregationInfoSelector = createDeepEqualSelector(
+	[chatMessagesSelector, chatRelevantAggregatorDataSelector, userSelectorSelector],
 	(chatMessages, aggregators, user) => {
 		return {
-			messagesWithAggregationInfo : mapAggregatedMessages(chatMessages, aggregators),
+			chatMessages : chatMessages,
+			aggregatorData : aggregators,
 			user
 		}
 	});
+

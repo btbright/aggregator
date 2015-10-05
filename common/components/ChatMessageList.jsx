@@ -1,11 +1,9 @@
 import React, { Component, PropTypes } from 'react'
-import cx from 'classnames'
 import ChatMessage from './ChatMessage.jsx'
 
 class ChatMessageList extends Component {
-	constructor(props){
-		super(props)
-		this.buildChatMessage = this.buildChatMessage.bind(this)
+	shouldComponentUpdate(nextProps){
+		return this.props !== nextProps;
 	}
 	componentDidUpdate(prevProps){
 		//if a message has been added, scroll to bottom of message list
@@ -14,18 +12,12 @@ class ChatMessageList extends Component {
 			chatList.scrollTop = chatList.scrollHeight;
 		}
 	}
-	buildChatMessage(message){
-		if (message.isComplete){
-			return <ChatMessage key={message.id} {...message} />
-		} else{
-			return <ChatMessage onClick={this.props.handleChatMessageClick} key={message.id} {...message} />
-		}
-	}
 	render(){
 		return (
 			<div className="chat-message-list" ref="chatMessageList">
-			  {Object.keys(this.props.messages).map(function(key,i){
-				return this.buildChatMessage(this.props.messages[key]);
+			  {this.props.messages.map(function(message){
+			  	var aggregatorData = this.props.aggregatorData.find(a => a.messageId === message.id);
+				return <ChatMessage onClick={this.props.handleChatMessageClick} key={message.id} {...message} {...aggregatorData} />
 			  },this)}
 			</div>
 			);
