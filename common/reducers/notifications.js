@@ -7,12 +7,10 @@ const intitialState = {
 
 export default function notifications(state = intitialState, action){
 	switch (action.type) {
-		/*
 	case ADD_NOTIFICATION:
 		//if there isn't a current notification or it has expired
 		if (!state.current || (action.notification.createdTime - state.current.timeMadeCurrent) >= (state.current.timeToShow)){
-			var newNotification = Object.assign({}, action.notification, { timeMadeCurrent : action.notification.createdTime });
-			return Object.assign({}, state, { current : newNotification });
+			return Object.assign({}, state, { current : Object.assign({}, action.notification, { timeMadeCurrent : action.notification.createdTime }) });
 		} else {
 			return Object.assign({}, state, { pending : [...state.pending, action.notification] });
 		}
@@ -21,8 +19,7 @@ export default function notifications(state = intitialState, action){
 		if (state.pending.length === 0) {
 			return intitialState;
 		}
-		return Object.assign({},state, { current: Object.assign({}, state.pending[0], { timeMadeCurrent : action.timeComplete }), pending: [state.pending.slice(1)] })
-		*/
+		return Object.assign({},state, { current: Object.assign({}, state.pending[0], { timeMadeCurrent : action.timeComplete }), pending: [...state.pending.slice(1)] });
 	default:
 		return state;
 	}

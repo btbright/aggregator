@@ -14,6 +14,11 @@ class UpperNotificationBar extends Component {
 		}
 		this.actions = bindActionCreators(NotificationActions, this.props.dispatch);
 	}
+	shouldComponentUpdate(nextProps, nextState){
+		return nextProps.notification !== this.props.notification || 
+			   nextProps.areNotificationsPending !== this.props.areNotificationsPending || 
+			   this.state !== nextState;
+	}
 	componentWillReceiveProps(nextProps){
 		if (this.state.notificationTimeoutHandle){
 			clearTimeout(this.state.notificationTimeoutHandle);
@@ -43,7 +48,7 @@ class UpperNotificationBar extends Component {
 			});
 
 			const fadeOutLength = 300;
-			if (timeoutLength > fadeOutLength){
+			if (!nextProps.areNotificationsPending && timeoutLength > fadeOutLength){
 				var fadeHandle = setTimeout(()=>{
 					this.setState({
 						fadeoutTimeoutHandle : false,
@@ -72,7 +77,8 @@ class UpperNotificationBar extends Component {
 
 function mapStateToProps(state) {
   return {
-    notification: state.notifications.current
+    notification: state.notifications.current,
+    areNotificationsPending : state.notifications.pending.length > 0
   };
 }
 
