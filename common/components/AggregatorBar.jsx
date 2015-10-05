@@ -24,7 +24,7 @@ class AggregatorBar extends Component {
 			})
 		},constants.Aggregator.FLASHLENGTH);
 	}
-	shouldComponentUpdate(nextProps, nextState){
+	componentShouldUpdate(nextProps, nextState){
 		return this.props.barValue !== nextProps.barValue || 
 			   this.props.rightText !== nextProps.rightText ||
 			   this.props.leftText !== nextProps.leftText ||

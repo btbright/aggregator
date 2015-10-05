@@ -4,6 +4,7 @@ import AggregatorBar from './AggregatorBar.jsx'
 import AggregatorText from './AggregatorText.jsx'
 import constants from '../constants/App.js'
 import { levelColors, getLevel } from '../utils/levels'
+import _ from 'lodash'
 
 class Aggregator extends Component {
 	constructor(props){
@@ -11,13 +12,18 @@ class Aggregator extends Component {
 		this.state = {
 			lastMouseDown : false,
 			isClicking : false,
-			hasScheduledRetirement : false
+			hasScheduledRetirement : false,
+			flashes : []
 		}
 		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
 		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
 	}
-	shouldComponentUpdate(nextProps,prevProps){
-		return !this.props.isRetired;
+	shouldComponentUpdate(nextProps,nextState){
+		return this.props.barValue !== nextProps.barValue || 
+			   this.props.rightText !== nextProps.rightText ||
+			   this.props.leftText !== nextProps.leftText ||
+			   this.props.barColorClass !== nextProps.barColorClass ||
+			   this.state.flashes.length !== nextState.flashes.length;
 	}
 	handleOnMouseDown(){
 		this.setState({
@@ -33,7 +39,7 @@ class Aggregator extends Component {
 		this.setState({
 			isClicking : true
 		});
-		this.refs.aggregatorBar.flash();
+		this.flash();
 		setTimeout(() => {
 			if (Date.now() - this.state.lastMouseDown < constants.Aggregator.CLICKTIMEOUT) return;
 			this.setState({
@@ -51,7 +57,50 @@ class Aggregator extends Component {
 			})
 		}
 	}
+	flash(){
+		this.setState(function(previousState){
+			previousState.flashes.push("flash:"+Date.now());
+			return {
+				flashes : previousState.flashes
+			}
+		});
+		setTimeout(() => {
+			this.setState({
+				flashes : _.rest(this.state.flashes) //get array except oldest
+			})
+		},constants.Aggregator.FLASHLENGTH);
+	}
 	render(){
+		var width = this.props.barValue;
+
+		//add optional text
+		var rightText;
+		if (this.props.rightText){
+			rightText = <span className="right-text">{this.props.rightText}</span>;
+		}
+		var leftText;
+		if (this.props.leftText){
+			leftText = rightText = <span className="left-text">{this.props.leftText}</span>;
+		}
+
+		//add optional residue marker
+		var residue;
+		if (this.props.residueValue && this.props.residueColorClass){
+			var classes = classnames('bar-residue', "bar-residue-"+this.props.residueColorClass);
+			residue = <div className={classes} style={{width:this.props.residueValue + '%'}}></div>
+		}
+
+		//determine wrap class names
+		var colorClass = false;
+		if (this.props.barColor){
+			colorClass = "bar-"+this.props.barColor
+		}
+		var barWrapClasses = classnames('bar-wrap', colorClass,
+			{
+				'bar-almost-full' : this.props.barValue > 85
+			});
+
+
 		var aggregatorClassNames = classnames('aggregator', this.props.isComplete ? 'aggregator-level-'+levelColors[getLevel(this.props.residueValue)] : '' ,{
 			'aggregator-user-clicking' : this.state.isClicking,
 			'aggregator-complete' : this.props.isComplete,
@@ -59,15 +108,20 @@ class Aggregator extends Component {
 		});
 		return (
 			<div onClick={this.props.aggregatorClicked} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>
-				<AggregatorBar 
-					ref="aggregatorBar"
-					barColorClass={"bar-"+this.props.barColor} 
-					barValue={this.props.barValue} 
-					rightText={this.props.rightText}
-					leftText={this.props.leftText}
-					residueValue={this.props.residueValue} 
-					residueColorClass={"bar-residue-"+this.props.residueColorClass} />
-				<AggregatorText displayText={this.props.displayText} />
+				<div className="bar">
+					<div className={barWrapClasses}>
+						{this.state.flashes.map(function(flashKey){
+							return <div key={flashKey} style={{width:'100%',right:100-width + '%'}} className='bar-leader'></div>
+						})}
+						{residue}
+						<div className="bar-inner" style={{width:width + '%'}}></div>
+						{rightText}
+						{leftText}
+					</div> 
+				</div>
+				<div className="text-display">
+					<p>{this.props.displayText}</p>
+				</div>
 			</div>
 			);
 	}
@@ -75,7 +129,13 @@ class Aggregator extends Component {
 
 Aggregator.propTypes = {
 	aggregatorClicked : PropTypes.func,
-	isComplete : PropTypes.bool.isRequired
+	isComplete : PropTypes.bool.isRequired,
+	rightText: PropTypes.string,
+	leftText: PropTypes.string,
+	barValue: PropTypes.number.isRequired,
+	residueValue: PropTypes.number,
+	residueColorClass: PropTypes.string,
+	barColorClass: PropTypes.string
 }
 
 export default Aggregator

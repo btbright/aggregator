@@ -14,10 +14,13 @@ var ChatMessage = React.createClass({
 	},
 	getDefaultProps: function(){
 		return {
-			isAggregated : false,
 			isComplete : false,
 			aggregationLevel : ''
 		}
+	},
+	shouldUpdateComponent : function(nextProps){
+		return this.props.aggregationLevel !== nextProps.aggregationLevel,
+			   this.props.isComplete !== nextProps.isComplete;
 	},
 	render : function(){
 		var commentClasses = cx('comment','clearfix',this.props.aggregationLevel ? 'comment-aggregation-level-'+this.props.aggregationLevel : '',{
