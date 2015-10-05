@@ -16,7 +16,6 @@ class AggregatorList extends Component {
 		}
 		this.actions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.handleAggregatorClicked = this.handleAggregatorClicked.bind(this)
-		this.prepareAggregator = this.prepareAggregator.bind(this)
 		this.getActiveAggregators = this.getActiveAggregators.bind(this)
 		this.retireAggregator = this.retireAggregator.bind(this)
 		bindAggregatorListeners(this.props.dispatch);
@@ -41,9 +40,6 @@ class AggregatorList extends Component {
 	handleAggregatorClicked(e,rawId){
 		var id = rawId.substr(rawId.indexOf("$")+1);
 		this.actions.newAggregatorClick(id)
-	}
-	prepareAggregator(aggregatorData){
-		return <Aggregator retire={this.retireAggregator} aggregatorClicked={this.handleAggregatorClicked} key={aggregatorData.id} {...aggregatorData} />;
 	}
 	getActiveAggregators(){
 		return this.props.packagedAggregators.filter(aggregator => !aggregator.isRetired);
@@ -71,7 +67,9 @@ class AggregatorList extends Component {
 	render(){
 		return (
 			<div className="aggregator-list">
-				{this.props.packagedAggregators.map(this.prepareAggregator)}
+				{this.props.packagedAggregators.map(aggregatorData => {
+					return <Aggregator retire={this.retireAggregator} aggregatorClicked={this.handleAggregatorClicked} key={aggregatorData.id} {...aggregatorData} />
+				})}
 			</div>
 			)
 	}

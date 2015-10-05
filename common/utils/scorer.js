@@ -4,7 +4,7 @@ export const ballisticsParameters = {
 	THRUST_VELOCITY : 10,
 	THRUST_TIME : 200, //ms
 	MASS : 30,
-	MIN_GRAVITY : 0.12
+	MIN_GRAVITY : 0.20
 }
 
 export const maxX = 100

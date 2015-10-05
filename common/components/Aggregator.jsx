@@ -80,7 +80,7 @@ class Aggregator extends Component {
 		}
 		var leftText;
 		if (this.props.leftText){
-			leftText = rightText = <span className="left-text">{this.props.leftText}</span>;
+			leftText = <span className="left-text">{this.props.leftText}</span>;
 		}
 
 		//add optional residue marker

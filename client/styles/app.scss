@@ -200,7 +200,7 @@ body {
     .comment {
         width:100%;
         position: relative;
-        padding:5px 52px 5px 10px;
+        padding:5px 70px 5px 10px;
         box-sizing:border-box;
         cursor: pointer;
         transition:border .2s, background .07s;
@@ -265,10 +265,10 @@ body {
         }
         .comment-meta {
             margin-right:5px;
+            line-height: 18px;
             .author {
                 font-weight: bold;
                 position: relative;
-                bottom: 1px;
             }
         }
         .aggregation-summary {

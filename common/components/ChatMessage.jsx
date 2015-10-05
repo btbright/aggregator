@@ -24,7 +24,7 @@ class ChatMessage extends Component {
 		});
 		return (
 			<div onClick={this.handleClick} className={commentClasses}>
-			  <span className="comment-time"></span>
+			  <span className="comment-time">{ new Date(this.props.time).toLocaleTimeString() }</span>
 			  <p className="comment-text">
 			  	<span className="comment-meta">
 			    	<span className="author">{this.props.userName}:</span>
