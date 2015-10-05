@@ -13,6 +13,13 @@ export function retireAggregator(id){
 	}
 }
 
+export function removeAggregator(id){
+	return {
+		type : types.REMOVE_AGGREGATOR,
+		id
+	}
+}
+
 export function updateAggregatorToTime(id, time){
 	return function(dispatch, getState){
 		//var clicksPerMin = clicksPerMinSelector(getState())

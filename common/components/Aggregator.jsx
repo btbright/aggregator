@@ -23,7 +23,8 @@ class Aggregator extends Component {
 			   this.props.rightText !== nextProps.rightText ||
 			   this.props.leftText !== nextProps.leftText ||
 			   this.props.barColorClass !== nextProps.barColorClass ||
-			   this.state.flashes.length !== nextState.flashes.length;
+			   this.state.flashes.length !== nextState.flashes.length ||
+			   this.props.isRetired !== nextProps.isRetired;
 	}
 	handleOnMouseDown(){
 		this.setState({
@@ -48,9 +49,16 @@ class Aggregator extends Component {
 		},constants.Aggregator.CLICKTIMEOUT);
 	}
 	componentWillReceiveProps(nextProps){
+		//all this logic keeps state implicitly in css and this element should be
+		//moved to the reducer and the transitions should key of start and end frames
+		//this componenet should handle setting the opacity directly on the aggregator as well,
+		//mapping from 100-0 between the start and end frames
 		if (nextProps.isComplete && !this.state.hasScheduledRetirement){
 			setTimeout(()=>{
 				this.props.retire(this.props.id)
+				setTimeout(()=>{
+					this.props.remove(this.props.id)
+				},400)
 			},3500)
 			this.setState({
 				hasScheduledRetirement : true

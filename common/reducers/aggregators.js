@@ -1,4 +1,4 @@
-import { RETIRE_AGGREGATOR, UPDATE_AGGREGATOR_TO_TIME, UPDATE_AGGREGATORS, ADD_AGGREGATOR, ADD_CLICK_TO_AGGREGATOR, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
+import { REMOVE_AGGREGATOR, RETIRE_AGGREGATOR, UPDATE_AGGREGATOR_TO_TIME, UPDATE_AGGREGATORS, ADD_AGGREGATOR, ADD_CLICK_TO_AGGREGATOR, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
 import { scorer } from '../utils/scorer'
 import { newListWithReplacementFromSubreducer, newListWithReplacementFields } from '../utils/reducerTools'
 import constants from '../constants/App'
@@ -32,6 +32,8 @@ export default function aggregators(state = initialState, action) {
 		return newListWithReplacementFromSubreducer(state, action, aggregator);
 	case RETIRE_AGGREGATOR:
 		return newListWithReplacementFromSubreducer(state, action, aggregator);
+	case REMOVE_AGGREGATOR:
+		return newListWithReplacementFromSubreducer(state, action, aggregator);
 	default:
     	return state;
   	}
@@ -54,6 +56,10 @@ function aggregator(state, action){
 	case RETIRE_AGGREGATOR:
 		return Object.assign({},state,{
 			isRetired : true
+		});
+	case REMOVE_AGGREGATOR:
+		return Object.assign({},state,{
+			isRemoved : true
 		});
 	default:
 		return state;

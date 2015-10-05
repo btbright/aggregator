@@ -12,6 +12,7 @@ export function createAggregator(props){
 		x : 0,
 		isComplete : false,
 		isRetired : false,
+		isRemoved : false,
 		completedTime : 0,
 		lastServerUpdate : false
 	}

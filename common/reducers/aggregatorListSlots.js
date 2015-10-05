@@ -1,4 +1,4 @@
-import { RETIRE_AGGREGATOR, ADD_AGGREGATOR, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
+import { REMOVE_AGGREGATOR, ADD_AGGREGATOR, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
 import { newListWithReplacementAtIndex, newListWithReplacementObjectAtIndex } from '../utils/reducerTools'
 
 export default function aggregatorListSlots(state = [], action){
@@ -9,7 +9,7 @@ export default function aggregatorListSlots(state = [], action){
 				return newListWithReplacementAtIndex(state, i, () => ({ active: true, id: action.aggregator.id }) );
 			}
 		}
-	case RETIRE_AGGREGATOR:
+	case REMOVE_AGGREGATOR:
 		var index = state.findIndex(slot => slot.id === action.id);
 		var newList = [
 		  ...state.slice(0, index),
