@@ -15,9 +15,6 @@ if (true){
 	simulator.run();
 }
 
-
-
-
 const rootElement = document.getElementById(constants.React.ROOTELEMENTID);
 
 React.render(

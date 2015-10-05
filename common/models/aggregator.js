@@ -2,7 +2,7 @@ import shortid from 'shortid'
 
 export function createAggregator(props){
 	return {
-		id: shortid.generate(),
+		id: props.id || shortid.generate(),
 		createdTime: props.createdTime || Date.now(),
 		userName : props.user,
 		objectType : props.objectType,

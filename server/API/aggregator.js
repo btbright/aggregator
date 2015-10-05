@@ -41,7 +41,7 @@ function Aggregators(io, messenger){
 		});
 	}
 
-	setInterval(sendUpdatedAggregators, 250)
+	setInterval(sendUpdatedAggregators, 50)
 	function sendUpdatedAggregators(){
 		Object.keys(aggregatorState).forEach(roomId => {
 			var updateObjects = [];
@@ -69,7 +69,7 @@ function Aggregators(io, messenger){
 		//TODO - compare to last click instead of Date.now(), but haven't implemented state on server yet
 		var lastClick = false;
 		socket.on('aggregator:click:new',function(requestedAggregatorId, click){
-			if (lastClick && (Date.now() - lastClick < constants.Aggregator.CLICKTHRESHOLD)) return;
+			if (lastClick && (click - lastClick < constants.Aggregator.CLICKTHRESHOLD)) return;
 			lastClick = click;
 			if (aggregatorState[socket.currentRoom] && aggregatorState[socket.currentRoom][requestedAggregatorId]){
 				aggregatorState[socket.currentRoom][requestedAggregatorId].clicks.push(click);

@@ -21,6 +21,10 @@ export default class ActivitySimulator {
 		this.stop = this.stop.bind(this)
 		this.addComment = this.addComment.bind(this)
 		this.clickComment = this.clickComment.bind(this)
+		this.supportAggregator = this.supportAggregator.bind(this)
+		this.clickAggy = this.clickAggy.bind(this)
+		this.currentClickingAggregatorId = false;
+		this.clickingHandle = false;
 
 		var nameIndex = Math.floor(Math.random() * simulationData.names.length);
 		this.fakeName = simulationData.names[nameIndex]+Math.floor(Math.random()*10)+1;
@@ -30,8 +34,11 @@ export default class ActivitySimulator {
 		if (Math.random() > 0.9){
 			this.addComment()
 		}
-		if (Math.random() > 0.8){
+		if (Math.random() > 0.95){
 			this.clickComment()
+		}
+		if (Math.random() > 0.6){
+			this.supportAggregator()
 		}
 	}
 	run(){
@@ -67,7 +74,20 @@ export default class ActivitySimulator {
 		});
 		if (aggregators.length > 0){
 			var aggregatorIndex = Math.floor(Math.random() * aggregators.length);
-			this.aggregatorActions.newAggregatorClick(aggregators[aggregatorIndex].id);
+			this.currentClickingAggregatorId = aggregators[aggregatorIndex].id;
+			this.clickAggy(this.currentClickingAggregatorId)
 		}
+	}
+
+	clickAggy(id){
+		if (this.currentClickingAggregatorId !== id) return
+		var aggregator = this.getState().aggregators.find(a => {
+			return a.id === id;
+		});
+		if (!aggregator || aggregator.isComplete) return;
+		this.aggregatorActions.newAggregatorClick(id);
+		setTimeout(()=>{
+			this.clickAggy(id)
+		},210)
 	}
 }

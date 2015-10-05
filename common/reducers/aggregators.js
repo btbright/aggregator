@@ -10,7 +10,7 @@ export default function aggregators(state = initialState, action) {
 	switch (action.type) {
 	case ADD_AGGREGATOR:
 		//if an aggregator already exists for the object, don't add it
-		if (state.some((aggregator) => aggregator.objectId === action.aggregator.objectId)) return state;
+		if (state.some((a) => a.objectId === action.aggregator.objectId)) return state;
 		return [action.aggregator,...state]
 	//set calculated aggregator state to time based on click history
 	case UPDATE_AGGREGATOR_TO_TIME:

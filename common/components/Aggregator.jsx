@@ -24,7 +24,8 @@ class Aggregator extends Component {
 			   this.props.leftText !== nextProps.leftText ||
 			   this.props.barColorClass !== nextProps.barColorClass ||
 			   this.state.flashes.length !== nextState.flashes.length ||
-			   this.props.isRetired !== nextProps.isRetired;
+			   this.props.isRetired !== nextProps.isRetired ||
+			   this.props.isComplete !== nextProps.isComplete;
 	}
 	handleOnMouseDown(){
 		this.setState({
