@@ -21,7 +21,7 @@ class RoomInfo extends Component {
 		}
 		var clickers;
 		if (this.props.clickers){
-			clickers = <span className="user-count">{this.props.clickers} active clickers</span>
+			clickers = <span className="user-count">~{this.props.clickers} active clickers</span>
 		}
 		return (
 			<div className="room-info">

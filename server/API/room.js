@@ -83,12 +83,6 @@ function Room(io, messenger){
 			if (!roomInfo[socket.currentRoom]) return;
 			if (roomInfo[socket.currentRoom].names) roomInfo[socket.currentRoom].names.splice(roomInfo[socket.currentRoom].names.indexOf(socket.userName),1);
 			roomInfo[socket.currentRoom].userCount--;
-			if (roomInfo[socket.currentRoom].activeClickers && roomInfo[socket.currentRoom].activeClickers[socket.id]){
-				delete roomInfo[socket.currentRoom].activeClickers[socket.id];
-				var activeClickerCount = roomInfo[socket.currentRoom].activeClickers.length;
-				messenger.emit('roomInfo:activeClickers:update', socket.currentRoom, activeClickerCount)
-				io.to(socket.currentRoom).emit('roomInfo:activeClickers:update', activeClickerCount)
-			}
 			io.to(socket.currentRoom).emit('roomInfo:userCount:update', roomInfo[socket.currentRoom].userCount);
 		});
 	});

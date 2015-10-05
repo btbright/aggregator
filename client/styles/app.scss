@@ -245,7 +245,7 @@ body {
             }
         }
         &:hover {
-            background: #e7e7e7;
+            background: #ededed;
         }
         &:first-child {
             margin-top:0;
@@ -414,8 +414,7 @@ body {
 }
 
 .aggregator-list {
-    max-height:500px;
-    overflow-y: auto;
+    min-height:500px;
     float:right;
 }
 .aggregator {

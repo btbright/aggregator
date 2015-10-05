@@ -100,9 +100,16 @@ export function addClickToAggregator(id, click){
 }
 
 export function addAggregator(aggregator){
-	return {
-		type : types.ADD_AGGREGATOR,
-		aggregator : aggregator
+	return function(dispatch, getState){
+		var aggregatorBaseObject = false;
+		if (aggregator.objectType === 'message'){
+			aggregatorBaseObject = getState().chatMessages.find(m => m.id === aggregator.objectId);
+		}
+		if (!aggregatorBaseObject) return;
+		dispatch({
+			type : types.ADD_AGGREGATOR,
+			aggregator : aggregator
+		})
 	}
 }
 
