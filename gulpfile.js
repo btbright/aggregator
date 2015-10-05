@@ -11,7 +11,8 @@ var gulp = require('gulp'),
     buffer = require('vinyl-buffer'),
     source = require('vinyl-source-stream'),
     sourcemaps = require('gulp-sourcemaps'),
-    packageConfig = require('./package.json');
+    packageConfig = require('./package.json'),
+    envify = require('envify/custom');
 
 
 
@@ -44,6 +45,9 @@ var customOpts = {
 var opts = assign({}, watchify.args, customOpts);
 
 var b = watchify(browserify(opts)); 
+b.transform(envify({
+  NODE_ENV: 'production'
+}))
 b.on('update', bundleJS);
 b.on('log', gutil.log);
 

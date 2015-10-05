@@ -17,9 +17,9 @@ const joinedMessageAggregatorSelector = createSelector(
 			var chatMessage = chatMessages.find((message) => message.id === aggregator.objectId);
 			return {
 				id : aggregator.id,
-				maxValue : aggregator.maxValue,
+				maxValue : Math.round(aggregator.maxValue * 10) / 10,
 				clicks : aggregator.clicks,
-				x : aggregator.x,
+				x : Math.round(aggregator.x * 10) / 10,
 				text : chatMessage.text,
 				userName : chatMessage.userName,
 				time : chatMessage.time,
@@ -27,7 +27,7 @@ const joinedMessageAggregatorSelector = createSelector(
 				isComplete : aggregator.isComplete,
 				isRetired : aggregator.isRetired,
 				completedTime : aggregator.completedTime,
-				velocity : aggregator.velocity
+				velocity : aggregator.velocity ? Math.round(aggregator.velocity * 10) / 10 : aggregator.velocity
 			}
 		});
 	});

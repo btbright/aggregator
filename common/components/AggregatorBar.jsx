@@ -24,6 +24,13 @@ class AggregatorBar extends Component {
 			})
 		},constants.Aggregator.FLASHLENGTH);
 	}
+	shouldComponentUpdate(nextProps, nextState){
+		return this.props.barValue !== nextProps.barValue || 
+			   this.props.rightText !== nextProps.rightText ||
+			   this.props.leftText !== nextProps.leftText ||
+			   this.props.barColorClass !== nextProps.barColorClass ||
+			   this.state.flashes.length !== nextState.flashes.length;
+	}
 	render(){
 		var width = this.props.barValue;
 

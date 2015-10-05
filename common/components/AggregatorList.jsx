@@ -24,10 +24,19 @@ class AggregatorList extends Component {
 		this.stop = this.stop.bind(this)
 	}
 	componentDidMount() {
-		this.start()
+		if (this.props.activeAggregators.length > 0){
+			this.start()
+		}
 	}
 	componentWillUnmount(){
 		this.stop()
+	}
+	componentWillReceiveProps(nextProps){
+		if (nextProps.activeAggregators.length === 0){
+			this.stop()
+		} else if(!this.state.frameId) {
+			this.start()
+		}
 	}
 	handleAggregatorClicked(e,rawId){
 		var id = rawId.substr(rawId.indexOf("$")+1);
@@ -44,6 +53,7 @@ class AggregatorList extends Component {
 	}
 	start() {
 		var frameId = requestAnimationFrame(() => this.start());
+		this.setState({ frameId: frameId });
 		var lastTime = this.state.performanceTime;
 
 		//run animations on in progresss aggregators

@@ -11,12 +11,27 @@ export default function aggregatorListSlots(state = [], action){
 		}
 	case RETIRE_AGGREGATOR:
 		var index = state.findIndex(slot => slot.id === action.id);
-		return [
+		var newList = [
 		  ...state.slice(0, index),
 		  ({active : false, id : action.id }),
 		  ...state.slice(index + 1)
-		]
+		];
+
+		var lastFilledSlotIndex = findLastFilledSlot(newList);
+		if (lastFilledSlotIndex !== false){
+			return [ ...newList.slice(0, lastFilledSlotIndex+1) ]
+		}
+		return []
 	default:
 		return state;
 	}
+}
+
+function findLastFilledSlot(slots){
+	for (var i = slots.length - 1; i >= 0; i--) {
+		if (slots[i].active){
+			return i;
+		}
+	};
+	return false;
 }

@@ -70,12 +70,10 @@ class Chat extends Component {
 					if (!message.aggregationLevel){
 						this.aggregatorActions.newAggregator("message",message.id);
 						this.notificationActions.addNotification(`Your message has been combined with ${message.userName}'s: ${message.text}`,"informative");
-						console.log();
 					//if the message exists but it's already aggregating
 					} else {
 						this.aggregatorActions.newAggregatorClick(message.aggregatorId);
 						this.notificationActions.addNotification(`Your message has been counted as support for ${message.userName}'s: ${message.text}`,"informative");
-						console.log();
 					}
 					return;
 				}
