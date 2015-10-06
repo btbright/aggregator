@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import constants from '../common/constants/App'
 import configureStore from '../common/store/configureStore';
-import App from '../common/containers/App';
+import App from '../common/containers/app';
 import ActivitySimulator from './simulation/ActivitySimulator'
 
 
@@ -10,7 +10,7 @@ const initialState = window.__INITIAL_STATE__;
 
 const store = configureStore(initialState);
 
-if (true){
+if (false){
 	var simulator = new ActivitySimulator(store.getState, store.dispatch);
 	simulator.run();
 }

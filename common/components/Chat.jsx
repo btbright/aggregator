@@ -64,7 +64,8 @@ class Chat extends Component {
 		if (!text) return;
 
 		if (this.props.user.userName){
-			var message = this.props.chatMessages.find((m) => m.text.toLowerCase() === text.toLowerCase());
+			//find the most recent message with the same text
+			var message = Array.prototype.slice.call(this.props.chatMessages).reverse().find((m) => m.text.toLowerCase() === text.toLowerCase());
 			if (message){
 				var messageAggregator = this.props.aggregatorData.find(a => a.messageId === message.id);
 				if (messageAggregator && messageAggregator.isComplete){
@@ -100,7 +101,7 @@ class Chat extends Component {
 		});
 		return (
 			<div className={chatClassNames} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp}>
-			  <ChatMessageList aggregatorData={this.props.aggregatorData} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
+			  <ChatMessageList isClicking={this.state.isClicking} aggregatorData={this.props.aggregatorData} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
 			  <ChatMessageForm placeholder={ this.props.user.userName ? 'Enter a comment...' : 'Enter a user name here to comment...' } onNewMessage={this.handleMessageFormSubmit} />
 			</div>
 			);

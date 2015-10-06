@@ -7,7 +7,7 @@ class ChatMessageList extends Component {
 	}
 	componentDidUpdate(prevProps){
 		//if a message has been added, scroll to bottom of message list
-		if (prevProps.messages.length !== this.props.messages.length){
+		if (prevProps.messages.length !== this.props.messages.length && !this.props.isClicking){
 			let chatList = React.findDOMNode(this.refs.chatMessageList);
 			chatList.scrollTop = chatList.scrollHeight;
 		}

@@ -4,7 +4,6 @@ import { submitAggregator, submitAggregatorClick } from '../apiutils/aggregators
 import { clicksPerMinSelector } from '../selectors/StatsSelectors.js'
 import { scorer, generateScore, calculateVelocity, calculateClickrateMulitplier, activeClicks } from '../utils/scorer'
 import constants from '../constants/App'
-import Parallel from 'paralleljs'
 
 export function retireAggregator(id){
 	return {

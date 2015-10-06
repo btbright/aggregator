@@ -16,7 +16,7 @@ import AggregatorAPI from './API/aggregator'
 import { EventEmitter } from 'events'
 
 const app = new Express();
-const port = 3000;
+const port = 80;
 
 var server = http.Server(app);
 
