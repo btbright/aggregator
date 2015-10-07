@@ -12,7 +12,8 @@ var gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     sourcemaps = require('gulp-sourcemaps'),
     packageConfig = require('./package.json'),
-    envify = require('envify/custom');
+    envify = require('envify/custom'),
+    exec = require('child_process').exec;
 
 
 
@@ -33,8 +34,21 @@ gulp.task('styles', function() {
         .pipe(gulp.dest(packageConfig.dest.styles));
 });
 
-gulp.task('scripts', function(){
-    bundleJS();
+gulp.task('scripts', function(done){
+    bundleJS(done);
+});
+
+gulp.task('test', ['run-test'], function(){
+    gulp.watch(packageConfig.paths.js,['run-test']);
+    gulp.watch(packageConfig.paths.tests,['run-test']);
+});
+
+gulp.task('run-test', function(done){
+    exec('npm test', function (err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        done();
+      });
 });
 
 var customOpts = {
@@ -51,7 +65,7 @@ b.transform(envify({
 b.on('update', bundleJS);
 b.on('log', gutil.log);
 
-function bundleJS() {
+function bundleJS(cb) {
   return b.bundle()
     // log errors if they happen
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
@@ -63,5 +77,6 @@ function bundleJS() {
     .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
        // Add transformation tasks to the pipeline here.
     .pipe(sourcemaps.write('./')) // writes .map file
-    .pipe(gulp.dest(packageConfig.dest.scripts));
+    .pipe(gulp.dest(packageConfig.dest.scripts))
+    .on('end', cb);
 }

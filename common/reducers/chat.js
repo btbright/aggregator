@@ -2,7 +2,7 @@ import { ADD_CHAT_MESSAGE, VOTE_CHAT_MESSAGE, UPDATE_CHAT_MESSAGE_ID } from '../
 import { newListWithReplacementFields } from '../utils/reducerTools'
 
 const initialState = [];
-
+ 
 export default function chatMessages(state = initialState, action) {
 	switch (action.type) {
 	case ADD_CHAT_MESSAGE:
