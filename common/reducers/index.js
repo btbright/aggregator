@@ -5,14 +5,16 @@ import aggregatorListSlots from './aggregatorListSlots'
 import room from './room'
 import user from './user'
 import notifications from './notifications'
+import scrubbableReducerFactory from './scrubbableReducerFactory'
 
-const rootReducer = combineReducers({
-  chatMessages,
-  aggregators,
-  aggregatorListSlots,
-  room,
-  user,
-  notifications
+let scrubbableReducers = scrubbableReducerFactory({chatMessages, aggregators, room});
+
+const reducers = Object.assign(scrubbableReducers,{
+	aggregatorListSlots,
+	user,
+	notifications
 });
+
+const rootReducer = combineReducers(reducers);
 
 export default rootReducer

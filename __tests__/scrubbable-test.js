@@ -62,7 +62,7 @@ const addExample = {
 
 describe('scrubbable', () => {
 
-	function reflector(state = [], action){
+	function reflector(state = Immutable.List(), action){
 		return state;
 	}
 
@@ -89,7 +89,7 @@ describe('scrubbable', () => {
 		const simpleState = simpleReflector(undefined, {})
 
 		expect(Immutable.is(simpleState.get('updates'), Immutable.Map())).toBeTruthy();
-		expect(simpleState.get('present')).toEqual(jasmine.any(Array))
+		expect(Immutable.List.isList(simpleState.get('present'))).toBeTruthy();
 	});
 
 	it('adds updates', () => {
@@ -128,17 +128,22 @@ describe('scrubbable', () => {
 		switch(action.type){
 		case "ADD_SIMPLE":
 			return state.push(Immutable.fromJS(action.entity))
+		case "REMOVE_SIMPLE":
+			return state.filter(item => item[action.keyField] !== action.key);
+		case "UPDATE_SIMPLE":
+			return Immutable.fromJS([{ id : 235235, x : 5.23, y : 9, state : "complete" }]);
 		default:
 			return state;
 		}
 	}
 	const simpleReducer = scrubbable(simple);
 
-	it('doesn\'t effect the enhanced reducers\' output', () => {
+	it('doesn\'t effect the enhanced reducer\'s output', () => {
 		const updateAction = {
 			type : "ADD_SIMPLE",
 			time : 1444178040462,
 			keyField : "id",
+			key : 235235,
 			entity : {
 				id : 235235,
 				testing : "oh hai"
@@ -152,12 +157,12 @@ describe('scrubbable', () => {
 		expect(newState.get('present').first().get('testing')).toBe(updateAction.entity.testing);
 	})
 
-	it('updates an add updates\' information when run as action', () => {
-
+	it('updates an add update\'s information when run as action', () => {
 		const updateAction = {
 			type : "ADD_SIMPLE",
 			time : 1444178040462,
 			keyField : "id",
+			key : 235235,
 			entity : {
 				id : 235235,
 				testing : "oh hey"
@@ -171,6 +176,106 @@ describe('scrubbable', () => {
 		expect(newState.getIn(['updates', updateAction.time.toString()]).size).toBe(1);
 		expect(newState.getIn(['updates', updateAction.time.toString()]).first()).toBeDefined();
 		expect(newState.getIn(['updates', updateAction.time.toString()]).first().get('key')).toBe(235235);
+	})
+
+	it('doesn\'t effect the enhanced reducer\'s output', () => {
+		const updateAction = {
+			type : "REMOVE_SIMPLE",
+			time : 1444178040462,
+			keyField : "id",
+			key : 235235
+		}
+
+		const initialState = Immutable.fromJS({present : [{id : 235235, testing : "oh hai"}], updates : { 1444178040462 : [updateAction] }});
+
+		var newState = simpleReducer(initialState, updateAction)
+		expect(newState.get('present').size).toBe(1);
+		expect(newState.get('present').first().get('testing')).toBe("oh hai");
+	})
+
+	it('updates a remove update\'s information when run as action', () => {
+		const updateAction = {
+			type : "REMOVE_SIMPLE",
+			time : 1444178040462,
+			keyField : "id",
+			key : 235235
+		}
+
+		const initialState = Immutable.fromJS({present : [{id : 235235, testing : "oh hai"}], updates : { 1444178040462 : [updateAction] }});
+
+		var newState = simpleReducer(initialState, updateAction)
+		expect(newState.get('updates').size).toBe(1);
+		expect(newState.getIn(['updates', updateAction.time.toString()]).size).toBe(1);
+		expect(newState.getIn(['updates', updateAction.time.toString()]).first()).toBeDefined();
+		expect(newState.getIn(['updates', updateAction.time.toString()]).first().getIn(['entity','testing'])).toBe("oh hai");
+	})
+
+	it('doesn\'t effect the enhanced reducer\'s output', () => {
+		const updateAction = {
+			type : "UPDATE_SIMPLE",
+			time : 1444178040462,
+			keyField : "id",
+			key : 235235,
+			mutations : [
+				{
+					type : "addition",
+					property : "x",
+					value : .23
+				},
+				{
+					type : "addition",
+					property : "y",
+					value : 2
+				},
+				{
+					type : "replacement",
+					property : "state",
+					value : "complete"
+				}
+			]
+		}
+
+		const initialState = Immutable.fromJS({present : [{ id : 235235, x : 5, y : 7, state : "initializing" }], updates : { 1444178040462 : [updateAction] }});
+
+		var newState = simpleReducer(initialState, updateAction)
+		expect(newState.get('present').size).toBe(1);
+		expect(newState.get('present').first().get('x')).toBe(5.23);
+		expect(newState.get('present').first().get('y')).toBe(9);
+		expect(newState.get('present').first().get('state')).toBe("complete");
+	})
+
+	it('adds needed mutation information to the update for reversing', () => {
+		const updateAction = {
+			type : "UPDATE_SIMPLE",
+			time : 1444178040462,
+			keyField : "id",
+			key : 235235,
+			mutations : [
+				{
+					type : "addition",
+					property : "x",
+					value : .23
+				},
+				{
+					type : "addition",
+					property : "y",
+					value : 2
+				},
+				{
+					type : "replacement",
+					property : "state",
+					value : "complete"
+				}
+			]
+		}
+
+		const initialState = Immutable.fromJS({present : [{ id : 235235, x : 5, y : 7, state : "initializing" }], updates : { 1444178040462 : [updateAction] }});
+
+		var newState = simpleReducer(initialState, updateAction)
+		expect(newState.get('updates').size).toBe(1);
+		expect(newState.getIn(['updates', updateAction.time.toString()]).size).toBe(1);
+		expect(newState.getIn(['updates', updateAction.time.toString()]).first()).toBeDefined();
+		expect(newState.getIn(['updates', updateAction.time.toString()]).first().getIn(['mutations',2,'replaced',0])).toBe("initializing");
 	})
 
 });    

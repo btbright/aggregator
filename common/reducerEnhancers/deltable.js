@@ -1,10 +1,10 @@
 import { Map, List, fromJS, Seq } from 'immutable'
 
 
-export default function deltable(reducer){
+export default function deltable(reducer, opts){
 
 	const initialState = reducer(undefined, {});
-	const namespace = `_${reducer.name.toUpperCase()}`;
+	const namespace = `_${opts && opts.namespace ? opts.namespace : reducer.name.toUpperCase()}`;
 
 	return function(state = initialState, action){
 		if (!action || !action.type) return state;
