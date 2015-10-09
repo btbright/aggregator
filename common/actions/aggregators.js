@@ -1,7 +1,6 @@
 import * as types from '../constants/ActionTypes'
 import { createAggregator } from '../models/aggregator'
 import { submitAggregator, submitAggregatorClick } from '../apiutils/aggregators'
-import { clicksPerMinSelector } from '../selectors/StatsSelectors.js'
 import { scorer, generateScore, calculateVelocity, calculateClickrateMulitplier, activeClicks } from '../utils/scorer'
 import constants from '../constants/App'
 

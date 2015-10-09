@@ -4,7 +4,7 @@ import { scorer } from '../../common/utils/scorer'
 import { roomInfo } from './room'
 
 function Aggregators(io, messenger){
-
+	/*
 	var activeClickers = {}
 
 	messenger.on('roomInfo:activeClickers:update', function(roomId, activeClickerCount){
@@ -78,6 +78,7 @@ function Aggregators(io, messenger){
 			socket.broadcast.to(socket.currentRoom).emit('aggregator:click:new',requestedAggregatorId, click);
 		});
 	});
+*/
 }
 
 export default Aggregators

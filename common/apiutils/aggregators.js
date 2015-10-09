@@ -1,23 +1,14 @@
-import { bindActionCreators } from 'redux'
-import * as AggregatorActions from '../actions/aggregators'
+import * as actions from '../actions/aggregators'
+import { ADD_AGGREGATOR, ADD_CLICK_TO_AGGREGATOR } from '../constants/ActionTypes'
 
-export function bindAggregatorListeners(dispatch){
-	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
-	var actions = bindActionCreators(AggregatorActions, dispatch);
-	var socket = io();
-	socket.on('aggregator:new', actions.addAggregator);
-	socket.on('aggregator:click:new', function(id, click){
-		actions.addClickToAggregator(id, Date.now())
-	})
-	socket.on('aggregators:update', actions.makeUpdateAggregatorsAction);
-}
-
-export function submitAggregator(aggregator){
-	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
-	io().emit('aggregator:new',aggregator);
-}
-
-export function submitAggregatorClick(aggregatorId, click){
-	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
-	io().emit('aggregator:click:new',aggregatorId, click);
+export default {
+	remoteToLocalMap : {
+		'aggregator:new' : actions.addAggregator,
+		'aggregators:update' : actions.makeUpdateAggregatorsAction,
+		'aggregator:click:new' : (id, click) => actions.addClickToAggregator(id, Date.now())
+	},
+	localToRemoteMap : {
+		[ADD_AGGREGATOR] : (action) => ({ event : 'aggregator:new', data : [action.aggregator]}),
+		[ADD_CLICK_TO_AGGREGATOR] : (action) => ({ event : 'aggregator:click:new', data : [action.aggregatorId, action.click]})
+	}
 }

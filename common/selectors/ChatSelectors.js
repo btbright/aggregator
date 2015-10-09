@@ -1,6 +1,7 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
 import { levelColors, getLevel } from '../utils/levels'
 import _ from 'lodash';
+import { toJS } from 'immutable'
 
 const chatMessagesSelector = (state) => state.chatMessages
 const aggregatorsSelector = (state) => state.aggregators
@@ -22,18 +23,13 @@ const chatRelevantAggregatorDataSelector = createSelector(
 		})
 	});
 
-const createDeepEqualSelector = createSelectorCreator(
-  defaultMemoize,
-  _.isEqual
-);
-
 //this selector handles the message->aggregator join
-export const chatMessagesWithAggregationInfoSelector = createDeepEqualSelector(
-	[chatMessagesSelector, chatRelevantAggregatorDataSelector, userSelectorSelector],
-	(chatMessages, aggregators, user) => {
+export const chatMessagesWithAggregationInfoSelector = createSelector(
+	[chatMessagesSelector, userSelectorSelector],
+	(chatMessages, user) => {
 		return {
-			chatMessages : chatMessages,
-			aggregatorData : aggregators,
+			chatMessages : chatMessages.get('present'),
+			aggregatorData : [],
 			user
 		}
 	});

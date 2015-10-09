@@ -15,7 +15,6 @@ class App extends Component {
 				<RoomInfo />
 				<UpperNotificationBar />
 				<div className="primary-content-wrap clearfix">
-					<AggregatorList />
 					<Chat />
 				</div>
 			</div>

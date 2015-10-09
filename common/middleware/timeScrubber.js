@@ -8,7 +8,6 @@ import { List } from 'immutable';
 	reducers recieve all update actions, so they need to be dispatched. console.log(
 */
 export default function timeScrubber(opts) {
-	
 
 	return store => next => action => {
 	  //intercepts only change time actions

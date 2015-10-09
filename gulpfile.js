@@ -62,7 +62,9 @@ var b = watchify(browserify(opts));
 b.transform(envify({
   NODE_ENV: 'production'
 }))
-b.on('update', bundleJS);
+b.on('update', function(){
+    bundleJS(function(){})
+});
 b.on('log', gutil.log);
 
 function bundleJS(cb) {
@@ -78,5 +80,9 @@ function bundleJS(cb) {
        // Add transformation tasks to the pipeline here.
     .pipe(sourcemaps.write('./')) // writes .map file
     .pipe(gulp.dest(packageConfig.dest.scripts))
-    .on('end', cb);
+    .on('end', function(){
+        if (typeof cb !== 'undefined'){
+            cb()
+        } 
+    });
 }

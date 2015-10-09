@@ -1,5 +1,4 @@
 import * as types from '../constants/ActionTypes'
-import { requestNewRoom } from '../apiutils/room'
 
 export function updateUserCount(userCount){
 	return {
@@ -16,7 +15,6 @@ export function updateActiveClickerCount(activeClickerCount){
 }
 
 export function requestUpdateRoom(newRoom){
-	requestNewRoom(newRoom);
 	return {
 		type: types.UPDATE_ROOM,
 		newRoom

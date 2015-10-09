@@ -94,10 +94,26 @@ describe('scrubbable', () => {
 
 	it('adds updates', () => {
 		const updateAction = {
-			type : actionTypes.ADD_UPDATE,
-			namespace : 'reflector',
+			type : 'ADD_REFLECTOR_UPDATES',
 			time : 1444178040462,
-			update : removeUpdate
+			updates: [removeUpdate]
+		}
+
+		var newState = simpleReflector(undefined, updateAction);
+		expect(newState.get('updates').size).toBe(1);
+		expect(Immutable.List.isList(newState.getIn(['updates',updateAction.time]))).toBeTruthy();
+		expect(newState.getIn(['updates',updateAction.time]).size).toBe(1);
+		expect(Immutable.Map.isMap(newState.getIn(['updates',updateAction.time]).first())).toBeTruthy();
+		
+		expect(newState.getIn(['updates',updateAction.time]).first().get('key')).toEqual(removeUpdate.key);
+		expect(newState.getIn(['updates',updateAction.time]).first().getIn(['object','userName'])).toEqual(removeUpdate.object.userName);
+	})
+
+	it('adds mulitple updates', () => {
+		const updateAction = {
+			type : 'ADD_REFLECTOR_UPDATES',
+			time : 1444178040462,
+			updates : [removeUpdate]
 		}
 
 		var newState = simpleReflector(undefined, updateAction);
@@ -112,10 +128,9 @@ describe('scrubbable', () => {
 
 	it('doesnt add updates from the wrong namespace', () => {
 		const updateActionWrongNamespace = {
-			type : actionTypes.ADD_UPDATE,
-			namespace : 'notReflector',
+			type : 'ADD_NOTREFLECTOR_UPDATES',
 			time : 1444178040462,
-			update : removeUpdate
+			updates : [removeUpdate]
 		}
 
 		var finalState = simpleReflector(undefined, updateActionWrongNamespace)

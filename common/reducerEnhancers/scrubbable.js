@@ -1,4 +1,4 @@
-import { ADD_UPDATE, MOVE_TO_TIME } from '../constants/ActionTypes'
+import { ADD_UPDATES, MOVE_TO_TIME } from '../constants/ActionTypes'
 import { Map, List, fromJS } from 'immutable'
 
 export default function scrubbable(reducer, opts){
@@ -8,7 +8,7 @@ export default function scrubbable(reducer, opts){
 		present : reducer(undefined, {}),
 		updates : Map()
 	});
-	const namespace = `_${opts && opts.namespace ? opts.namespace : reducer.name.toUpperCase()}`;
+	const namespace = `${opts && opts.namespace ? opts.namespace.toUpperCase() : reducer.name.toUpperCase()}`;
     
 	return function(state = initialState, action){
 		if (!action || !action.type) return state;
@@ -18,11 +18,15 @@ export default function scrubbable(reducer, opts){
 		}
 
 		switch(action.type){
-		case ADD_UPDATE:
-			if (action.namespace !== reducer.name) return state;
-			return state.updateIn(['updates',action.time], List(), updates => updates.push(fromJS(action.update)));
+		case `ADD_${namespace}_UPDATES`:
+			return standardUpdate(reducer, state, action,(updateState) => {
+				updateState.updateIn(['updates',action.time], List(), updates => {
+					const newObj = updates.concat(fromJS(action.updates))
+					return newObj;
+				})
+			});
 
-		case `REMOVE${namespace}`:
+		case `REMOVE_${namespace}`:
 			const removeUpdateIndex = getUpdateIndex(state, action.time.toString(), action.key);
 			const currentEntity = getReducerEntity(reducerState, action.key, action.keyField);
 
@@ -32,7 +36,7 @@ export default function scrubbable(reducer, opts){
 				}
 			});
 
-		case `UPDATE${namespace}`:
+		case `UPDATE_${namespace}`:
 			const updateUpdateIndex = getUpdateIndex(state, action.time.toString(), action.key);
 			const currentEntityUpdate = getReducerEntity(reducerState, action.key, action.keyField);
 

@@ -1,6 +1,5 @@
 import { Map, List, fromJS, Seq } from 'immutable'
 
-
 export default function deltable(reducer, opts){
 
 	const initialState = reducer(undefined, {});
@@ -33,7 +32,7 @@ export default function deltable(reducer, opts){
 				}))
 			}
 		default:
-			return state;
+			return reducer(state, action);
 		}
 	}
 }

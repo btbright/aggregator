@@ -1,13 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { bindRoomListeners } from '../apiutils/room'
 import { requestUpdateRoom } from '../actions/room'
-import { clicksPerMinSelector, messagesPerMinSelector } from '../selectors/StatsSelectors.js';
 
 class RoomInfo extends Component {
 	constructor(props){
 		super(props)
-		bindRoomListeners(this.props.dispatch);
 		this.props.dispatch(requestUpdateRoom(this.props.name))
 	}
 	render(){

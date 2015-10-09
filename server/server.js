@@ -27,7 +27,7 @@ app.use('/r/:id',handleRender);
 
 var messenger = new EventEmitter();
 
-ChatAPI(io, messenger)
+ChatAPI(io)
 RoomAPI(io, messenger)
 AggregatorAPI(io, messenger)
 

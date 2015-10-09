@@ -1,28 +1,21 @@
-import { bindActionCreators } from 'redux'
-import * as RoomActions from '../actions/room'
-import * as UserActions from '../actions/user'
-import * as NotificationActions from '../actions/notifications'
+import * as actions from '../actions/room'
+import * as userActions from '../actions/user'
+import * as notificationActions from '../actions/notifications'
+import { UPDATE_ROOM, UPDATE_USER_NAME } from '../constants/ActionTypes'
 
-export function bindRoomListeners(dispatch){
-	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
-	var actions = bindActionCreators(RoomActions, dispatch);
-	var userActions = bindActionCreators(UserActions, dispatch);
-	var notificationActions = bindActionCreators(NotificationActions, dispatch);
-	var socket = io();
-	socket.on('roomInfo:userCount:update', actions.updateUserCount);
-	socket.on('error:user:name:change', function(error){
-		userActions.removeUserName();
-		notificationActions.addNotification(error, "error");
-	});
-	socket.on('roomInfo:activeClickers:update', actions.updateActiveClickerCount)
-}
-
-export function requestNewRoom(newRoom, oldRoom){
-	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
-	io().emit("room:change",{newRoom, oldRoom});
-}
-
-export function requestNameChange(name){
-	if (typeof io === "undefined") return; //only bind listeners on client (better way to do this?)
-	io().emit("user:name:change", name);
+export default {
+	remoteToLocalMap : {
+		'room:userCount:update' : actions.updateUserCount,
+		'room:activeClickers:update' : actions.updateActiveClickerCount,
+		'error:user:name:change' : function(error) {
+			return [
+				userActions.removeUserName(), 
+				notificationActions.addNotification(error, "error")
+				]
+		}
+	},
+	localToRemoteMap : {
+		[UPDATE_ROOM] : (action) => ({ event : 'room:change', data : [{ newRoom : action.newRoom, oldRoom : action.oldRoom }]}),
+		[UPDATE_USER_NAME] : (action) => ({ event : 'user:name:change', data : [action.userName]}),
+	}
 }

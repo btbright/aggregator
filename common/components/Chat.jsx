@@ -9,8 +9,8 @@ import * as NotificationActions from '../actions/notifications'
 import * as UserActions from '../actions/user'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { bindChatListeners } from '../apiutils/chat'
 import { chatMessagesWithAggregationInfoSelector } from '../selectors/ChatSelectors.js';
+import { createChatMessage } from '../models/chatMessage'
 
 class Chat extends Component {
 	constructor(props){
@@ -27,7 +27,6 @@ class Chat extends Component {
 		this.aggregatorActions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.userActions = bindActionCreators(UserActions, this.props.dispatch);
 		this.notificationActions = bindActionCreators(NotificationActions, this.props.dispatch);
-		bindChatListeners(this.props.dispatch);
 	}
 	handleOnMouseDown(){
 		this.setState({
@@ -54,22 +53,25 @@ class Chat extends Component {
 		},constants.Aggregator.CLICKTIMEOUT);
 	}
 	handleChatMessageClick(isAggregating, messageId, aggregatorId){
+		/*
 		if (isAggregating){
 			this.aggregatorActions.newAggregatorClick(aggregatorId);
 		} else {
 			this.aggregatorActions.newAggregator("message",messageId);
 		}
+		*/
 	}
 	handleMessageFormSubmit(text){
 		if (!text) return;
 
 		if (this.props.user.userName){
 			//find the most recent message with the same text
+			/*
 			var message = Array.prototype.slice.call(this.props.chatMessages).reverse().find((m) => m.text.toLowerCase() === text.toLowerCase());
 			if (message){
 				var messageAggregator = this.props.aggregatorData.find(a => a.messageId === message.id);
 				if (messageAggregator && messageAggregator.isComplete){
-					this.chatActions.newChatMessage(text, this.props.user.userName)
+					this.chatActions.addChatMessage(createChatMessage({text, this.props.user.userName}))
 					return;
 				}
 				var secondsSinceMessage = (Date.now() - message.time) / 1000;
@@ -88,8 +90,9 @@ class Chat extends Component {
 					return;
 				}
 			}
+			*/
 
-			this.chatActions.newChatMessage(text, this.props.user.userName)
+			this.chatActions.addChatMessage(createChatMessage({text, userName : this.props.user.userName}))
 		} else {
 			this.userActions.updateUserName(text);
 		}

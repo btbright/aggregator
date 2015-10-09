@@ -3,12 +3,15 @@ import { Provider } from 'react-redux';
 import constants from '../common/constants/App'
 import configureStore from '../common/store/configureStore';
 import App from '../common/containers/app';
-import ActivitySimulator from './simulation/ActivitySimulator'
+import ActivitySimulator from './simulation/ActivitySimulator';
+import setupApiUtils from '../common/apiutils';
 
-
-const initialState = window.__INITIAL_STATE__;
-
-const store = configureStore(initialState);
+let initialState = window.__INITIAL_STATE__;
+initialState.chatMessages = undefined;
+const socket = io();
+const [apiHandlers, startListeners] = setupApiUtils(socket);
+const store = configureStore(initialState, socket, apiHandlers.map(handler => handler.local));
+startListeners(store.dispatch)
 
 if (false){
 	var simulator = new ActivitySimulator(store.getState, store.dispatch);

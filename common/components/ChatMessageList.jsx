@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import ChatMessage from './ChatMessage.jsx'
+import { toJS } from 'immutable'
 
 class ChatMessageList extends Component {
 	shouldComponentUpdate(nextProps){
@@ -7,7 +8,7 @@ class ChatMessageList extends Component {
 	}
 	componentDidUpdate(prevProps){
 		//if a message has been added, scroll to bottom of message list
-		if (prevProps.messages.length !== this.props.messages.length && !this.props.isClicking){
+		if (prevProps.messages.size !== this.props.messages.size && !this.props.isClicking){
 			let chatList = React.findDOMNode(this.refs.chatMessageList);
 			chatList.scrollTop = chatList.scrollHeight;
 		}
@@ -17,7 +18,7 @@ class ChatMessageList extends Component {
 			<div className="chat-message-list" ref="chatMessageList">
 			  {this.props.messages.map(function(message){
 			  	var aggregatorData = this.props.aggregatorData.find(a => a.messageId === message.id);
-				return <ChatMessage onClick={this.props.handleChatMessageClick} key={message.id} {...message} {...aggregatorData} />
+				return <ChatMessage onClick={this.props.handleChatMessageClick} key={message.get('id')} {...message.toJS()} {...aggregatorData} />
 			  },this)}
 			</div>
 			);
