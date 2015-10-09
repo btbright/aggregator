@@ -8,7 +8,7 @@ export default function configureStore(initialState, socket, localHandlers) {
   const createStoreWithMiddleware = applyMiddleware(
     thunk,
     serverUpdater(socket, localHandlers),
-    timeScrubber()
+    timeScrubber({ timeStoreName : "time", killLocalUpdates : true })
   )(createStore); 
   return createStoreWithMiddleware(rootReducer, initialState); 
 }

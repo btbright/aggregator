@@ -17,8 +17,7 @@ class ChatMessageList extends Component {
 		return (
 			<div className="chat-message-list" ref="chatMessageList">
 			  {this.props.messages.map(function(message){
-			  	var aggregatorData = this.props.aggregatorData.find(a => a.messageId === message.id);
-				return <ChatMessage onClick={this.props.handleChatMessageClick} key={message.get('id')} {...message.toJS()} {...aggregatorData} />
+				return <ChatMessage onClick={this.props.handleChatMessageClick} key={message.get('id')} {...message.toJS()} />
 			  },this)}
 			</div>
 			);

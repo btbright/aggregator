@@ -29,7 +29,7 @@ export const chatMessagesWithAggregationInfoSelector = createSelector(
 	(chatMessages, user) => {
 		return {
 			chatMessages : chatMessages.get('present'),
-			aggregatorData : [],
+			aggregatorData : false,
 			user
 		}
 	});

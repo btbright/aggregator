@@ -15,6 +15,7 @@ function Chat(io){
 				if (savedMessage.time > lastUpdate){
 					updateObjects.push({
 						type : 'ADD_CHATMESSAGES',
+						isUpdateAction : true,
 						key : savedMessage.id,
 						keyField : 'id',
 						entity : savedMessage
@@ -28,7 +29,6 @@ function Chat(io){
 						[thisUpdate] : updateObjects
 					}
 				};
-				console.log("sending update",updateObject)
 				io.to(roomId).emit('update:new',updateObject);
 			}
 		});

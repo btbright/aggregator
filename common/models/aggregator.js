@@ -7,14 +7,10 @@ export function createAggregator(props){
 		userName : props.user,
 		objectType : props.objectType,
 		objectId : props.objectId,
-		clicks : [props.createdTime || Date.now()],
 		maxValue : 0,
 		x : 0,
-		isComplete : false,
-		isRetired : false,
-		isRemoved : false,
 		completedTime : 0,
-		lastServerUpdate : false
+		state : 'initializing'
 	}
 }
 

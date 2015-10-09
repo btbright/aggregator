@@ -104,7 +104,7 @@ class Chat extends Component {
 		});
 		return (
 			<div className={chatClassNames} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp}>
-			  <ChatMessageList isClicking={this.state.isClicking} aggregatorData={this.props.aggregatorData} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
+			  <ChatMessageList isClicking={this.state.isClicking} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
 			  <ChatMessageForm placeholder={ this.props.user.userName ? 'Enter a comment...' : 'Enter a user name here to comment...' } onNewMessage={this.handleMessageFormSubmit} />
 			</div>
 			);

@@ -1,4 +1,4 @@
-import { ADD_UPDATES } from '../constants/ActionTypes'
+import { ADD_UPDATES, MOVE_TO_TIME } from '../constants/ActionTypes'
 
 //translates server updates into action structure
 export function handleServerUpdate(updates){
@@ -22,4 +22,11 @@ export function handleServerUpdate(updates){
 		});
 	});
 	return actions;
+}
+
+export function moveToTime(time){
+	return {
+		type : MOVE_TO_TIME,
+		time
+	}
 }

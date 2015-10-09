@@ -3,24 +3,28 @@ import { Map, List, fromJS, Seq } from 'immutable'
 export default function deltable(reducer, opts){
 
 	const initialState = reducer(undefined, {});
-	const namespace = `_${opts && opts.namespace ? opts.namespace : reducer.name.toUpperCase()}`;
+	const namespace = `${opts && opts.namespace ? opts.namespace : reducer.name.toUpperCase()}`;
 
 	return function(state = initialState, action){
 		if (!action || !action.type) return state;
-		switch(action.type.replace(namespace, '')){
-		case "ADD":
+		switch(action.type){
+		case `ADD_${namespace}`:
 			if (Map.isMap(state)){
+				//skip add if it exists already
+				if (action.key && state.has(action.key.toString())) return state;
 				return state.set(action.key.toString(), fromJS(action.entity));
 			} else {
+				//skip add if it exists already
+				if (action.keyField && action.key && state.find(entity => entity.get(action.keyField) === action.key)) return state;
 				return state.push(fromJS(action.entity));
 			}
-		case "REMOVE":
+		case `REMOVE_${namespace}`:
 			if (Map.isMap(state)){
 				return state.delete(action.key.toString());
 			} else {
 				return state.filter(obj => obj.get(action.keyField) !== action.key);
 			}
-		case "UPDATE":
+		case `UPDATE_${namespace}`:
 			if (Map.isMap(state)){
 				return state.set(action.key.toString(), state.get(action.key.toString()).withMutations(map => {
 					action.mutations.forEach(mutation => mutate(map, mutation));

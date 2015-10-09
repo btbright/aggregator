@@ -6,7 +6,7 @@ export default (socket, localHandlers) => store => next => action => {
 
 	//listen for actions to send to server
 	localHandlers.forEach(localHandler => {
-		if (!action.isRemoteTriggered){
+		if (!action.isRemoteTriggered && !action.isUpdateAction){
 			const emitInstructions = localHandler(action);
 			if (emitInstructions){
 				socket.emit(emitInstructions.event, ...emitInstructions.data);

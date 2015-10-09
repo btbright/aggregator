@@ -14,8 +14,7 @@ class ChatMessage extends Component {
 		}
 	}
 	shouldComponentUpdate(nextProps){
-		return this.props.aggregationLevel !== nextProps.aggregationLevel ||
-			   this.props.isComplete !== nextProps.isComplete;
+		return this.props !== nextProps;
 	}
 	render(){
 		var commentClasses = cx('comment','clearfix',this.props.aggregationLevel ? 'comment-aggregation-level-'+this.props.aggregationLevel : '',{

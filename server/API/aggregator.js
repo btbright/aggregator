@@ -41,7 +41,7 @@ function Aggregators(io, messenger){
 		});
 	}
 
-	setInterval(sendUpdatedAggregators, 50)
+	setInterval(sendUpdatedAggregators, 100)
 	function sendUpdatedAggregators(){
 		Object.keys(aggregatorState).forEach(roomId => {
 			var updateObjects = [];
@@ -62,9 +62,6 @@ function Aggregators(io, messenger){
 				aggregatorState[socket.currentRoom] = {}
 			}
 			aggregatorState[socket.currentRoom][aggregator.id] = aggregator;
-
-			socket.broadcast.to(socket.currentRoom).emit('aggregator:new',aggregator);
-			updateAggregators()
 		});
 		//TODO - compare to last click instead of Date.now(), but haven't implemented state on server yet
 		var lastClick = false;
@@ -74,8 +71,6 @@ function Aggregators(io, messenger){
 			if (aggregatorState[socket.currentRoom] && aggregatorState[socket.currentRoom][requestedAggregatorId]){
 				aggregatorState[socket.currentRoom][requestedAggregatorId].clicks.push(click);
 			}
-			updateAggregators()
-			socket.broadcast.to(socket.currentRoom).emit('aggregator:click:new',requestedAggregatorId, click);
 		});
 	});
 */

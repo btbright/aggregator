@@ -45,6 +45,7 @@ function prepareActions(actionCreator){
 		}
 		actions.forEach(action => {
 			action.isRemoteTriggered = true;
+			console.log(action)
 		});
 		return actions;
 	}

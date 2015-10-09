@@ -1,83 +1,39 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
-import AggregatorBar from './AggregatorBar.jsx'
-import AggregatorText from './AggregatorText.jsx'
-import constants from '../constants/App.js'
-import { levelColors, getLevel } from '../utils/levels'
-import _ from 'lodash'
 
 class Aggregator extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			lastMouseDown : false,
-			isClicking : false,
-			hasScheduledRetirement : false,
-			flashes : []
+			isUserPressing : false
 		}
 		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
 		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
+		this.handleOnMouseOut = this.handleOnMouseOut.bind(this)
+		this.endUserPressing = this.endUserPressing.bind(this)
 	}
 	shouldComponentUpdate(nextProps,nextState){
-		return this.props.barValue !== nextProps.barValue || 
-			   this.props.rightText !== nextProps.rightText ||
-			   this.props.leftText !== nextProps.leftText ||
-			   this.props.barColorClass !== nextProps.barColorClass ||
-			   this.state.flashes.length !== nextState.flashes.length ||
-			   this.props.isRetired !== nextProps.isRetired ||
-			   this.props.isComplete !== nextProps.isComplete;
+		return this.props !== nextProps;
 	}
 	handleOnMouseDown(){
 		this.setState({
-			lastMouseDown : Date.now()
+			isUserPressing : true
 		})
+		this.props.onPressingStateChange(this.props.id, true);
+	}
+	endUserPressing(){
+		if (this.state.isUserPressing){
+			this.props.onPressingStateChange(this.props.id, false);
+			this.setState({
+				isUserPressing : false
+			})
+		}
 	}
 	handleOnMouseUp(){
-		if (!this.state.lastMouseDown || this.props.isComplete) return;
-		var timeSinceLastMouseDown = Date.now() - this.state.lastMouseDown;
-		if (timeSinceLastMouseDown > constants.Aggregator.CLICKTIMEOUT){
-			return;
-		}
-		this.setState({
-			isClicking : true
-		});
-		this.flash();
-		setTimeout(() => {
-			if (Date.now() - this.state.lastMouseDown < constants.Aggregator.CLICKTIMEOUT) return;
-			this.setState({
-				isClicking : false
-			});
-		},constants.Aggregator.CLICKTIMEOUT);
+		this.endUserPressing();
 	}
-	componentWillReceiveProps(nextProps){
-		//all this logic keeps state implicitly in css and this element should be
-		//moved to the reducer and the transitions should key of start and end frames
-		//this componenet should handle setting the opacity directly on the aggregator as well,
-		//mapping from 100-0 between the start and end frames
-		if (nextProps.isComplete && !this.state.hasScheduledRetirement){
-			setTimeout(()=>{
-				this.props.retire(this.props.id)
-				setTimeout(()=>{
-					this.props.remove(this.props.id)
-				},400)
-			},3500)
-			this.setState({
-				hasScheduledRetirement : true
-			})
-		}
-	}
-	flash(){
-		this.setState(function(previousState){
-			previousState.flashes.push("flash:"+Date.now());
-			return {
-				flashes : previousState.flashes
-			}
-		});
-		setTimeout(() => {
-			this.setState({
-				flashes : _.rest(this.state.flashes) //get array except oldest
-			})
-		},constants.Aggregator.FLASHLENGTH);
+	handleOnMouseOut(){
+		this.endUserPressing();
 	}
 	render(){
 		var width = this.props.barValue;
@@ -99,6 +55,11 @@ class Aggregator extends Component {
 			residue = <div className={classes} style={{width:this.props.residueValue + '%'}}></div>
 		}
 
+		var flash;
+		if (this.props.isPressing){
+			flash = <div style={{width:'100%',right:100-width + '%'}} className='bar-leader'></div>
+		}
+
 		//determine wrap class names
 		var colorClass = false;
 		if (this.props.barColor){
@@ -109,19 +70,12 @@ class Aggregator extends Component {
 				'bar-almost-full' : this.props.barValue > 85
 			});
 
-
-		var aggregatorClassNames = classnames('aggregator', this.props.isComplete ? 'aggregator-level-'+levelColors[getLevel(this.props.residueValue)] : '' ,{
-			'aggregator-user-clicking' : this.state.isClicking,
-			'aggregator-complete' : this.props.isComplete,
-			'aggregator-retired' : this.props.isRetired
-		});
+		var aggregatorClassNames = classnames('aggregator', `aggregator-${this.props.state}`, this.props.isPressing ? 'aggregator-pressing' : '' ,this.props.isComplete ? 'aggregator-level-'+levelColors[getLevel(this.props.residueValue)] : '');
 		return (
-			<div onClick={this.props.aggregatorClicked} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>
+			<div onMouseDown={this.handleOnMouseDown} onMouseOut={this.handleOnMouseOut} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>
 				<div className="bar">
 					<div className={barWrapClasses}>
-						{this.state.flashes.map(function(flashKey){
-							return <div key={flashKey} style={{width:'100%',right:100-width + '%'}} className='bar-leader'></div>
-						})}
+						{flash}
 						{residue}
 						<div className="bar-inner" style={{width:width + '%'}}></div>
 						{rightText}

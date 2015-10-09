@@ -8,7 +8,7 @@ export default {
 		'aggregator:click:new' : (id, click) => actions.addClickToAggregator(id, Date.now())
 	},
 	localToRemoteMap : {
-		[ADD_AGGREGATOR] : (action) => ({ event : 'aggregator:new', data : [action.aggregator]}),
-		[ADD_CLICK_TO_AGGREGATOR] : (action) => ({ event : 'aggregator:click:new', data : [action.aggregatorId, action.click]})
+		[ADD_AGGREGATORS] : (action) => ({ event : 'aggregator:new', data : [action.aggregator]}),
+		[UPDATE_AGGREGATORS_PRESSING] : (action) => ({ event : 'aggregator:pressing:change', data : [action.aggregatorId, action.isPressing]})
 	}
 }
