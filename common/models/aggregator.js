@@ -9,18 +9,9 @@ export function createAggregator(props){
 		objectId : props.objectId,
 		maxValue : 0,
 		x : 0,
-		completedTime : 0,
-		state : 'initializing'
-	}
-}
-
-export function createAggregatorServerUpdate({id,x,maxValue,isComplete,completedTime,lastServerUpdate}){
-	return {
-		id,
-		x,
-		maxValue,
-		isComplete,
-		completedTime,
-		lastServerUpdate
+		lastStateChangeTime : 0,
+		state : 'initializing',
+		activePresserCount : 1,
+		lastServerUpdate : 0
 	}
 }

@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
-import AggregationSummary from './AggregationSummary.jsx'
 
 class ChatMessage extends Component {
 	constructor(props) {
@@ -9,7 +8,7 @@ class ChatMessage extends Component {
 		this.handleClick = this.handleClick.bind(this)
 	}
 	handleClick(e, rawId){
-		if (!this.props.isComplete){
+		if (!this.props.aggregationComplete){
 			this.props.onClick(!!this.props.aggregationLevel, this.props.id, this.props.aggregatorId);
 		}
 	}
@@ -18,8 +17,8 @@ class ChatMessage extends Component {
 	}
 	render(){
 		var commentClasses = cx('comment','clearfix',this.props.aggregationLevel ? 'comment-aggregation-level-'+this.props.aggregationLevel : '',{
-			'comment-aggregation-complete' : this.props.isComplete,
-			'comment-aggregating' : !!this.props.aggregationLevel && !this.props.isComplete
+			'comment-aggregation-complete' : this.props.aggregationComplete,
+			'comment-aggregating' : !!this.props.aggregationLevel && !this.props.aggregationComplete
 		});
 		return (
 			<div onClick={this.handleClick} className={commentClasses}>
@@ -43,7 +42,7 @@ ChatMessage.propTypes = {
 }
 
 ChatMessage.defaultProps = {
-	isComplete : false,
+	aggregationComplete : false,
 	aggregationLevel : ''
 }
 

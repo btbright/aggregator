@@ -13,13 +13,9 @@ export const frameRate = 1/60
 
 //takes an array of timestamps and returns 0-100 x position
 //based on physics model at a specific time
-export function scorer(clicks, time, frameRateNew, initialX, initialVelocity, globalActivityModifier){
-	if (!clicks || !Array.isArray(clicks)) throw new Error("Malformed 'clicks' array");
-	//throw out clicks newer than t, they are in the future and don't count
-	var filteredClicks = clicks.filter((click) => click <= time);
-	var activeClickCount = activeClicks(filteredClicks, time).length;
+export function scorer(activePresserCount, time, frameRateNew, initialX, initialVelocity, globalActivityModifier){
 	var actualModifier = globalActivityModifier === 0 ? 1 : globalActivityModifier;
-	var scoreResults = generateScore(activeClickCount, frameRateNew, initialX, initialVelocity, actualModifier)
+	var scoreResults = generateScore(activePresserCount, frameRateNew, initialX, initialVelocity, actualModifier)
 	return scoreResults;
 }
 

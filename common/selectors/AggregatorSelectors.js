@@ -1,9 +1,8 @@
 import { createSelector } from 'reselect'
-import { levelColors, getLevel } from '../utils/levels'
 
-const chatMessagesSelector = (state) => state.chatMessages
-const aggregatorsSelector = (state) => state.aggregators
-const aggregatorsListSlotsSelector = (state) => state.aggregatorListSlots
+const chatMessagesSelector = state => state.chatMessages.get('present')
+const aggregatorsSelector = state => state.aggregators.get('present')
+const aggregatorsListSlotsSelector = state => state.aggregatorListSlots
 
 //this selector handles the message->aggregator join
 const joinedMessageAggregatorSelector = createSelector(
@@ -11,64 +10,26 @@ const joinedMessageAggregatorSelector = createSelector(
 	aggregatorsSelector,
 	(chatMessages, aggregators) => {
 		return aggregators
-		.filter((aggregator) => aggregator.objectType === "message")
-		.filter(aggregator => !!chatMessages.find(message => message.id === aggregator.objectId))
-		.map((aggregator) => {
-			var chatMessage = chatMessages.find((message) => message.id === aggregator.objectId);
-			return {
-				id : aggregator.id,
-				maxValue : Math.round(aggregator.maxValue * 10) / 10,
-				clicks : aggregator.clicks,
-				x : Math.round(aggregator.x * 10) / 10,
-				text : chatMessage.text,
-				userName : chatMessage.userName,
-				time : chatMessage.time,
-				hasUserNominated : chatMessage.hasUserNominated,
-				isComplete : aggregator.isComplete,
-				isRetired : aggregator.isRetired,
-				completedTime : aggregator.completedTime,
-				velocity : aggregator.velocity ? Math.round(aggregator.velocity * 10) / 10 : aggregator.velocity
-			}
-		});
-	});
-
-
-//this selector does the calculations to transform the raw aggregator for display
-const preparedForDisplaySelector = createSelector(
-	joinedMessageAggregatorSelector,
-	(joinedAggregators) => {
-		return joinedAggregators.map((message) => {
-			return {
-				id : message.id,
-				displayText : message.text,
-				barColor : levelColors[getLevel(message.maxValue)],
-				barValue : message.x,
-				rightText : new Date(message.time).toLocaleTimeString(),
-				residueValue : message.maxValue,
-				residueColorClass : levelColors[getLevel(message.maxValue)],
-				leftText : message.userName,
-				isComplete : message.isComplete,
-				isRetired : message.isRetired,
-				completedTime : message.completedTime,
-				clicks : message.clicks,
-				velocity : message.velocity
-			}
+		.filter(aggregator => aggregator.get('objectType') === "message")
+		.filter(aggregator => !!chatMessages.find(message => message.get('id') === aggregator.get('objectId')))
+		.map(aggregator => {
+			var chatMessage = chatMessages.find((message) => message.get('id') === aggregator.get('objectId'));
+			return aggregator.set('chatMessage', chatMessage)
 		});
 	});
 
 //this selector maps aggregators to slots so they don't shift around
 const mappedToSlotsSelector = createSelector(
-	preparedForDisplaySelector, 
+	joinedMessageAggregatorSelector, 
 	aggregatorsListSlotsSelector,
 	(aggregators, slots) => {
-		return slots
+		var packed = slots
 			.map((slot) => {
-				var aggregator = aggregators.find(a => a.id === slot.id);
+				var aggregator = aggregators.find(a => a.get('id') === slot.id);
 				return aggregator;
 			});
+		return packed;
 	});
-
-const activeAggregatorSelector = aggregators => aggregators.filter(a => !a.isRetired)
 
 const activeClickCountSelector = (state) => state.room.activeClickerCount
 
@@ -78,7 +39,6 @@ export const packagedAggregatorSelector = createSelector(
 	(packagedAggregators, activeClickerCount) => {
 		return {
 			activeClickerCount,
-			packagedAggregators,
-			activeAggregators : activeAggregatorSelector(packagedAggregators)
+			packagedAggregators
 		}
 	});

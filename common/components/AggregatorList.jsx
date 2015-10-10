@@ -1,4 +1,4 @@
-import { Component, PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react'
 import Aggregator from './Aggregator.jsx'
 import { connect } from 'react-redux';
 import { packagedAggregatorSelector } from '../selectors/AggregatorSelectors.js';
@@ -19,7 +19,7 @@ class AggregatorList extends Component {
 		return (
 			<div className="aggregator-list">
 				{this.props.packagedAggregators.map(aggregatorData => {
-					return <Aggregator onPressingStateChange={this.onPressingStateChange} key={aggregatorData.id} {...aggregatorData} />
+					return <Aggregator onPressingStateChange={this.onPressingStateChange} key={aggregatorData.id} aggregator={aggregatorData} />
 				})}
 			</div>
 			)

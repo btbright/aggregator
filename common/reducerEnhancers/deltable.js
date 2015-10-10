@@ -26,11 +26,13 @@ export default function deltable(reducer, opts){
 			}
 		case `UPDATE_${namespace}`:
 			if (Map.isMap(state)){
+				if (!state.has(action.key.toString())) return state;
 				return state.set(action.key.toString(), state.get(action.key.toString()).withMutations(map => {
 					action.mutations.forEach(mutation => mutate(map, mutation));
 				}))
 			} else {
 				const index = state.indexOf(obj => obj.get(action.keyField) !== action.key);
+				if (index === -1) return state;
 				return state.set(index, state.get(index).withMutations(map => {
 					action.mutations.forEach(mutation => mutate(map, mutation));
 				}))

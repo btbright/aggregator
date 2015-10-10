@@ -32,21 +32,24 @@ export default function timeScrubber(opts) {
 	  const scrubbableStoresKeys = scrubbableStoresKeysSelector(currentState);
 	  let allUpdates = [];
 
-
 	  scrubbableStoresKeys.forEach(scrubbableStoreKey => {
 	  	let actionNamespace = scrubbableStoreKey.toUpperCase();
 	  	let scrubbableStore = currentState[scrubbableStoreKey];
 	  	let updates = scrubbableStore.get('updates');
 	  	let storeUpdateKeys = List(updates.keys());
-	  	let filteredKeys = storeUpdateKeys.withMutations(updateKeys => {
-	  		updateKeys.filter(key => isForwardMove ? key <= targetTime && key >= currentTime : key >= targetTime && key <= currentTime);
-	  		if (!isForwardMove){
-	  			updateKeys.reverse();
-	  		}
-	  	})
+	  	let filteredKeys = storeUpdateKeys.filter(key => isForwardMove ? key <= targetTime && key >= currentTime : key >= targetTime && key <= currentTime);
+	  	let orderedKeys = isForwardMove ? filteredKeys : filteredKeys.reverse();
 
 	  	//get updates by ordered keys
-	  	const orderedUpdates = filteredKeys.map(key => updates.get(key)).flatten(1);
+	  	const orderedUpdates = orderedKeys
+	  							.map(key => {
+	  								var update = updates.get(key).toJS()[0]
+	  								update.time = key;
+	  								update.isUpdateAction = true;
+	  								return update;
+	  							})
+	  							.flatten(1);
+
 
 	  	//transforms actions into plain objects
 	  	const renderedOrderedUpdates = orderedUpdates.toJS();
@@ -72,13 +75,13 @@ export default function timeScrubber(opts) {
 	  	allUpdates = [...allUpdates, ...renderedOrderedUpdates]
 	  });
 
-	  //dispatches those actions
-	  allUpdates.forEach(store.dispatch);
-
 	  //updates currentTime
 	  store.dispatch({
 	  	type : UPDATE_TIME,
 	  	time : targetTime
 	  });
+
+	  //dispatches those actions
+	  allUpdates.forEach(store.dispatch);
 	};
 }

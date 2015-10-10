@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
+import { levelColors, getLevel } from '../utils/levels'
 
 class Aggregator extends Component {
 	constructor(props){
@@ -16,18 +17,20 @@ class Aggregator extends Component {
 		return this.props !== nextProps;
 	}
 	handleOnMouseDown(){
-		this.setState({
-			isUserPressing : true
-		})
-		this.props.onPressingStateChange(this.props.id, true);
+		if (this.props.state === 'initializing' || this.props.state === 'aggregating'){
+			this.setState({
+				isUserPressing : true
+			})
+			this.props.onPressingStateChange(this.props.id, true);
+		}
 	}
 	endUserPressing(){
-		if (this.state.isUserPressing){
+		if (this.state.isUserPressing && (this.props.state === 'initializing' || this.props.state === 'aggregating')){
 			this.props.onPressingStateChange(this.props.id, false);
-			this.setState({
-				isUserPressing : false
-			})
 		}
+		this.setState({
+			isUserPressing : false
+		})
 	}
 	handleOnMouseUp(){
 		this.endUserPressing();
@@ -36,41 +39,39 @@ class Aggregator extends Component {
 		this.endUserPressing();
 	}
 	render(){
-		var width = this.props.barValue;
+		var width = this.props.aggregator.get('x');
+		var color = levelColors[getLevel(this.props.aggregator.get('maxValue'))];
 
 		//add optional text
 		var rightText;
 		if (this.props.rightText){
-			rightText = <span className="right-text">{this.props.rightText}</span>;
+			rightText = <span className="right-text">{new Date(this.props.aggregator.get('chatMessage').get('time')).toLocaleTimeString()}</span>;
 		}
 		var leftText;
 		if (this.props.leftText){
-			leftText = <span className="left-text">{this.props.leftText}</span>;
+			leftText = <span className="left-text">{this.props.aggregator.get('userName')}</span>;
 		}
 
 		//add optional residue marker
 		var residue;
-		if (this.props.residueValue && this.props.residueColorClass){
-			var classes = classnames('bar-residue', "bar-residue-"+this.props.residueColorClass);
-			residue = <div className={classes} style={{width:this.props.residueValue + '%'}}></div>
+		if (color){
+			var classes = classnames('bar-residue', "bar-residue-"+color);
+			residue = <div className={classes} style={{width:this.props.aggregator.get('maxValue') + '%'}}></div>
 		}
 
 		var flash;
-		if (this.props.isPressing){
+		if (this.props.aggregator.get('isPressing')){
 			flash = <div style={{width:'100%',right:100-width + '%'}} className='bar-leader'></div>
 		}
 
 		//determine wrap class names
-		var colorClass = false;
-		if (this.props.barColor){
-			colorClass = "bar-"+this.props.barColor
-		}
+		var colorClass = "bar-"+color;
 		var barWrapClasses = classnames('bar-wrap', colorClass,
 			{
-				'bar-almost-full' : this.props.barValue > 85
+				'bar-almost-full' : width > 85
 			});
 
-		var aggregatorClassNames = classnames('aggregator', `aggregator-${this.props.state}`, this.props.isPressing ? 'aggregator-pressing' : '' ,this.props.isComplete ? 'aggregator-level-'+levelColors[getLevel(this.props.residueValue)] : '');
+		var aggregatorClassNames = classnames('aggregator', `aggregator-${this.props.state}`, this.props.isPressing ? 'aggregator-pressing' : '' ,this.props.aggregator.get('state') === 'completed' ? 'aggregator-level-'+levelColors[getLevel(this.props.aggregator.get('maxValue'))] : '');
 		return (
 			<div onMouseDown={this.handleOnMouseDown} onMouseOut={this.handleOnMouseOut} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>
 				<div className="bar">
@@ -83,22 +84,11 @@ class Aggregator extends Component {
 					</div> 
 				</div>
 				<div className="text-display">
-					<p>{this.props.displayText}</p>
+					<p>{this.props.aggregator.get('chatMessage').get('text')}</p>
 				</div>
 			</div>
 			);
 	}
-}
-
-Aggregator.propTypes = {
-	aggregatorClicked : PropTypes.func,
-	isComplete : PropTypes.bool.isRequired,
-	rightText: PropTypes.string,
-	leftText: PropTypes.string,
-	barValue: PropTypes.number.isRequired,
-	residueValue: PropTypes.number,
-	residueColorClass: PropTypes.string,
-	barColorClass: PropTypes.string
 }
 
 export default Aggregator

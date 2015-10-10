@@ -15,12 +15,7 @@ import { createChatMessage } from '../models/chatMessage'
 class Chat extends Component {
 	constructor(props){
 		super(props)
-		this.state = {
-			lastMouseDown : false,
-			isClicking : false
-		}
-		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
-		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
+		this.state = {}
 		this.handleChatMessageClick = this.handleChatMessageClick.bind(this)
 		this.handleMessageFormSubmit = this.handleMessageFormSubmit.bind(this)
 		this.chatActions = bindActionCreators(ChatActions, this.props.dispatch);
@@ -28,50 +23,26 @@ class Chat extends Component {
 		this.userActions = bindActionCreators(UserActions, this.props.dispatch);
 		this.notificationActions = bindActionCreators(NotificationActions, this.props.dispatch);
 	}
-	handleOnMouseDown(){
-		this.setState({
-			lastMouseDown : Date.now()
-		})
-	}
 	shouldComponentUpdate(nextProps, nextState){
 		return this.props !== nextProps || this.state !== nextState;
 	}
-	handleOnMouseUp(){
-		if (!this.state.lastMouseDown) return;
-		var timeSinceLastMouseDown = Date.now() - this.state.lastMouseDown;
-		if (timeSinceLastMouseDown > constants.Aggregator.CLICKTIMEOUT){
-			return;
-		}
-		this.setState({
-			isClicking : true
-		});
-		setTimeout(() => {
-			if (Date.now() - this.state.lastMouseDown < constants.Aggregator.CLICKTIMEOUT) return;
-			this.setState({
-				isClicking : false
-			});
-		},constants.Aggregator.CLICKTIMEOUT);
-	}
 	handleChatMessageClick(isAggregating, messageId, aggregatorId){
-		/*
 		if (isAggregating){
 			this.aggregatorActions.newAggregatorClick(aggregatorId);
 		} else {
 			this.aggregatorActions.newAggregator("message",messageId);
 		}
-		*/
 	}
 	handleMessageFormSubmit(text){
 		if (!text) return;
 
 		if (this.props.user.userName){
 			//find the most recent message with the same text
-			/*
-			var message = Array.prototype.slice.call(this.props.chatMessages).reverse().find((m) => m.text.toLowerCase() === text.toLowerCase());
+			var message = this.props.chatMessages.reverse().find(m => m.get('text').toLowerCase() === text.toLowerCase());
 			if (message){
-				var messageAggregator = this.props.aggregatorData.find(a => a.messageId === message.id);
-				if (messageAggregator && messageAggregator.isComplete){
-					this.chatActions.addChatMessage(createChatMessage({text, this.props.user.userName}))
+				var messageAggregator = this.props.aggregatorData.find(a => a.get('objectId') === message.get('id'));
+				if (messageAggregator && messageAggregator.state !== 'initializing' && messageAggregator.state !== 'aggregating'){
+					this.chatActions.addChatMessage(createChatMessage({text, userName: this.props.user.userName}))
 					return;
 				}
 				var secondsSinceMessage = (Date.now() - message.time) / 1000;
@@ -80,17 +51,16 @@ class Chat extends Component {
 				if (isMessageFresh){
 					//if a message already exists, but it's not aggregating
 					if (!messageAggregator){
-						this.aggregatorActions.newAggregator("message",message.id);
+						this.aggregatorActions.newAggregator("message",message.get('id'));
 						this.notificationActions.addNotification(`Your message has been combined with ${message.userName}'s: ${message.text}`,"informative");
 					//if the message exists but it's already aggregating
 					} else {
-						this.aggregatorActions.newAggregatorClick(messageAggregator.aggregatorId);
+						this.aggregatorActions.updateIsPressing(messageAggregator.get('id'), true);
 						this.notificationActions.addNotification(`Your message has been counted as support for ${message.userName}'s: ${message.text}`,"informative");
 					}
 					return;
 				}
 			}
-			*/
 
 			this.chatActions.addChatMessage(createChatMessage({text, userName : this.props.user.userName}))
 		} else {
@@ -99,9 +69,7 @@ class Chat extends Component {
 	}
 	render(){
 		const { chatMessages } = this.props;
-		var chatClassNames = classnames('chat', {
-			'chat-user-clicking' : this.state.isClicking
-		});
+		var chatClassNames = classnames('chat');
 		return (
 			<div className={chatClassNames} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp}>
 			  <ChatMessageList isClicking={this.state.isClicking} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />

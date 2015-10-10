@@ -1,7 +1,6 @@
 function Room(io, messenger){
 
 	var roomInfo = {}
-	/*
 	setInterval(updateActiveClickers,1000)
 	function updateActiveClickers(){
 		var timeToCheck = Date.now()
@@ -21,7 +20,6 @@ function Room(io, messenger){
 			}
 		})
 	}
-	*/
 
 	io.on('connection', function (socket) {
 		socket.on("room:change",function(requestInfo){
@@ -58,9 +56,9 @@ function Room(io, messenger){
 			socket.userName = name;
 		});
 
-		/*
+
 		socket.on('aggregator:new',addActiveClicker);
-		socket.on('aggregator:click:new',addActiveClicker);
+		socket.on('aggregator:pressing:change',addActiveClicker);
 
 		function addActiveClicker(){
 			if (!roomInfo[socket.currentRoom]){
@@ -80,7 +78,6 @@ function Room(io, messenger){
 				io.to(socket.currentRoom).emit('roomInfo:activeClickers:update',activeClickerCount)
 			}
 		}
-		*/
 
 		socket.on('disconnect', function () {
 			if (!roomInfo[socket.currentRoom]) return;

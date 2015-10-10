@@ -7,9 +7,27 @@ import ActivitySimulator from './simulation/ActivitySimulator';
 import setupApiUtils from '../common/apiutils';
 import { moveToTime } from '../common/actions/bufferedUpdates';
 
+(function () {
+    var _log = console.log;
+    console.log = function () {
+        var converted = false;
+        var args = Array.prototype.map.call(arguments, function (arg) {
+            if (typeof arg.toJS === "function"){
+                converted = true;
+                return arg.toJS();
+            } else {
+                return arg
+            };
+             
+        });
+        return _log.apply(console, converted ? ['converted immutable in args: ', ...args] :  args);
+    };
+})();
+
 let initialState = window.__INITIAL_STATE__;
 initialState.chatMessages = undefined;
 initialState.time = undefined;
+initialState.aggregators = undefined;
 const socket = io();
 const [apiHandlers, startListeners] = setupApiUtils(socket);
 const store = configureStore(initialState, socket, apiHandlers.map(handler => handler.local));

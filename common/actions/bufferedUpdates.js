@@ -10,6 +10,7 @@ export function handleServerUpdate(updates){
 		}
 	}
 	*/
+
 	let actions = [];
 	Object.keys(updates).forEach(updatedNamespace => {
 		Object.keys(updates[updatedNamespace]).forEach(time => {

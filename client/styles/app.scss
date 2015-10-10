@@ -511,7 +511,7 @@ body {
                 cursor: pointer;
                 position: relative;
                 z-index: 1;
-                transition: background-color .2s;
+                transition: background-color .2s, width .1s;
 
                 &::before {
                     opacity: 0;

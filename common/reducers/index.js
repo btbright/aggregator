@@ -9,7 +9,7 @@ import notifications from './notifications';
 import time from './time';
 
 
-let scrubbableReducers = scrubbableReducerFactory({chatMessages});
+let scrubbableReducers = scrubbableReducerFactory({chatMessages, aggregators});
 
 const reducers = Object.assign(scrubbableReducers,{
 	aggregatorListSlots,
