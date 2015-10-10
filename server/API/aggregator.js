@@ -15,7 +15,7 @@ function Aggregators(io, messenger){
 	setInterval(updateAggregators,frameRate*1000);
 
 	const initializationTime = 1500;
-	const completedTime = 1500;
+	const completedTime = 3500;
 	const retirementTime = 400;
 
 	function updateAggregators(){
@@ -66,11 +66,10 @@ function Aggregators(io, messenger){
 					maxValue = storedAggregator.maxValue;
 
 				if (scoreResults){
-					x = scoreResults.x;
+					x = Math.round(scoreResults.x * 100) / 100;
 					velocity = scoreResults.velocity;
-					maxValue = storedAggregator.maxValue >= scoreResults.x ? storedAggregator.maxValue : scoreResults.x;
+					maxValue = Math.round((storedAggregator.maxValue >= scoreResults.x ? storedAggregator.maxValue : scoreResults.x) * 100) / 100;
 				}
-
 
 				if (hasUpdate || hasStateChange){
 					var updateObject = {
@@ -120,6 +119,8 @@ function Aggregators(io, messenger){
 		});
 		lastUpdate = thisUpdate;
 	}
+
+	var aggTest = 0;
 
 	function createAggregatorServerUpdate(aggregator, lastSnapshot){
 		if (!lastSnapshot){

@@ -1,4 +1,4 @@
-import { REMOVE_AGGREGATORS, ADD_AGGREGATORS, UPDATE_AGGREGATOR_ID } from '../constants/ActionTypes';
+import { UPDATE_AGGREGATORS, ADD_AGGREGATORS } from '../constants/ActionTypes';
 import { newListWithReplacementAtIndex, newListWithReplacementObjectAtIndex } from '../utils/reducerTools'
 
 export default function aggregatorListSlots(state = [], action){
@@ -14,19 +14,22 @@ export default function aggregatorListSlots(state = [], action){
 				return newListWithReplacementAtIndex(state, i, () => ({ active: true, id: action.entity.id }) );
 			}
 		}
-	case REMOVE_AGGREGATORS:
-		var index = state.findIndex(slot => slot.id === action.id);
-		var newList = [
-		  ...state.slice(0, index),
-		  ({active : false, id : action.id }),
-		  ...state.slice(index + 1)
-		];
+	case UPDATE_AGGREGATORS:
+		if (action.mutations && action.mutations.find(mutation => mutation.value === 'removed')){
+			var index = state.findIndex(slot => slot.id === action.key);
+			var newList = [
+			  ...state.slice(0, index),
+			  ({active : false, id : action.key }),
+			  ...state.slice(index + 1)
+			];
 
-		var lastFilledSlotIndex = findLastFilledSlot(newList);
-		if (lastFilledSlotIndex !== false){
-			return [ ...newList.slice(0, lastFilledSlotIndex+1) ]
+			var lastFilledSlotIndex = findLastFilledSlot(newList);
+			if (lastFilledSlotIndex !== false){
+				return [ ...newList.slice(0, lastFilledSlotIndex+1) ]
+			}
+			return []
 		}
-		return []
+		return state;
 	default:
 		return state;
 	}

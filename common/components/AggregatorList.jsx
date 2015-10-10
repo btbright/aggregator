@@ -19,7 +19,7 @@ class AggregatorList extends Component {
 		return (
 			<div className="aggregator-list">
 				{this.props.packagedAggregators.map(aggregatorData => {
-					return <Aggregator onPressingStateChange={this.onPressingStateChange} key={aggregatorData.id} aggregator={aggregatorData} />
+					return <Aggregator onPressingStateChange={this.onPressingStateChange} key={aggregatorData.get('id')} aggregator={aggregatorData} />
 				})}
 			</div>
 			)

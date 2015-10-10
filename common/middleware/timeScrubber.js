@@ -37,7 +37,7 @@ export default function timeScrubber(opts) {
 	  	let scrubbableStore = currentState[scrubbableStoreKey];
 	  	let updates = scrubbableStore.get('updates');
 	  	let storeUpdateKeys = List(updates.keys());
-	  	let filteredKeys = storeUpdateKeys.filter(key => isForwardMove ? key <= targetTime && key >= currentTime : key >= targetTime && key <= currentTime);
+	  	let filteredKeys = storeUpdateKeys.filter(key => isForwardMove ? key <= targetTime && key > currentTime : key >= targetTime && key < currentTime);
 	  	let orderedKeys = isForwardMove ? filteredKeys : filteredKeys.reverse();
 
 	  	//get updates by ordered keys

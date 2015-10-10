@@ -31,8 +31,9 @@ export default function deltable(reducer, opts){
 					action.mutations.forEach(mutation => mutate(map, mutation));
 				}))
 			} else {
-				const index = state.indexOf(obj => obj.get(action.keyField) !== action.key);
-				if (index === -1) return state;
+				const findResults = state.findEntry(obj => obj.get(action.keyField) === action.key);
+				if (!findResults) return state;
+				const [index, entity] = findResults;
 				return state.set(index, state.get(index).withMutations(map => {
 					action.mutations.forEach(mutation => mutate(map, mutation));
 				}))

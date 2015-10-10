@@ -554,6 +554,7 @@ body {
                 top:0px;
                 left:0px;
                 opacity: 0.2;
+                transition: background-color .2s, width .1s;
 
                 &.bar-residue-green {
                     background: $levelGreen;

@@ -17,7 +17,7 @@ class Aggregator extends Component {
 		return this.props !== nextProps;
 	}
 	handleOnMouseDown(){
-		if (this.props.state === 'initializing' || this.props.state === 'aggregating'){
+		if (this.props.aggregator.get('state') === 'initializing' || this.props.aggregator.get('state') === 'aggregating'){
 			this.setState({
 				isUserPressing : true
 			})
@@ -25,7 +25,7 @@ class Aggregator extends Component {
 		}
 	}
 	endUserPressing(){
-		if (this.state.isUserPressing && (this.props.state === 'initializing' || this.props.state === 'aggregating')){
+		if (this.state.isUserPressing && (this.props.aggregator.get('state') === 'initializing' || this.props.aggregator.get('state') === 'aggregating')){
 			this.props.onPressingStateChange(this.props.id, false);
 		}
 		this.setState({
@@ -44,11 +44,11 @@ class Aggregator extends Component {
 
 		//add optional text
 		var rightText;
-		if (this.props.rightText){
+		if (this.props.aggregator.get('chatMessage')){
 			rightText = <span className="right-text">{new Date(this.props.aggregator.get('chatMessage').get('time')).toLocaleTimeString()}</span>;
 		}
 		var leftText;
-		if (this.props.leftText){
+		if (this.props.aggregator.get('userName')){
 			leftText = <span className="left-text">{this.props.aggregator.get('userName')}</span>;
 		}
 
@@ -71,7 +71,7 @@ class Aggregator extends Component {
 				'bar-almost-full' : width > 85
 			});
 
-		var aggregatorClassNames = classnames('aggregator', `aggregator-${this.props.state}`, this.props.isPressing ? 'aggregator-pressing' : '' ,this.props.aggregator.get('state') === 'completed' ? 'aggregator-level-'+levelColors[getLevel(this.props.aggregator.get('maxValue'))] : '');
+		var aggregatorClassNames = classnames('aggregator', `aggregator-${this.props.aggregator.get('state')}`, this.props.isPressing ? 'aggregator-pressing' : '' ,this.props.aggregator.get('state') === 'completed' ? 'aggregator-level-'+levelColors[getLevel(this.props.aggregator.get('maxValue'))] : '');
 		return (
 			<div onMouseDown={this.handleOnMouseDown} onMouseOut={this.handleOnMouseOut} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>
 				<div className="bar">
