@@ -12,6 +12,7 @@ import { moveToTime } from '../common/actions/bufferedUpdates';
     console.log = function () {
         var converted = false;
         var args = Array.prototype.map.call(arguments, function (arg) {
+            if (typeof arg === 'undefined') return arg;
             if (typeof arg.toJS === "function"){
                 converted = true;
                 return arg.toJS();

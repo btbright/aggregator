@@ -15,5 +15,8 @@ export function getLevel(x){
 	if (x < 90){
 		return 2;
 	}
-	return 3;
+	if (x <= 100){
+		return 3;
+	}
+	return;
 }

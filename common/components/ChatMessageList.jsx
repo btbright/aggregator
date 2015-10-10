@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ChatMessage from './ChatMessage.jsx'
 import { toJS } from 'immutable'
+import { levelColors, getLevel } from '../utils/levels'
 
 class ChatMessageList extends Component {
 	shouldComponentUpdate(nextProps){
@@ -17,7 +18,17 @@ class ChatMessageList extends Component {
 		return (
 			<div className="chat-message-list" ref="chatMessageList">
 			  {this.props.messages.map(function(message){
-				return <ChatMessage onClick={this.props.handleChatMessageClick} key={message.get('id')} {...message.toJS()} />
+			  	var aggregator = this.props.aggregators.find(a => a.get('objectId') === message.get('id'));
+			  	var rawAggregator = aggregator ? aggregator.toJS() : {};
+			  	console.log(rawAggregator.maxValue)
+				return <ChatMessage 
+							onClick={this.props.handleChatMessageClick} 
+							key={message.get('id')} 
+							aggregatorId={rawAggregator.id} 
+							aggregationLevel={levelColors[getLevel(rawAggregator.maxValue)]}
+							state={rawAggregator.state}
+							isComplete={!!aggregator && (rawAggregator.state !== 'initializing' && rawAggregator.state !== 'aggregating')}
+							{...message.toJS()} />
 			  },this)}
 			</div>
 			);

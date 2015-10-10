@@ -8,7 +8,7 @@ class ChatMessage extends Component {
 		this.handleClick = this.handleClick.bind(this)
 	}
 	handleClick(e, rawId){
-		if (!this.props.aggregationComplete){
+		if (!this.props.state){
 			this.props.onClick(!!this.props.aggregationLevel, this.props.id, this.props.aggregatorId);
 		}
 	}
@@ -16,10 +16,13 @@ class ChatMessage extends Component {
 		return this.props !== nextProps;
 	}
 	render(){
-		var commentClasses = cx('comment','clearfix',this.props.aggregationLevel ? 'comment-aggregation-level-'+this.props.aggregationLevel : '',{
-			'comment-aggregation-complete' : this.props.aggregationComplete,
-			'comment-aggregating' : !!this.props.aggregationLevel && !this.props.aggregationComplete
-		});
+		var commentClasses = cx(
+								'comment',
+								'clearfix',
+								this.props.aggregationLevel ? 'comment-aggregation-level-'+this.props.aggregationLevel : '',
+								this.props.state ? 'comment-aggregation-'+this.props.state : '',
+								this.props.isComplete ? 'comment-aggregation-complete' : ''
+							);
 		return (
 			<div onClick={this.handleClick} className={commentClasses}>
 			  <span className="comment-time">{ new Date(this.props.time).toLocaleTimeString() }</span>

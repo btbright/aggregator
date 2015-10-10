@@ -40,8 +40,8 @@ class Chat extends Component {
 			//find the most recent message with the same text
 			var message = this.props.chatMessages.reverse().find(m => m.get('text').toLowerCase() === text.toLowerCase());
 			if (message){
-				var messageAggregator = this.props.aggregatorData.find(a => a.get('objectId') === message.get('id'));
-				if (messageAggregator && messageAggregator.state !== 'initializing' && messageAggregator.state !== 'aggregating'){
+				var messageAggregator = this.props.aggregators.find(a => a.get('objectId') === message.get('id'));
+				if (messageAggregator && messageAggregator.get('state') !== 'initializing' && messageAggregator.get('state') !== 'aggregating'){
 					this.chatActions.addChatMessage(createChatMessage({text, userName: this.props.user.userName}))
 					return;
 				}
@@ -52,11 +52,11 @@ class Chat extends Component {
 					//if a message already exists, but it's not aggregating
 					if (!messageAggregator){
 						this.aggregatorActions.newAggregator("message",message.get('id'));
-						this.notificationActions.addNotification(`Your message has been combined with ${message.userName}'s: ${message.text}`,"informative");
+						this.notificationActions.addNotification(`Your message has been combined with ${message.get('userName')}'s: ${message.get('text')}`,"informative");
 					//if the message exists but it's already aggregating
 					} else {
 						this.aggregatorActions.updateIsPressing(messageAggregator.get('id'), true);
-						this.notificationActions.addNotification(`Your message has been counted as support for ${message.userName}'s: ${message.text}`,"informative");
+						this.notificationActions.addNotification(`Your message has been counted as support for ${message.get('userName')}'s: ${message.get('text')}`,"informative");
 					}
 					return;
 				}
@@ -68,11 +68,11 @@ class Chat extends Component {
 		}
 	}
 	render(){
-		const { chatMessages } = this.props;
+		const { chatMessages, aggregators } = this.props;
 		var chatClassNames = classnames('chat');
 		return (
 			<div className={chatClassNames} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp}>
-			  <ChatMessageList isClicking={this.state.isClicking} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
+			  <ChatMessageList isClicking={this.state.isClicking} aggregators={aggregators} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
 			  <ChatMessageForm placeholder={ this.props.user.userName ? 'Enter a comment...' : 'Enter a user name here to comment...' } onNewMessage={this.handleMessageFormSubmit} />
 			</div>
 			);
