@@ -5,17 +5,16 @@ export default function scrubbable(reducer, opts){
 
 	const initialState = Map({
 		isScrubbable : true,
+		doesSimulate : opts && opts.doesSimulate,
 		present : reducer(undefined, {}),
-		updates : Map()
+		updates : Map(),
+		simulations : Map()
 	});
 	const namespace = `${opts && opts.namespace ? opts.namespace.toUpperCase() : reducer.name.toUpperCase()}`;
     
 	return function(state = initialState, action){
 		if (!action || !action.type) return state;
 		const reducerState = state.get('present');
-		if (!Map.isMap(reducerState) && !List.isList(reducerState)){
-			throw new Error(`The state of the enhanced reducer (${reducer.name}) must be an Immutable Map or List`);
-		}
 
 		switch(action.type){
 		case `ADD_${namespace}_UPDATES`:
@@ -58,6 +57,12 @@ export default function scrubbable(reducer, opts){
 					}
 				}
 			});
+		//dangerously sending sub-reducer the full state, 
+		//but it needs to update the simulations list 
+		case `RUN_SIMULATIONS_${namespace}`:
+			return reducer(state, action);
+		case `ROLL_BACK_SIMULATIONS_${namespace}`:
+			return reducer(state, action);
 		default:
 			return standardUpdate(reducer, state, action);
 		}

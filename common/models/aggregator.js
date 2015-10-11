@@ -9,6 +9,7 @@ export function createAggregator(props){
 		objectId : props.objectId,
 		maxValue : 0,
 		x : 0,
+		velocity : 0,
 		lastStateChangeTime : 0,
 		state : 'initializing',
 		activePresserCount : 0,

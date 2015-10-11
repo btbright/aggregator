@@ -20,6 +20,9 @@ export default function timeScrubber(opts) {
 	  const scrubbableStoresKeysSelector = state => Object.keys(state).filter(storeKey => {
 	  	return state[storeKey] && typeof state[storeKey].get === 'function' && state[storeKey].get('isScrubbable') === true;
 	  });
+
+	  //TODO - the store itself should really define this
+	  const simulationStores = ['aggregators'];
 	  
 	  const currentState = store.getState();
 
@@ -32,14 +35,14 @@ export default function timeScrubber(opts) {
 	  const scrubbableStoresKeys = scrubbableStoresKeysSelector(currentState);
 	  let allUpdates = [];
 
+
 	  scrubbableStoresKeys.forEach(scrubbableStoreKey => {
 	  	let actionNamespace = scrubbableStoreKey.toUpperCase();
 	  	let scrubbableStore = currentState[scrubbableStoreKey];
 	  	let updates = scrubbableStore.get('updates');
 	  	let storeUpdateKeys = List(updates.keys());
 	  	let filteredKeys = storeUpdateKeys.filter(key => isForwardMove ? key <= targetTime && key > currentTime : key >= targetTime && key < currentTime);
-	  	let orderedKeys = isForwardMove ? filteredKeys : filteredKeys.reverse();
-
+	  	
 	  	/*
 		TODO - if there aren't any updates in this frame, we need to simulate the physics for the aggregators
 		after we do that, we need to dispatch an action that updates the state with the simulation
@@ -50,6 +53,24 @@ export default function timeScrubber(opts) {
 		to match. Then take the next snapshot. That way we only store one at a time.... but the problem with that approach is
 		you can't go backwards
 	  	*/
+
+	  	//if the server didn't provide an update for this time move, provide an
+	  	//opportunity for reducers to simulate it
+	  	if (filteredKeys.size === 0 && simulationStores.indexOf(scrubbableStoreKey) !== -1){
+	  		store.dispatch({
+	  			type : `RUN_SIMULATIONS_${scrubbableStoreKey.toUpperCase()}`,
+	  			currentTime,
+	  			targetTime,
+	  			activeClickerCount : currentState.room.activeClickerCount //obvious have for aggregators
+	  		});
+	  	} else if (scrubbableStore.get('simulations').size !== 0) {
+	  		store.dispatch({
+	  			type : `ROLL_BACK_SIMULATIONS_${scrubbableStoreKey.toUpperCase()}`
+	  		});
+	  	}
+
+	  	//turn the keys around if it's backwards, so the most recent ones fire first
+	  	let orderedKeys = isForwardMove ? filteredKeys : filteredKeys.reverse();
 
 	  	//get updates by ordered keys
 	  	const orderedUpdates = orderedKeys.map(key => updates.get(key)).flatten(1);

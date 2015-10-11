@@ -106,7 +106,7 @@ function Aggregators(io, messenger){
 	var aggregatorUpdateSnapshots = {};
 	var lastUpdate = 0;
 
-	setInterval(sendUpdatedAggregators, 50)
+	setInterval(sendUpdatedAggregators, 100)
 	function sendUpdatedAggregators(){
 		const thisUpdate = Date.now()
 		Object.keys(aggregatorState).forEach(roomId => {
