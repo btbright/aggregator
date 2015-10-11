@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
 import { levelColors, getLevel } from '../utils/levels'
+import constants from '../../common/constants/App'
 
 class Aggregator extends Component {
 	constructor(props){
@@ -14,19 +15,21 @@ class Aggregator extends Component {
 		this.endUserPressing = this.endUserPressing.bind(this)
 	}
 	shouldComponentUpdate(nextProps,nextState){
-		return this.props !== nextProps;
+		return this.props.aggregator.get('x') !== nextProps.aggregator.get('x') || 
+			   this.props.aggregator.get('state') !== nextProps.aggregator.get('state') || 
+			   this.props.aggregator.get('isPressing') !== nextProps.aggregator.get('isPressing');
 	}
 	handleOnMouseDown(){
 		if (this.props.aggregator.get('state') === 'initializing' || this.props.aggregator.get('state') === 'aggregating'){
 			this.setState({
 				isUserPressing : true
 			})
-			this.props.onPressingStateChange(this.props.id, true);
+			this.props.onPressingStateChange(this.props.aggregator.get('id'), true);
 		}
 	}
 	endUserPressing(){
 		if (this.state.isUserPressing && (this.props.aggregator.get('state') === 'initializing' || this.props.aggregator.get('state') === 'aggregating')){
-			this.props.onPressingStateChange(this.props.id, false);
+			this.props.onPressingStateChange(this.props.aggregator.get('id'), false);
 		}
 		this.setState({
 			isUserPressing : false
@@ -59,8 +62,12 @@ class Aggregator extends Component {
 			residue = <div className={classes} style={{width:this.props.aggregator.get('maxValue') + '%'}}></div>
 		}
 
+		if (this.props.aggregator.get('state') === 'initializing'){
+			residue = <div className="bar-residue"></div>	
+		}
+
 		var flash;
-		if (this.props.aggregator.get('isPressing')){
+		if (this.props.aggregator.get('isPressing') && (this.props.aggregator.get('state') === 'initializing' || this.props.aggregator.get('state') === 'aggregating')){
 			flash = <div style={{width:'100%',right:100-width + '%'}} className='bar-leader'></div>
 		}
 
@@ -81,6 +88,7 @@ class Aggregator extends Component {
 						<div className="bar-inner" style={{width:width + '%'}}></div>
 						{rightText}
 						{leftText}
+						<span className="instructions-text">Click and hold to make it gold</span>
 					</div> 
 				</div>
 				<div className="text-display">

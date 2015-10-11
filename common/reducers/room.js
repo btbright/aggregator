@@ -20,7 +20,3 @@ export default function room(state = initialState, action) {
 		return state;
 	}
 }
-
-function determineAverage(){
-	return 0
-}

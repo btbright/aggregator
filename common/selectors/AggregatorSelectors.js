@@ -10,7 +10,7 @@ const joinedMessageAggregatorSelector = createSelector(
 	aggregatorsSelector,
 	(chatMessages, aggregators) => {
 		return aggregators
-		.filter(aggregator => aggregator.get('objectType') === "message" && aggregator.get('state') !== 'removed')
+		.filter(aggregator => aggregator.get('objectType') === "message")
 		.filter(aggregator => !!chatMessages.find(message => message.get('id') === aggregator.get('objectId')))
 		.map(aggregator => {
 			var chatMessage = chatMessages.find((message) => message.get('id') === aggregator.get('objectId'));

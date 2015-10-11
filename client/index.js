@@ -1,4 +1,5 @@
 import React from 'react';
+//import React from 'react/addons';
 import { Provider } from 'react-redux';
 import constants from '../common/constants/App'
 import configureStore from '../common/store/configureStore';
@@ -24,6 +25,11 @@ import { moveToTime } from '../common/actions/bufferedUpdates';
         return _log.apply(console, converted ? ['converted immutable in args: ', ...args] :  args);
     };
 })();
+
+/*
+window.React = React.addons.Perf; // save for later console calls
+  React.addons.Perf.start();
+*/
 
 let initialState = window.__INITIAL_STATE__;
 initialState.chatMessages = undefined;

@@ -2,11 +2,12 @@ import { createAggregator } from '../../common/models/aggregator'
 import constants from '../../common/constants/App'
 import { scorer } from '../../common/utils/scorer'
 import { roomInfo } from './room'
+import { getLevel } from '../../common/utils/levels'
 
 function Aggregators(io, messenger){
 	var activeClickers = {}
 
-	messenger.on('roomInfo:activeClickers:update', function(roomId, activeClickerCount){
+	messenger.on('room:activeClickers:update', function(roomId, activeClickerCount){
 		activeClickers[roomId] = activeClickerCount;
 	})
 
@@ -14,9 +15,9 @@ function Aggregators(io, messenger){
 	var frameRate = 1/60;
 	setInterval(updateAggregators,frameRate*1000);
 
-	const initializationTime = 1500;
-	const completedTime = 3500;
-	const retirementTime = 400;
+	const initializationTime = constants.Aggregator.INITIALIZATIONTIME;
+	const completedTime = constants.Aggregator.COMPLETEDTIME;
+	const retirementTime = constants.Aggregator.RETIREMENTTIME;
 
 	function updateAggregators(){
 		Object.keys(aggregatorState).forEach(roomId => {
@@ -24,7 +25,7 @@ function Aggregators(io, messenger){
 				var storedAggregator = aggregatorState[roomId][aggregatorId];
 				if (storedAggregator.state === 'removed') return;
 				var time = Date.now();
-				var calculatedFrameRate = !storedAggregator.lastServerUpdate ? frameRate : (time - storedAggregator.lastServerUpdate)/1000;
+				var calculatedFrameRate = storedAggregator.lastServerUpdate !== 0 ? frameRate : (time - storedAggregator.lastServerUpdate)/1000;
 				if (!activeClickers[roomId]) activeClickers[roomId] = 1
 
 				var newState = storedAggregator.state,
@@ -39,12 +40,16 @@ function Aggregators(io, messenger){
 				if (newState === 'initializing' && time - storedAggregator.createdTime > initializationTime){
 					newState = 'aggregating';
 					hasStateChange = true;
+					//if no one is holding down a comment, just end it
+					if (storedAggregator.activePresserCount === 0){
+						newState = 'completed';
+					}
 				}
 
 				if (newState === 'aggregating'){
 					hasUpdate = true;
-					scoreResults = scorer(storedAggregator.activePresserCount, time, calculatedFrameRate, storedAggregator.x, storedAggregator.velocity, activeClickers[roomId]);
-					var isComplete = scoreResults.x === 100 || (scoreResults.x === 0 && storedAggregator.maxValue != 0);
+					scoreResults = scorer(storedAggregator.activePresserCount, calculatedFrameRate, storedAggregator.x, storedAggregator.velocity, activeClickers[roomId]);
+					var isComplete = scoreResults.x >= 100 || scoreResults.x <= 0;
 					if (isComplete && !hasStateChange){
 						newState = 'completed';
 				    	hasStateChange = true;
@@ -71,6 +76,15 @@ function Aggregators(io, messenger){
 					maxValue = Math.round((storedAggregator.maxValue >= scoreResults.x ? storedAggregator.maxValue : scoreResults.x) * 100) / 100;
 				}
 
+				if (true){
+					if (hasStateChange){
+						console.log('state change: ',newState)
+					}
+					if (hasUpdate){
+						console.log('activePresserCount: ',storedAggregator.activePresserCount)
+					}
+				}
+
 				if (hasUpdate || hasStateChange){
 					var updateObject = {
 						state : newState,
@@ -80,7 +94,8 @@ function Aggregators(io, messenger){
 						velocity : velocity,
 						maxValue : maxValue,
 						lastStateChangeTime : hasStateChange ? time : storedAggregator.lastStateChangeTime,
-						lastServerUpdate : time
+						lastServerUpdate : time,
+						level : getLevel(maxValue)
 					};
 					aggregatorState[roomId][aggregatorId] = Object.assign({},storedAggregator,updateObject);
 				}
@@ -91,7 +106,7 @@ function Aggregators(io, messenger){
 	var aggregatorUpdateSnapshots = {};
 	var lastUpdate = 0;
 
-	setInterval(sendUpdatedAggregators, 100)
+	setInterval(sendUpdatedAggregators, 50)
 	function sendUpdatedAggregators(){
 		const thisUpdate = Date.now()
 		Object.keys(aggregatorState).forEach(roomId => {
@@ -103,7 +118,7 @@ function Aggregators(io, messenger){
 				}
 				var lastSnapshot = aggregatorUpdateSnapshots[roomId][aggregatorId];
 				if (storedAggregator !== lastSnapshot){
-					updateObjects.push(createAggregatorServerUpdate(storedAggregator, lastSnapshot));
+					updateObjects.push(createAggregatorServerUpdate(thisUpdate, storedAggregator, lastSnapshot));
 					aggregatorUpdateSnapshots[roomId][aggregatorId] = storedAggregator;
 				}
 			});
@@ -122,11 +137,12 @@ function Aggregators(io, messenger){
 
 	var aggTest = 0;
 
-	function createAggregatorServerUpdate(aggregator, lastSnapshot){
+	function createAggregatorServerUpdate(time, aggregator, lastSnapshot){
 		if (!lastSnapshot){
 			return {
 				type : 'ADD_AGGREGATORS',
 				isUpdateAction : true,
+				time : time,
 				key : aggregator.id,
 				keyField : 'id',
 				entity : aggregator
@@ -134,9 +150,12 @@ function Aggregators(io, messenger){
 		}
 
 		var mutations = [];
-		['x','maxValue','state','activePresserCount'].forEach(mutationField => {
+		['x','maxValue','state','activePresserCount','level'].forEach(mutationField => {
 			var oldValue = lastSnapshot[mutationField];
 			var newValue = aggregator[mutationField];
+			if (mutationField === 'activePresserCount'){
+					console.log('old, new',oldValue,newValue)
+				}
 			if (oldValue !== newValue){
 				if (typeof oldValue === 'number' && typeof newValue === 'number'){
 					mutations.push({
@@ -144,6 +163,9 @@ function Aggregators(io, messenger){
 						property : mutationField,
 						value : aggregator[mutationField] - lastSnapshot[mutationField]
 					});
+					if (mutationField === 'activePresserCount'){
+						console.log('sending...',aggregator[mutationField] - lastSnapshot[mutationField])
+					}
 				} else if (typeof oldValue === 'string' && typeof newValue === 'string'){
 					mutations.push({
 						type : 'replacement',
@@ -157,6 +179,7 @@ function Aggregators(io, messenger){
 		return {
 				type : 'UPDATE_AGGREGATORS',
 				isUpdateAction : true,
+				time : time,
 				key : aggregator.id,
 				keyField : 'id',
 				mutations : mutations
@@ -173,7 +196,8 @@ function Aggregators(io, messenger){
 			activePresserCount : aggregator.activePresserCount,
 			objectId : aggregator.objectId,
 			objectType : aggregator.objectType,
-			userName : aggregator.userName
+			userName : aggregator.userName,
+			level : aggregator.level
 		}
 	}
 
@@ -188,11 +212,13 @@ function Aggregators(io, messenger){
 		});
 
 		socket.on('aggregator:pressing:change',function(aggregatorId, isPressing){
-			if (aggregatorState[socket.currentRoom] && 
-				aggregatorState[socket.currentRoom][aggregatorId] && 
-				(aggregatorState[socket.currentRoom][aggregatorId].state === 'initializing' ||
-					aggregatorState[socket.currentRoom][aggregatorId].state === 'initializing')){
-				aggregatorState[socket.currentRoom][aggregatorId].activePresserCount += isPressing ? 1 : -1;
+			if (!aggregatorState[socket.currentRoom] || !aggregatorState[socket.currentRoom][aggregatorId]) return;
+
+			var storedAggregator = aggregatorState[socket.currentRoom][aggregatorId];
+			if (storedAggregator.state === 'aggregating' || storedAggregator.state === 'initializing'){
+				aggregatorState[socket.currentRoom][aggregatorId] = Object.assign({},storedAggregator,{
+					activePresserCount : storedAggregator.activePresserCount + (isPressing ? 1 : -1)
+				});
 			}
 		});
 	});

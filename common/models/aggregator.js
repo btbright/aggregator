@@ -11,7 +11,8 @@ export function createAggregator(props){
 		x : 0,
 		lastStateChangeTime : 0,
 		state : 'initializing',
-		activePresserCount : 1,
-		lastServerUpdate : 0
+		activePresserCount : 0,
+		lastServerUpdate : 0,
+		level : 0
 	}
 }

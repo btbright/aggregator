@@ -15,8 +15,8 @@ function Room(io, messenger){
 			})
 			var newCount = Object.keys(roomInfo[roomId].activeClickers).length;
 			if (oldCount != newCount){
-				messenger.emit('roomInfo:activeClickers:update', roomId, newCount)
-				io.to(roomId).emit('roomInfo:activeClickers:update',newCount)
+				messenger.emit('room:activeClickers:update', roomId, newCount)
+				io.to(roomId).emit('room:activeClickers:update',newCount)
 			}
 		})
 	}
@@ -34,12 +34,12 @@ function Room(io, messenger){
 			if (requestInfo.oldRoom){
 				socket.leave(requestInfo.oldRoom);
 				roomInfo[requestInfo.oldRoom].userCount--;
-				io.to(requestInfo.oldRoom).emit('roomInfo:userCount:update', roomInfo[requestInfo.oldRoom].userCount);
+				io.to(requestInfo.oldRoom).emit('room:userCount:update', roomInfo[requestInfo.oldRoom].userCount);
 			}
 			//join user to new room
 			socket.currentRoom = requestInfo.newRoom;
 			socket.join(requestInfo.newRoom);
-			io.to(requestInfo.newRoom).emit('roomInfo:userCount:update', roomInfo[requestInfo.newRoom].userCount);
+			io.to(requestInfo.newRoom).emit('room:userCount:update', roomInfo[requestInfo.newRoom].userCount);
 		});
 
 		socket.on("user:name:change",function(name){
@@ -74,8 +74,8 @@ function Room(io, messenger){
 			roomInfo[socket.currentRoom].activeClickers[socket.id] = Date.now();
 			if (update){
 				var activeClickerCount = Object.keys(roomInfo[socket.currentRoom].activeClickers).length
-				messenger.emit('roomInfo:activeClickers:update', socket.currentRoom, activeClickerCount)
-				io.to(socket.currentRoom).emit('roomInfo:activeClickers:update',activeClickerCount)
+				messenger.emit('room:activeClickers:update', socket.currentRoom, activeClickerCount)
+				io.to(socket.currentRoom).emit('room:activeClickers:update',activeClickerCount)
 			}
 		}
 
@@ -83,7 +83,7 @@ function Room(io, messenger){
 			if (!roomInfo[socket.currentRoom]) return;
 			if (roomInfo[socket.currentRoom].names) roomInfo[socket.currentRoom].names.splice(roomInfo[socket.currentRoom].names.indexOf(socket.userName),1);
 			roomInfo[socket.currentRoom].userCount--;
-			io.to(socket.currentRoom).emit('roomInfo:userCount:update', roomInfo[socket.currentRoom].userCount);
+			io.to(socket.currentRoom).emit('room:userCount:update', roomInfo[socket.currentRoom].userCount);
 		});
 	});
 }

@@ -5,7 +5,7 @@ import { List } from 'immutable';
 	the timescrubber's job is to generate and dispatch the actions
 	needed to get from t0 to tf. I wanted each scrubbable reducer to
 	handle its own updates between times, but it's important that all
-	reducers recieve all update actions, so they need to be dispatched. console.log(
+	reducers recieve all update actions, so they need to be dispatched
 */
 export default function timeScrubber(opts) {
 
@@ -40,16 +40,19 @@ export default function timeScrubber(opts) {
 	  	let filteredKeys = storeUpdateKeys.filter(key => isForwardMove ? key <= targetTime && key > currentTime : key >= targetTime && key < currentTime);
 	  	let orderedKeys = isForwardMove ? filteredKeys : filteredKeys.reverse();
 
-	  	//get updates by ordered keys
-	  	const orderedUpdates = orderedKeys
-	  							.map(key => {
-	  								var update = updates.get(key).toJS()[0]
-	  								update.time = key;
-	  								update.isUpdateAction = true;
-	  								return update;
-	  							})
-	  							.flatten(1);
+	  	/*
+		TODO - if there aren't any updates in this frame, we need to simulate the physics for the aggregators
+		after we do that, we need to dispatch an action that updates the state with the simulation
+		and store the simulation in a simulationUpdates list. Then, the next frame we come to that has
+		a server update to apply, we reverse all the actions in the simulationUpdates list and then apply the server
+		update OR if there is a server update for a frame, snapshot the state after the update has been applied. run
+		client simulations until the next update. When the next update comes, apply it to the snapshot and update the state
+		to match. Then take the next snapshot. That way we only store one at a time.... but the problem with that approach is
+		you can't go backwards
+	  	*/
 
+	  	//get updates by ordered keys
+	  	const orderedUpdates = orderedKeys.map(key => updates.get(key)).flatten(1);
 
 	  	//transforms actions into plain objects
 	  	const renderedOrderedUpdates = orderedUpdates.toJS();

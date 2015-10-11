@@ -16,8 +16,11 @@ class Chat extends Component {
 	constructor(props){
 		super(props)
 		this.state = {}
+
 		this.handleChatMessageClick = this.handleChatMessageClick.bind(this)
 		this.handleMessageFormSubmit = this.handleMessageFormSubmit.bind(this)
+		this.onPressingStateChange = this.onPressingStateChange.bind(this)
+
 		this.chatActions = bindActionCreators(ChatActions, this.props.dispatch);
 		this.aggregatorActions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.userActions = bindActionCreators(UserActions, this.props.dispatch);
@@ -33,6 +36,9 @@ class Chat extends Component {
 			this.aggregatorActions.newAggregator("message",messageId);
 		}
 	}
+	onPressingStateChange(id, isUserPressing){
+		this.aggregatorActions.updateIsPressing(id, isUserPressing);
+	}
 	handleMessageFormSubmit(text){
 		if (!text) return;
 
@@ -40,8 +46,7 @@ class Chat extends Component {
 			//find the most recent message with the same text
 			var message = this.props.chatMessages.reverse().find(m => m.get('text').toLowerCase() === text.toLowerCase());
 			if (message){
-				var messageAggregator = this.props.aggregators.find(a => a.get('objectId') === message.get('id'));
-				if (messageAggregator && messageAggregator.get('state') !== 'initializing' && messageAggregator.get('state') !== 'aggregating'){
+				if (message.has('isAggregationComplete') && message.get('isAggregationComplete')){
 					this.chatActions.addChatMessage(createChatMessage({text, userName: this.props.user.userName}))
 					return;
 				}
@@ -50,14 +55,11 @@ class Chat extends Component {
 				var isMessageFresh = secondsSinceMessage <= messageTimeoutSeconds;
 				if (isMessageFresh){
 					//if a message already exists, but it's not aggregating
-					if (!messageAggregator){
+					if (!message.get('hasAggregator')){
 						this.aggregatorActions.newAggregator("message",message.get('id'));
 						this.notificationActions.addNotification(`Your message has been combined with ${message.get('userName')}'s: ${message.get('text')}`,"informative");
-					//if the message exists but it's already aggregating
-					} else {
-						this.aggregatorActions.updateIsPressing(messageAggregator.get('id'), true);
-						this.notificationActions.addNotification(`Your message has been counted as support for ${message.get('userName')}'s: ${message.get('text')}`,"informative");
 					}
+					//if the message exists but it's already aggregating?
 					return;
 				}
 			}
@@ -71,8 +73,8 @@ class Chat extends Component {
 		const { chatMessages, aggregators } = this.props;
 		var chatClassNames = classnames('chat');
 		return (
-			<div className={chatClassNames} onMouseDown={this.handleOnMouseDown} onMouseUp={this.handleOnMouseUp}>
-			  <ChatMessageList isClicking={this.state.isClicking} aggregators={aggregators} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
+			<div className={chatClassNames}>
+			  <ChatMessageList onPressingStateChange={this.onPressingStateChange} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
 			  <ChatMessageForm placeholder={ this.props.user.userName ? 'Enter a comment...' : 'Enter a user name here to comment...' } onNewMessage={this.handleMessageFormSubmit} />
 			</div>
 			);

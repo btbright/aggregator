@@ -5,6 +5,10 @@ export function createChatMessage(props){
 		id : props.id || shortid.generate(),
 		text : props.text,
 		userName : props.userName,
-		time : props.time || Date.now()
+		time : props.time || Date.now(),
+		hasAggregator : false,
+		aggregationLevel : 0,
+		isAggregationComplete : false,
+		aggregatorId : ''
 	}
 }

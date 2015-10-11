@@ -443,6 +443,40 @@ body {
         z-index: 9;
     }
 
+    &.aggregator-user-pressing,
+    &.aggregator-initializing {
+        
+    }
+
+    &.aggregator-initializing {
+        .right-text,
+        .left-text
+        {
+            opacity: 0 !important;
+        }
+        .instructions-text {
+            opacity: 1 !important;
+        }
+        .bar-residue {
+            background:$levelDefault !important;
+            -webkit-animation: countdown 2s linear;
+            transform-origin:left;
+            opacity: 0;
+        }
+    }
+
+    @-webkit-keyframes countdown {
+        0%{transform: scaleX(1);opacity:.2;width:100%;}
+        99%{transform: scaleX(0);opacity:.2;width:100%;}
+        100%{transform: scaleX(0);opacity:0;width:0%;}
+    }
+
+    @-webkit-keyframes pulse {
+        0%{background-position:50% 0%}
+        50%{background-position:50% 100%}
+        100%{background-position:50% 0%}
+    }
+
     &.aggregator-level-gold {
         background: $levelBackgroundGold;
         &::before {
@@ -486,6 +520,7 @@ body {
         }
     }
 
+    &.aggregator-removed,
     &.aggregator-retired {
         opacity: 0;
     }
@@ -554,20 +589,23 @@ body {
                 background: #fff;
                 top:0px;
                 left:0px;
-                opacity: 0.2;
                 transition: background-color .2s, width .1s;
 
                 &.bar-residue-green {
                     background: $levelGreen;
+                    opacity: 0.2;
                 }
                 &.bar-residue-blue {
                     background: $levelBlue;
+                    opacity: 0.2;
                 }
                 &.bar-residue-default {
                     background: $levelDefault;
+                    opacity: 0.2;
                 }
                 &.bar-residue-gold {
                     background: $levelGold;
+                    opacity: 0.2;
                 }
             }
 
@@ -577,11 +615,11 @@ body {
                 right:0px;
                 height:100%;
                 transition:width .7s ease-in-out;
-                background: rgba(255,255,255,.3);
+                background: rgba(255,255,255,.15);
                 opacity: 1;
                 animation-name: boom;
                 animation-duration: 0.3s;
-                animation-iteration-count:1;
+                animation-iteration-count:infinite;
             }
 
             @keyframes boom {
@@ -599,7 +637,8 @@ body {
             }
 
             .right-text,
-            .left-text {
+            .left-text,
+            .instructions-text {
                 position: absolute;
                 top: 0px;
                 right: 3px;
@@ -609,6 +648,12 @@ body {
                 transition:opacity .2s;
                 z-index: 0;
                 opacity: 1;
+            }
+
+            .instructions-text {
+                right:50%;
+                margin-right:-75px;
+                opacity: 0;
             }
 
             .left-text {

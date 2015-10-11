@@ -1,59 +1,24 @@
-import _ from 'lodash'
+const maxX = 100
+const arbitraryBoost = 1.05;
 
-export const ballisticsParameters = {
-	THRUST_VELOCITY : 10,
-	THRUST_TIME : 200, //ms
-	MASS : 30,
-	MIN_GRAVITY : 0.20
-}
-
-export const maxX = 100
-export const frameRate = 1/60
-
-
-//takes an array of timestamps and returns 0-100 x position
-//based on physics model at a specific time
-export function scorer(activePresserCount, time, frameRateNew, initialX, initialVelocity, globalActivityModifier){
-	var actualModifier = globalActivityModifier === 0 ? 1 : globalActivityModifier;
-	var scoreResults = generateScore(activePresserCount, frameRateNew, initialX, initialVelocity, actualModifier)
-	return scoreResults;
-}
-
-export function generateScore(activeClickCount, frameRateNew, initialX = 0, initialVelocity = 15, globalActivityModifier = 1){
+export function scorer(activePresserCount, frameRate, initialX = 0, initialVelocity = 0, activeUsers = 1){
 	//v = v + a * dt
-	let velocity = initialVelocity + calculateVelocity(initialX, initialVelocity, activeClickCount, frameRateNew, globalActivityModifier);
+	let velocity = initialVelocity + calculateAdditionalVelocity(initialX, initialVelocity > -20 ? activePresserCount : 0, frameRate, activeUsers === 0 ? 1 : activeUsers);
 	//x = x + v * dt
-	let x = initialX + velocity * frameRateNew;
+	let x = initialX + velocity * frameRate;
 	if (x <= 0){
 		velocity = 0;
 		x = 0;
 	}
-	if (x > 100){
-		x = 100
+	if (x > maxX){
+		x = maxX
 	}
 	return { x : x, velocity : velocity };
 }
 
-export function calculateVelocity(x, currentVelocity, activeClickCount, frameRateNew, globalActivityModifier){
-	var thrustVelocity = 1;
-	//calc velocity vector
-	var thrustDV = (activeClickCount * (thrustVelocity/globalActivityModifier));
-
-	//calc velocity
-	return thrustDV - (x < 20 ? ballisticsParameters.MIN_GRAVITY : (x/100)) * 100 * thrustVelocity * frameRateNew;
+function calculateAdditionalVelocity(x, activePresserCount, frameRate, activeUsers){
+	//normalize each user's vote to 1/activeUsers so if half vote, we end up half-way, plus a little
+	var thrustDV = (activePresserCount / activeUsers) * arbitraryBoost;
+	//                G
+	return thrustDV - x * frameRate;
 };
-
-export function calculateClickrateMulitplier(globalClicksPerMin){
-	return (clickRateWeight + globalClicksPerMin) / clickRateWeight;
-}
-
-export function activeClicks(clicks, time){
-	return clicks.filter(activeClickFilter);
-
-	function activeClickFilter(click){
-		return time-click <= 200;
-	}
-}
-
-//https://en.wikipedia.org/wiki/Logistic_function
-function gentleSigmoidCurve(x, midX, maxVal){return maxVal/(1+Math.pow(Math.E,(-0.2*(x-midX))))}
