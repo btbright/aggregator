@@ -7,7 +7,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 
 import configureStore from '../common/store/configureStore';
-import App from '../common/containers/App';
+import App from '../common/containers/app';
 import constants from '../common/constants/App'
 import ChatAPI from './API/chat'
 import RoomAPI from './API/room'
