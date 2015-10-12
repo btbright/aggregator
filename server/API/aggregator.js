@@ -76,7 +76,7 @@ function Aggregators(io, messenger){
 					maxValue = Math.round((storedAggregator.maxValue >= scoreResults.x ? storedAggregator.maxValue : scoreResults.x) * 100) / 100;
 				}
 
-				if (true){
+				if (false){
 					if (hasStateChange){
 						console.log('state change: ',newState)
 					}
@@ -153,9 +153,6 @@ function Aggregators(io, messenger){
 		['x','maxValue','state','activePresserCount','level'].forEach(mutationField => {
 			var oldValue = lastSnapshot[mutationField];
 			var newValue = aggregator[mutationField];
-			if (mutationField === 'activePresserCount'){
-					console.log('old, new',oldValue,newValue)
-				}
 			if (oldValue !== newValue){
 				if (typeof oldValue === 'number' && typeof newValue === 'number'){
 					mutations.push({
@@ -163,9 +160,6 @@ function Aggregators(io, messenger){
 						property : mutationField,
 						value : aggregator[mutationField] - lastSnapshot[mutationField]
 					});
-					if (mutationField === 'activePresserCount'){
-						console.log('sending...',aggregator[mutationField] - lastSnapshot[mutationField])
-					}
 				} else if (typeof oldValue === 'string' && typeof newValue === 'string'){
 					mutations.push({
 						type : 'replacement',

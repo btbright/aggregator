@@ -6,40 +6,16 @@ import constants from '../../common/constants/App'
 class Aggregator extends Component {
 	constructor(props){
 		super(props)
-		this.state = {
-			isUserPressing : false
-		}
-		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
-		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
-		this.handleOnMouseOut = this.handleOnMouseOut.bind(this)
-		this.endUserPressing = this.endUserPressing.bind(this)
+		this.state = {}
+		this.handleOnClick = this.handleOnClick.bind(this)
 	}
 	shouldComponentUpdate(nextProps,nextState){
 		return this.props.aggregator.get('x') !== nextProps.aggregator.get('x') || 
 			   this.props.aggregator.get('state') !== nextProps.aggregator.get('state') || 
 			   this.props.aggregator.get('isPressing') !== nextProps.aggregator.get('isPressing');
 	}
-	handleOnMouseDown(){
-		if (this.props.aggregator.get('state') === 'initializing' || this.props.aggregator.get('state') === 'aggregating'){
-			this.setState({
-				isUserPressing : true
-			})
-			this.props.onPressingStateChange(this.props.aggregator.get('id'), true);
-		}
-	}
-	endUserPressing(){
-		if (this.state.isUserPressing && (this.props.aggregator.get('state') === 'initializing' || this.props.aggregator.get('state') === 'aggregating')){
-			this.props.onPressingStateChange(this.props.aggregator.get('id'), false);
-		}
-		this.setState({
-			isUserPressing : false
-		})
-	}
-	handleOnMouseUp(){
-		this.endUserPressing();
-	}
-	handleOnMouseOut(){
-		this.endUserPressing();
+	handleOnClick(){
+		this.props.onAggregatorClick(this.props.aggregator.get('id'));
 	}
 	render(){
 		var width = this.props.aggregator.get('x');
@@ -80,7 +56,7 @@ class Aggregator extends Component {
 
 		var aggregatorClassNames = classnames('aggregator', `aggregator-${this.props.aggregator.get('state')}`, this.props.isPressing ? 'aggregator-pressing' : '' ,this.props.aggregator.get('state') === 'completed' ? 'aggregator-level-'+levelColors[getLevel(this.props.aggregator.get('maxValue'))] : '');
 		return (
-			<div onMouseDown={this.handleOnMouseDown} onMouseOut={this.handleOnMouseOut} onMouseUp={this.handleOnMouseUp} className={aggregatorClassNames}>
+			<div onClick={this.handleOnClick} className={aggregatorClassNames}>
 				<div className="bar">
 					<div className={barWrapClasses}>
 						{flash}

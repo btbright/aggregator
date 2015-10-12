@@ -10,16 +10,16 @@ class AggregatorList extends Component {
 		super(props)
 		this.state = {}
 		this.actions = bindActionCreators(AggregatorActions, this.props.dispatch);
-		this.onPressingStateChange = this.onPressingStateChange.bind(this);
+		this.handleOnAggregatorClick = this.handleOnAggregatorClick.bind(this);
 	}
-	onPressingStateChange(id, isUserPressing){
-		this.actions.updateIsPressing(id, isUserPressing);
+	handleOnAggregatorClick(id){
+		this.actions.selectDeselectAggregator(id);
 	}
 	render(){
 		return (
 			<div className="aggregator-list">
 				{this.props.packagedAggregators.map(aggregatorData => {
-					return <Aggregator onPressingStateChange={this.onPressingStateChange} key={aggregatorData.get('id')} aggregator={aggregatorData} />
+					return <Aggregator onAggregatorClick={this.handleOnAggregatorClick} key={aggregatorData.get('id')} aggregator={aggregatorData} />
 				})}
 			</div>
 			)

@@ -19,7 +19,6 @@ class Chat extends Component {
 
 		this.handleChatMessageClick = this.handleChatMessageClick.bind(this)
 		this.handleMessageFormSubmit = this.handleMessageFormSubmit.bind(this)
-		this.onPressingStateChange = this.onPressingStateChange.bind(this)
 
 		this.chatActions = bindActionCreators(ChatActions, this.props.dispatch);
 		this.aggregatorActions = bindActionCreators(AggregatorActions, this.props.dispatch);
@@ -29,15 +28,12 @@ class Chat extends Component {
 	shouldComponentUpdate(nextProps, nextState){
 		return this.props !== nextProps || this.state !== nextState;
 	}
-	handleChatMessageClick(isAggregating, messageId, aggregatorId){
-		if (isAggregating){
-			this.aggregatorActions.newAggregatorClick(aggregatorId);
-		} else {
+	handleChatMessageClick(hasAggregator, isAggregationComplete, messageId, aggregatorId){
+		if (hasAggregator && !isAggregationComplete){
+			this.aggregatorActions.selectDeselectAggregator(aggregatorId);
+		} else if (!hasAggregator) {
 			this.aggregatorActions.newAggregator("message",messageId);
 		}
-	}
-	onPressingStateChange(id, isUserPressing){
-		this.aggregatorActions.updateIsPressing(id, isUserPressing);
 	}
 	handleMessageFormSubmit(text){
 		if (!text) return;

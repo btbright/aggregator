@@ -5,46 +5,14 @@ import { levelColors, getLevel } from '../utils/levels'
 class ChatMessage extends Component {
 	constructor(props) {
       	super(props);
-		this.state = {
-			isUserPressing : false
-		}
-		this.handleOnMouseDown = this.handleOnMouseDown.bind(this)
-		this.handleOnMouseUp = this.handleOnMouseUp.bind(this)
-		this.handleOnMouseOut = this.handleOnMouseOut.bind(this)
-		this.endUserPressing = this.endUserPressing.bind(this)
+		this.state = {}
 		this.handleClick = this.handleClick.bind(this)
 	}
 	handleClick(e, rawId){
-		if (!this.props.message.get('hasAggregator')){
-			this.props.onClick(this.props.message.get('hasAggregator') && !this.props.message.get('isAggregationComplete'), this.props.message.get('id'), this.props.message.get('aggregatorId'));
-		}
+		this.props.onClick(this.props.message.get('hasAggregator'), this.props.message.get('isAggregationComplete'), this.props.message.get('id'), this.props.message.get('aggregatorId'));
 	}
 	shouldComponentUpdate(nextProps){
 		return this.props.message !== nextProps.message;
-	}
-	handleOnMouseDown(){
-		if (this.props.message.get('hasAggregator') && !this.props.message.get('isAggregationComplete')){
-			this.setState({
-				isUserPressing : true
-			})
-			this.props.onPressingStateChange(this.props.message.get('aggregatorId'), true);
-		}
-	}
-	endUserPressing(){
-		if (this.state){
-			if (this.state.isUserPressing && this.props.message.get('hasAggregator') && !this.props.message.get('isAggregationComplete')){
-				this.props.onPressingStateChange(this.props.message.get('aggregatorId'), false);
-			}
-			this.setState({
-				isUserPressing : false
-			})
-		}
-	}
-	handleOnMouseUp(){
-		this.endUserPressing();
-	}
-	handleOnMouseOut(){
-		this.endUserPressing();
 	}
 	render(){
 		var commentClasses = cx(

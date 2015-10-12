@@ -614,11 +614,10 @@ body {
                 top:0px;
                 right:0px;
                 height:100%;
-                transition:width .7s ease-in-out;
-                background: rgba(255,255,255,.15);
+                background: rgba(255,255,255,.25);
                 opacity: 1;
                 animation-name: boom;
-                animation-duration: 0.3s;
+                animation-duration: 0.4s;
                 animation-iteration-count:infinite;
             }
 
