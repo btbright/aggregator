@@ -47,6 +47,6 @@ export function updateUserPoints(userName, points, newPoints){
 		const cornyIndex = Math.floor(Math.random()*cornySayings.length)
 		const endingIndex = Math.floor(Math.random()*endings.length)
 
-		dispatch(notificationActions.addNotification(true,`${cornySayings[cornyIndex]}, you got ${newPoints} points for doing something clever. ${endings[endingIndex]}`, "informational"))
+		dispatch(notificationActions.addNotification(`${cornySayings[cornyIndex]}, you got ${newPoints} points for doing something clever. ${endings[endingIndex]}`, "informational"))
 	}
 }
