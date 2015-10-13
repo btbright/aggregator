@@ -42,7 +42,7 @@ const store = configureStore(initialState, socket, apiHandlers.map(handler => ha
 startListeners(store.getState, store.dispatch);
 
 animLoop(function(dt){
-	const offset = 100;
+	const offset = 300;
 	store.dispatch(moveToTime(Date.now()-offset));
 });
 
@@ -54,9 +54,7 @@ function animLoop( render ) {
             requestAnimationFrame( loop );
             var deltaT = now - lastFrame;
             // do not render frame when deltaT is too high
-            if ( deltaT < 50 ) {
-                running = render( deltaT );
-            }
+            running = render( deltaT );
             lastFrame = now;
         }
     }

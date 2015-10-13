@@ -64,7 +64,6 @@ class Aggregator extends Component {
 						<div className="bar-inner" style={{width:width + '%'}}></div>
 						{rightText}
 						{leftText}
-						<span className="instructions-text">Click and hold to make it gold</span>
 					</div> 
 				</div>
 				<div className="text-display">
