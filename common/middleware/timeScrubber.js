@@ -72,10 +72,9 @@ export default function timeScrubber(opts) {
 
 	  	//turn the keys around if it's backwards, so the most recent ones fire first
 	  	let orderedKeys = isForwardMove ? filteredKeys : filteredKeys.reverse();
-	  	let withMissesKeys = missedUpdateKeys.size > 0 ? orderedKeys.unshift(missedUpdateKeys) : orderedKeys;
 
 	  	//get updates by ordered keys
-	  	const orderedUpdates = withMissesKeys.map(key => updates.get(key)).flatten(1);
+	  	const orderedUpdates = orderedKeys.map(key => updates.get(key)).flatten(1);
 
 	  	//transforms actions into plain objects
 	  	const renderedOrderedUpdates = orderedUpdates.toJS();
@@ -99,8 +98,10 @@ export default function timeScrubber(opts) {
 			});
 		}
 
+
 		if (missedUpdateKeys.size > 0){
-			console.log('CLEARINGMISSES')
+			const missedUpdates = missedUpdateKeys.map(key => updates.get(key)).flatten(1).filter(u => !!u).toJS();
+			Array.prototype.unshift.apply(renderedOrderedUpdates, missedUpdates);
 	  		renderedOrderedUpdates.push({
 	  			type: `CLEAR_${actionNamespace}_MISSES`
 	  		})
