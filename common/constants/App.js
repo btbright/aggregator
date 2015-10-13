@@ -9,5 +9,8 @@ export default {
 		INITIALIZATIONTIME : 2000,
 		COMPLETEDTIME : 3500,
 		RETIREMENTTIME : 400
+	},
+	App : {
+		BUFFERTIME : 300
 	}
 }

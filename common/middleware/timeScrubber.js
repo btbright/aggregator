@@ -40,6 +40,7 @@ export default function timeScrubber(opts) {
 	  	let actionNamespace = scrubbableStoreKey.toUpperCase();
 	  	let scrubbableStore = currentState[scrubbableStoreKey];
 	  	let updates = scrubbableStore.get('updates');
+	  	let missedUpdateKeys = scrubbableStore.get('missedUpdates');
 	  	let storeUpdateKeys = List(updates.keys());
 	  	let filteredKeys = storeUpdateKeys.filter(key => isForwardMove ? key <= targetTime && key > currentTime : key >= targetTime && key < currentTime);
 	  	
@@ -61,7 +62,7 @@ export default function timeScrubber(opts) {
 	  			type : `RUN_SIMULATIONS_${scrubbableStoreKey.toUpperCase()}`,
 	  			currentTime,
 	  			targetTime,
-	  			activeClickerCount : currentState.room.activeClickerCount //obvious have for aggregators
+	  			activeClickerCount : currentState.room.activeClickerCount //obvious hack for aggregators
 	  		});
 	  	} else if (scrubbableStore.get('simulations').size !== 0) {
 	  		store.dispatch({
@@ -71,9 +72,10 @@ export default function timeScrubber(opts) {
 
 	  	//turn the keys around if it's backwards, so the most recent ones fire first
 	  	let orderedKeys = isForwardMove ? filteredKeys : filteredKeys.reverse();
+	  	let withMissesKeys = missedUpdateKeys.size > 0 ? orderedKeys.unshift(missedUpdateKeys) : orderedKeys;
 
 	  	//get updates by ordered keys
-	  	const orderedUpdates = orderedKeys.map(key => updates.get(key)).flatten(1);
+	  	const orderedUpdates = withMissesKeys.map(key => updates.get(key)).flatten(1);
 
 	  	//transforms actions into plain objects
 	  	const renderedOrderedUpdates = orderedUpdates.toJS();
@@ -96,6 +98,14 @@ export default function timeScrubber(opts) {
 				}
 			});
 		}
+
+		if (missedUpdateKeys.size > 0){
+			console.log('CLEARINGMISSES')
+	  		renderedOrderedUpdates.push({
+	  			type: `CLEAR_${actionNamespace}_MISSES`
+	  		})
+	  	}
+
 	  	allUpdates = [...allUpdates, ...renderedOrderedUpdates]
 	  });
 

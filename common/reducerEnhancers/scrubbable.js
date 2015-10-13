@@ -8,6 +8,7 @@ export default function scrubbable(reducer, opts){
 		doesSimulate : opts && opts.doesSimulate,
 		present : reducer(undefined, {}),
 		updates : Map(),
+		missedUpdates : List(),
 		simulations : Map()
 	});
 	const namespace = `${opts && opts.namespace ? opts.namespace.toUpperCase() : reducer.name.toUpperCase()}`;
@@ -18,12 +19,20 @@ export default function scrubbable(reducer, opts){
 
 		switch(action.type){
 		case `ADD_${namespace}_UPDATES`:
-			return standardUpdate(reducer, state, action,(updateState) => {
+			let updatedState = standardUpdate(reducer, state, action,(updateState) => {
 				updateState.updateIn(['updates',action.time], List(), updates => {
 					const newObj = updates.concat(fromJS(action.updates))
 					return newObj;
 				})
 			});
+			return updatedState.update('missedUpdates', List(), missed => {
+				return action.wasMissed ? missed.push(action.time) : missed;
+			});
+
+		case `CLEAR_${namespace}_MISSES`:
+			return standardUpdate(reducer, state, action, (updateState) => {
+				updateState.set('missedUpdates', List())
+			}); 
 
 		case `REMOVE_${namespace}`:
 			const removeUpdateIndex = getUpdateIndex(state, action.time.toString(), action.key);

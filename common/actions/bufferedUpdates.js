@@ -1,4 +1,5 @@
 import { ADD_UPDATES, MOVE_TO_TIME } from '../constants/ActionTypes'
+import constants from '../constants/App'
 
 //translates server updates into action structure
 export function handleServerUpdate(updates){
@@ -14,10 +15,16 @@ export function handleServerUpdate(updates){
 	let actions = [];
 	Object.keys(updates).forEach(updatedNamespace => {
 		Object.keys(updates[updatedNamespace]).forEach(time => {
+			let wasMissed = false;
+			let latency = (Date.now()-parseInt(time,10)); //this wont always be the latency, but it is right now
+			if (latency > constants.App.BUFFERTIME){
+				wasMissed = true;
+			}
 			let action = {
 				type : `ADD_${updatedNamespace.toUpperCase()}_UPDATES`,
 				time : parseInt(time,10),
-				updates: updates[updatedNamespace][time]
+				updates : updates[updatedNamespace][time],
+				wasMissed
 			};
 			actions.push(action);
 		});

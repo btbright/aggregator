@@ -43,7 +43,7 @@ const store = configureStore(initialState, socket, apiHandlers.map(handler => ha
 startListeners(store.getState, store.dispatch);
 
 animLoop(function(dt){
-	const offset = 300;
+	const offset = constants.App.BUFFERTIME;
 	store.dispatch(moveToTime(Date.now()-offset));
 });
 
