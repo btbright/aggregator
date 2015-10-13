@@ -7,6 +7,7 @@ export default {
 	remoteToLocalMap : {
 		'room:userCount:update' : actions.updateUserCount,
 		'room:activeClickers:update' : actions.updateActiveClickerCount,
+		'user:points:update' : userActions.updateUserPoints,
 		'error:user:name:change' : function(error) {
 			return [
 				userActions.removeUserName(), 

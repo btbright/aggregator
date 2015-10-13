@@ -21,7 +21,21 @@ function Room(io, messenger){
 		})
 	}
 
+
 	io.on('connection', function (socket) {
+
+		messenger.on('user:points:update', (userName, pointsAddition) => {
+			if (userName !== socket.userName) return;
+			var room = roomInfo[socket.currentRoom];
+			if (!Object.keys(room.users).includes(userName)) return;
+
+			let userObject = room.users[userName];
+			if (!userObject.points) userObject.points = 0;
+			userObject.points += pointsAddition;
+			io.to(roomId).emit('user:points:update',userName, userObject.points);
+		});
+
+
 		socket.on("room:change",function(requestInfo){
 			//check if real room, etc.
 			//update counts
@@ -45,14 +59,14 @@ function Room(io, messenger){
 		socket.on("user:name:change",function(name){
 			var room = roomInfo[socket.currentRoom];
 			if (!room) return; //oops
-			if (!room.names){
-				room.names = [];
+			if (!room.users){
+				room.users = {};
 			}
-			if (room.names.includes(name)){
+			if (Object.keys(room.users).includes(name)){
 				socket.emit('error:user:name:change','Someone is using that name. Please choose another.');
 				return;
 			}
-			room.names.push(name);
+			room.users[name] = {name};
 			socket.userName = name;
 		});
 
@@ -81,7 +95,7 @@ function Room(io, messenger){
 
 		socket.on('disconnect', function () {
 			if (!roomInfo[socket.currentRoom]) return;
-			if (roomInfo[socket.currentRoom].names) roomInfo[socket.currentRoom].names.splice(roomInfo[socket.currentRoom].names.indexOf(socket.userName),1);
+			if (roomInfo[socket.currentRoom].users) delete roomInfo[socket.currentRoom].users[socket.userName];
 			roomInfo[socket.currentRoom].userCount--;
 			io.to(socket.currentRoom).emit('room:userCount:update', roomInfo[socket.currentRoom].userCount);
 		});

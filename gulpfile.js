@@ -13,7 +13,9 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     packageConfig = require('./package.json'),
     envify = require('envify/custom'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    babelify = require('babelify'),
+    reactify = require('reactify');
 
 
 
@@ -53,7 +55,7 @@ gulp.task('run-test', function(done){
 
 var customOpts = {
   entries: [packageConfig.paths.app],
-  transform: ['babelify','reactify','debowerify'],
+  transform: [],
   debug: true
 };
 var opts = assign({}, watchify.args, customOpts);
@@ -62,6 +64,17 @@ var b = watchify(browserify(opts));
 b.transform(envify({
   NODE_ENV: 'production'
 }))
+b.transform(
+
+    // We want to convert JSX to normal javascript
+    babelify.configure({
+
+        // load the runtime to be able to use Object.assign
+        optional: ["runtime"]
+    })
+);
+b.transform('reactify');
+b.transform('debowerify');
 b.on('update', function(){
     bundleJS(function(){})
 });

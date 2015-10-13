@@ -23,11 +23,13 @@ class RoomInfo extends Component {
 		return (
 			<div className="room-info">
 				<div className="right-info">
-					{userCount}
 					{userName}
-					{clickers}
 				</div>
 				<span className="room-name">#{this.props.name}</span>
+				<div className="left-info">
+					{userCount}
+					{clickers}
+				</div>
 			</div>
 			);
 	}

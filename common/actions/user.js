@@ -12,3 +12,11 @@ export function removeUserName(){
 		type : types.REMOVE_USER_NAME
 	}
 }
+
+export function updateUserPoints(userName, points){
+	return {
+		type : types.UPDATE_USER_POINTS,
+		userName,
+		points
+	}
+}
