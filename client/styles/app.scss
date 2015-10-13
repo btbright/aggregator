@@ -267,10 +267,10 @@ body {
         &:hover {
             background: #ededed;
         }
-        &.comment-is-self-authored:hover {
+        &.comment-is-self-authored {
             cursor: default;
             &:hover {
-                background: #f3f3f3;
+                background: inherit;
             }
         }
         &:first-child {
