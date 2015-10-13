@@ -21,20 +21,19 @@ function Room(io, messenger){
 		})
 	}
 
-
-	io.on('connection', function (socket) {
-
-		messenger.on('user:points:update', (userName, pointsAddition) => {
-			if (userName !== socket.userName) return;
+	messenger.on('user:points:update', (socketId, pointsAddition) => {
+			var socket = io.sockets.connected[socketId];
 			var room = roomInfo[socket.currentRoom];
-			if (!Object.keys(room.users).includes(userName)) return;
+			if (!Object.keys(room.users).includes(socket.userName)) return;
 
 			let userObject = room.users[userName];
 			if (!userObject.points) userObject.points = 0;
 			userObject.points += pointsAddition;
-			io.to(roomId).emit('user:points:update',userName, userObject.points);
+			io.to(roomId).emit('user:points:update',socket.userName, userObject.points);
 		});
 
+
+	io.on('connection', function (socket) {
 
 		socket.on("room:change",function(requestInfo){
 			//check if real room, etc.
