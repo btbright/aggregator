@@ -13,7 +13,7 @@ class RoomInfo extends Component {
 			var score;
 			var ownScore = this.props.scores.find(s => s.get('userName') === this.props.userName);
 			if (ownScore && ownScore.get('points') !== 0){
-				score = <span class="user-score"> ({ownScore.get('points')})</span>
+				score = <span className="user-score"> ({ownScore.get('points')})</span>
 			}
 			userName = <span className="user-count">{this.props.userName}{score}</span>
 		}
