@@ -4,7 +4,7 @@ import { createNotification } from '../models/notification'
 export function addNotification(text, type){
 	return {
 		type : types.ADD_NOTIFICATION,
-		notification : createNotification({text, type, timeToShow : 3000}),
+		notification : createNotification({text, type, timeToShow : 4500}),
 	}
 }
 

@@ -34,14 +34,23 @@ export function updateUserPoints(userName, points, newPoints){
 								'By george', 
 								'Jumping Jehosaphat', 
 								'Heavens to betsy',
-								'Jiminy Cricket'
+								'Jiminy Cricket',
+								'Great scott',
+								'Crikey',
+								'Jeepers creepers',
+								'Jinkies'
 							];
 
 		const endings = [
 							'Points are delicious.',
 							'Look at you.',
 							'Sweet, useless points.',
-							'That\'s good. One less thing.'
+							'That\'s good. One less thing.',
+							'What a success.',
+							'Cool beans.',
+							'Cool cool coolio.',
+							'Tremendous.',
+							'Cowabunga.'
 						];
 
 		const cornyIndex = Math.floor(Math.random()*cornySayings.length)

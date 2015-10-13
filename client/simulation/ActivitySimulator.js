@@ -4,6 +4,7 @@ import * as UserActions from '../../common/actions/user'
 import { bindActionCreators } from 'redux'
 import shortid from 'shortid'
 import { simulationData } from './simulationData'
+import { createChatMessage } from '../../common/models/chatMessage'
 
 const taskRunnerRate = 1000;
 
@@ -37,7 +38,7 @@ export default class ActivitySimulator {
 		if (Math.random() > 0.95){
 			this.clickComment()
 		}
-		if (Math.random() > 0.6){
+		if (Math.random() > 0.8){
 			this.supportAggregator()
 		}
 	}
@@ -51,43 +52,39 @@ export default class ActivitySimulator {
 	clickComment(){
 		var currentTime = Date.now();
 		var aggregators = this.getState().aggregators;
-		var recentMessages = this.getState().chatMessages.filter(m => {
-			return currentTime - m.time < 1000 * 20;
+		var recentMessages = this.getState().chatMessages.get('present').filter(m => {
+			return currentTime - m.get('time') < 1000 * 20;
 		});
 		if (recentMessages.length > 0){
 			var messageIndex = Math.floor(Math.random() * recentMessages.length);
-			if (!aggregators.find(a => a.objectId === recentMessages[messageIndex].id)){
-				this.aggregatorActions.newAggregator("message",recentMessages[messageIndex].id);
+			if (!aggregators.find(a => a.get('objectId') === recentMessages.get(messageIndex).get('id'))){
+				this.aggregatorActions.newAggregator("message", recentMessages.get(messageIndex).get('id'));
 			}
 		}
 	}
 
 	addComment(){
 		var commentIndex = Math.floor(Math.random()*simulationData.debateComments.length);
-		this.chatActions.newChatMessage(simulationData.debateComments[commentIndex], this.fakeName);
+
+		this.chatActions.addChatMessage(createChatMessage({text : simulationData.debateComments[commentIndex], userName : this.fakeName}));
 	}
 
 	supportAggregator(){
 		var currentTime = Date.now();
-		var aggregators = this.getState().aggregators.filter(a => {
-			return !a.isComplete;
+		var aggregators = this.getState().aggregators.get('present').filter(a => {
+			return a.get('state') === 'initializing' || a.get('state') === 'aggregating';
 		});
-		if (aggregators.length > 0){
+		if (aggregators.size > 0){
 			var aggregatorIndex = Math.floor(Math.random() * aggregators.length);
-			this.currentClickingAggregatorId = aggregators[aggregatorIndex].id;
-			this.clickAggy(this.currentClickingAggregatorId)
+			this.clickAggy(aggregators.get(aggregatorIndex).get('id'))
 		}
 	}
 
 	clickAggy(id){
-		if (this.currentClickingAggregatorId !== id) return
 		var aggregator = this.getState().aggregators.find(a => {
-			return a.id === id;
+			return a.get('id') === id;
 		});
-		if (!aggregator || aggregator.isComplete) return;
-		this.aggregatorActions.newAggregatorClick(id);
-		setTimeout(()=>{
-			this.clickAggy(id)
-		},210)
+		if (!aggregator || (a.get('state') !== 'initializing' || a.get('state') !== 'aggregating')) return;
+		this.aggregatorActions.selectDeselectAggregator(id);
 	}
 }
