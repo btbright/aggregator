@@ -56,17 +56,17 @@ function handleRender(req, res) {
 
   const finalState = store.getState();
 
-  res.send(renderFullPage(html, finalState, constants.React.ROOTELEMENTID));
+  res.send(renderFullPage(html, finalState, constants.React.ROOTELEMENTID, req.params.id));
 }
 
-function renderFullPage(html, initialState, reactRootId) {
+function renderFullPage(html, initialState, reactRootId, roomName) {
   return `
     <!doctype html>
     <html class="no-js" lang="">
       <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Aggregators</title>
+        <title>${roomName}</title>
         <link href='https://fonts.googleapis.com/css?family=Poppins:500' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" media="all" href="/css/normalize.css" />
         <link rel="stylesheet" media="all" href="/css/app.css" />
