@@ -7,6 +7,7 @@ import room from './room';
 import user from './user';
 import notifications from './notifications';
 import time from './time';
+import scores from './scores';
 
 
 let scrubbableReducers = scrubbableReducerFactory({chatMessages, aggregators});
@@ -16,7 +17,8 @@ const reducers = Object.assign(scrubbableReducers,{
 	user,
 	notifications,
 	room,
-	time
+	time,
+	scores
 });
 
 const rootReducer = combineReducers(reducers);

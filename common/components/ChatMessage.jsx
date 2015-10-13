@@ -18,6 +18,7 @@ class ChatMessage extends Component {
 		var commentClasses = cx(
 								'comment',
 								'clearfix',
+								this.props.userName === this.props.message.get('userName') ? 'comment-is-self-authored' : '',
 								this.props.message.get('hasAggregator') ? 'comment-aggregation-level-'+levelColors[this.props.message.get('aggregationLevel')] : '',
 								this.props.message.get('isAggregationComplete') ? 'comment-aggregation-complete' : ''
 							);

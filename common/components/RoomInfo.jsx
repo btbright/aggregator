@@ -10,7 +10,12 @@ class RoomInfo extends Component {
 	render(){
 		var userName;
 		if (this.props.userName){
-			userName = <span className="user-name">{this.props.userName}</span>
+			var score;
+			var ownScore = this.props.scores.find(s => s.get('userName') === this.props.userName);
+			if (ownScore && ownScore.get('points') !== 0){
+				score = <span class="user-score"> ({ownScore.get('points')})</span>
+			}
+			userName = <span className="user-count">{this.props.userName}{score}</span>
 		}
 		var userCount;
 		if (this.props.userCount){
@@ -22,11 +27,9 @@ class RoomInfo extends Component {
 		}
 		return (
 			<div className="room-info">
-				<div className="right-info">
-					{userName}
-				</div>
 				<span className="room-name">#{this.props.name}</span>
 				<div className="left-info">
+					{userName}
 					{userCount}
 					{clickers}
 				</div>
@@ -41,6 +44,7 @@ function mapStateToProps(state) {
     name: state.room.name,
     userName : state.user.userName,
     clickers : state.room.activeClickerCount,
+    scores : state.scores
   };
 }
 

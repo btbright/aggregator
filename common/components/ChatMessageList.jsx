@@ -18,6 +18,7 @@ class ChatMessageList extends Component {
 			<div className="chat-message-list" ref="chatMessageList">
 			  {this.props.messages.map(function(message){
 				return <ChatMessage 
+							userName={this.props.userName}
 							onPressingStateChange={this.props.onPressingStateChange}
 							onClick={this.props.handleChatMessageClick} 
 							key={message.get('id')} 

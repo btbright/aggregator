@@ -7,23 +7,27 @@ export default (socket) => {
 	const apiHandlerDefinitions = [room, chat, aggregators, bufferedUpdates];
 	const apiHandlers = apiHandlerDefinitions.map(apiHandlerFactory);
 
-	return [apiHandlers, function(dispatch){
+	return [apiHandlers, function(getState, dispatch){
 		//listen for server messages
 		apiHandlers
 			.map(apiHandler => apiHandler.remote)
-			.forEach(remoteHandler => remoteHandler(socket, dispatch));
-
-		socket.on();
+			.forEach(remoteHandler => remoteHandler(socket, getState, dispatch));
 	}]
 }
 
 function apiHandlerFactory(apiDefinition){
 	return {
-		remote : (socket, dispatch) => {
+		remote : (socket, getState, dispatch) => {
 			Object.keys(apiDefinition.remoteToLocalMap).forEach(remoteEventName => {
 				socket.on(remoteEventName, function(){
 					const actions = prepareActions(apiDefinition.remoteToLocalMap[remoteEventName]).apply(null, arguments);
-					actions.forEach(dispatch);
+					actions.forEach(action => {
+						if (typeof action === 'function'){
+							action(dispatch, getState)
+						} else {
+							dispatch(action);
+						}
+					});
 				});
 			});
 		},
@@ -40,12 +44,11 @@ function prepareActions(actionCreator){
 	return function(){
 		let actions = actionCreator.apply(null, arguments);
 		if (!actions) return;
-		if (typeof actions.length === 'undefined'){
+		if (!Array.isArray(actions)){
 			actions = [actions];
 		}
 		actions.forEach(action => {
 			action.isRemoteTriggered = true;
-			//console.log(action)
 		});
 		return actions;
 	}

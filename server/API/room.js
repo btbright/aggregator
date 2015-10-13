@@ -21,16 +21,16 @@ function Room(io, messenger){
 		})
 	}
 
-	messenger.on('user:points:update', (socketId, pointsAddition) => {
-			var socket = io.sockets.connected[socketId];
-			var room = roomInfo[socket.currentRoom];
-			if (!Object.keys(room.users).includes(socket.userName)) return;
+	messenger.on('user:points:update', (userName, pointsAddition) => {
+		var roomName = Object.keys(roomInfo).find(r => Object.keys(roomInfo[r].users).includes(userName));
+		var room = roomInfo[roomName];
+		if (!roomName || !room) return;
 
-			let userObject = room.users[userName];
-			if (!userObject.points) userObject.points = 0;
-			userObject.points += pointsAddition;
-			io.to(roomId).emit('user:points:update',socket.userName, userObject.points);
-		});
+		let userObject = room.users[userName];
+		if (!userObject.points) userObject.points = 0;
+		userObject.points += pointsAddition;
+		io.to(roomName).emit('user:points:update',userName, userObject.points, pointsAddition);
+	});
 
 
 	io.on('connection', function (socket) {

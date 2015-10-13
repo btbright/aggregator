@@ -1,4 +1,5 @@
 import * as types from '../constants/ActionTypes'
+import * as notificationActions from './notifications'
 
 export function updateUserName(userName){
 	return {
@@ -13,10 +14,39 @@ export function removeUserName(){
 	}
 }
 
-export function updateUserPoints(userName, points){
-	return {
-		type : types.UPDATE_USER_POINTS,
-		userName,
-		points
+export function updateUserPoints(userName, points, newPoints){
+	return function(dispatch, getState){
+
+		dispatch({
+			type : types.UPDATE_USER_POINTS,
+			userName,
+			points,
+			isRemoteTriggered : true
+		})
+
+		if (getState().user.userName !== userName) return;
+
+		const cornySayings = [
+								'Gee willikers', 
+								'Holy moly', 
+								'Sweet sassy molassy', 
+								'By golly', 
+								'By george', 
+								'Jumping Jehosaphat', 
+								'Heavens to betsy',
+								'Jiminy Cricket'
+							];
+
+		const endings = [
+							'Points are delicious.',
+							'Look at you.',
+							'Sweet, useless points.',
+							'That\'s good. One less thing.'
+						];
+
+		const cornyIndex = Math.floor(Math.random()*cornySayings.length)
+		const endingIndex = Math.floor(Math.random()*endings.length)
+
+		dispatch(notificationActions.addNotification(true,`${cornySayings[cornyIndex]}, you got ${newPoints} points for doing something clever. ${endings[endingIndex]}`, "informational"))
 	}
 }

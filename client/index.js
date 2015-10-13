@@ -35,10 +35,11 @@ let initialState = window.__INITIAL_STATE__;
 initialState.chatMessages = undefined;
 initialState.time = undefined;
 initialState.aggregators = undefined;
+initialState.scores = undefined;
 const socket = io();
 const [apiHandlers, startListeners] = setupApiUtils(socket);
 const store = configureStore(initialState, socket, apiHandlers.map(handler => handler.local));
-startListeners(store.dispatch);
+startListeners(store.getState, store.dispatch);
 
 animLoop(function(dt){
 	const offset = 100;

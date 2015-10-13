@@ -85,6 +85,12 @@ function Aggregators(io, messenger){
 					}
 				}
 
+				if (hasStateChange && newState === 'completed'){
+					var aggPoints = getMaxValuePoints(maxValue)
+					messenger.emit('user:points:update', storedAggregator.objectUserName, aggPoints);
+					messenger.emit('user:points:update', storedAggregator.userName, Math.round(aggPoints/5));
+				}
+
 				if (hasUpdate || hasStateChange){
 					var updateObject = {
 						state : newState,
@@ -101,6 +107,21 @@ function Aggregators(io, messenger){
 				}
 			});
 		});
+	}
+
+	function getMaxValuePoints(maxValue){
+		switch (getLevel(maxValue)){
+		case 0:
+			return 15;
+		case 1:
+			return 40;
+		case 2:
+			return 70;
+		case 3:
+			return 100;
+		default:
+			return 0;
+		}
 	}
 
 	var aggregatorUpdateSnapshots = {};

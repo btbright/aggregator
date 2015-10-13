@@ -42,16 +42,16 @@ class Chat extends Component {
 			//find the most recent message with the same text
 			var message = this.props.chatMessages.reverse().find(m => m.get('text').toLowerCase() === text.toLowerCase());
 			if (message){
-				if (message.has('isAggregationComplete') && message.get('isAggregationComplete')){
+				if (message.get('isAggregationComplete')){
 					this.chatActions.addChatMessage(createChatMessage({text, userName: this.props.user.userName}))
 					return;
 				}
-				var secondsSinceMessage = (Date.now() - message.time) / 1000;
+				var secondsSinceMessage = (Date.now() - message.get('time')) / 1000;
 				const messageTimeoutSeconds = 60;
 				var isMessageFresh = secondsSinceMessage <= messageTimeoutSeconds;
 				if (isMessageFresh){
 					//if a message already exists, but it's not aggregating
-					if (!message.get('hasAggregator')){
+					if (!message.get('hasAggregator') && this.props.user.userName !== message.get('userName')){
 						this.aggregatorActions.newAggregator("message",message.get('id'));
 						this.notificationActions.addNotification(`Your message has been combined with ${message.get('userName')}'s: ${message.get('text')}`,"informative");
 					}
@@ -70,7 +70,7 @@ class Chat extends Component {
 		var chatClassNames = classnames('chat');
 		return (
 			<div className={chatClassNames}>
-			  <ChatMessageList onPressingStateChange={this.onPressingStateChange} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
+			  <ChatMessageList onPressingStateChange={this.onPressingStateChange} userName={this.props.user.userName} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
 			  <ChatMessageForm placeholder={ this.props.user.userName ? 'Enter a comment...' : 'Enter a user name here to comment...' } onNewMessage={this.handleMessageFormSubmit} />
 			</div>
 			);

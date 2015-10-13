@@ -34,10 +34,13 @@ export function selectDeselectAggregator(id){
 export function newAggregator(objectType, objectId){
 	return function(dispatch, getState){
 		var userName = getState().user.userName;
+		var object = getState().chatMessages.get('present').find(cm => cm.get('id') === objectId);
+		if (!object || object.get('userName') === userName) return;
 		var aggregator = createAggregator({
 		objectId,
 		objectType,
-		user : userName
+		userName,
+		objectUserName : object.get('userName')
 		});
 		dispatch({
 			type : types.ADD_AGGREGATORS,
