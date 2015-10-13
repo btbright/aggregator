@@ -25,9 +25,8 @@ const mappedToSlotsSelector = createSelector(
 	(aggregators, slots) => {
 		var packed = slots
 			.map((slot) => {
-				var aggregator = aggregators.find(a => a.get('id') === slot.id);
-				return aggregator;
-			});
+				return aggregators.find(a => a.get('id') === slot.id);
+			}).filter(a => !!a);
 		return packed;
 	});
 
