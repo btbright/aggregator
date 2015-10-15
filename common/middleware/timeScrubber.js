@@ -103,6 +103,7 @@ export default function timeScrubber(opts) {
 		}
 
 		if (!action.isUtilityMove && missedUpdateKeys.size > 0){
+			console.log(`fixing ${missedUpdateKeys.size} misses`)
 			const oldestMissedUpdateKey = missedUpdateKeys.first();
 			const oldestMissedUpdateKeyIndex = storeUpdateKeys.indexOf(oldestMissedUpdateKey);
 			const rollbackTime = oldestMissedUpdateKeyIndex !== 0 ? storeUpdateKeys.get(oldestMissedUpdateKeyIndex - 1) - 10 : oldestMissedUpdateKey - 10;

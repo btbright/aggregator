@@ -54,9 +54,13 @@ class Aggregator extends Component {
 				'bar-almost-full' : width > 85
 			});
 
-		var aggregatorClassNames = classnames('aggregator', `aggregator-${this.props.aggregator.get('state')}`, this.props.isPressing ? 'aggregator-pressing' : '' ,this.props.aggregator.get('state') === 'completed' ? 'aggregator-level-'+levelColors[getLevel(this.props.aggregator.get('maxValue'))] : '');
+		var aggregatorClassNames = classnames('aggregator', 
+									`aggregator-${this.props.aggregator.get('state')}`, 
+									this.props.aggregator.get('isPressing') ? 'aggregator-pressing' : '' ,
+									this.props.aggregator.get('state') === 'completed' ? 'aggregator-level-'+levelColors[getLevel(this.props.aggregator.get('maxValue'))] : '');
 		return (
 			<div onClick={this.handleOnClick} className={aggregatorClassNames}>
+				<div className='pressing-dot'></div>
 				<div className="bar">
 					<div className={barWrapClasses}>
 						{flash}

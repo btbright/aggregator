@@ -203,7 +203,7 @@ body {
     .chat {
         width:48%;
         margin:0px 0px 0;
-        padding-bottom: 50px;
+        padding-bottom: 38px;
     }
 }
 
@@ -469,9 +469,24 @@ body {
         z-index: 9;
     }
 
-    &.aggregator-user-pressing,
-    &.aggregator-initializing {
-        
+    .pressing-dot {
+        height:6px;
+        width:6px;
+        display:block;
+        background:#BBB;
+        border-radius: 50%;
+        position:absolute;
+        top:50%;
+        left:-13px;
+        margin-top:-3px;
+        opacity: 0;
+        transition: opacity .15s;
+    }
+
+    &.aggregator-pressing {
+        .pressing-dot {
+            opacity: 1;
+        }
     }
 
     &.aggregator-initializing {

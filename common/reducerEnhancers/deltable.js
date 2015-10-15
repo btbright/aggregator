@@ -16,7 +16,6 @@ export default function deltable(reducer, opts){
 			} else {
 				//skip add if it exists already
 				if (action.keyField && action.key && !!state.find(entity => {
-					console.log(entity.get(action.keyField) === action.key);
 					return entity.get(action.keyField) === action.key;
 				})){ 
 					return state; 
