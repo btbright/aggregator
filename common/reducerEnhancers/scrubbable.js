@@ -35,6 +35,8 @@ export default function scrubbable(reducer, opts){
 			}); 
 
 		case `REMOVE_${namespace}`:
+			if (!action.time) return standardUpdate(reducer, state, action);
+
 			const removeUpdateIndex = getUpdateIndex(state, action.time.toString(), action.key);
 			const currentEntity = getReducerEntity(reducerState, action.key, action.keyField);
 
@@ -45,13 +47,15 @@ export default function scrubbable(reducer, opts){
 			});
 
 		case `UPDATE_${namespace}`:
-			const updateUpdateIndex = getUpdateIndex(state, action.time.toString(), action.key);
+			if (!action.isUpdateAction) return standardUpdate(reducer, state, action);
+
+			const updateUpdateIndex = getUpdateIndex(state, action.time, action.key);
 			const currentEntityUpdate = getReducerEntity(reducerState, action.key, action.keyField);
 
 			return standardUpdate(reducer, state, action, (updateState) => {
 				if (updateUpdateIndex !== -1 && currentEntityUpdate){
 					//get all the mutations on the update object stored by scrubbable
-					const updateMutations = state.getIn(['updates',action.time.toString(),updateUpdateIndex,'mutations']);
+					const updateMutations = state.getIn(['updates',action.time,updateUpdateIndex,'mutations']);
 					if (updateMutations){
 						//update the mutations of the update to hold any current entity state, so we can go back
 						const newMutations = updateMutations.map(mutation => {
@@ -62,7 +66,7 @@ export default function scrubbable(reducer, opts){
 							}
 							return mutation;
 						})
-						updateState.setIn(['updates',action.time.toString(),updateUpdateIndex,'mutations'], newMutations);
+						updateState.setIn(['updates',action.time,updateUpdateIndex,'mutations'], newMutations);
 					}
 				}
 			});

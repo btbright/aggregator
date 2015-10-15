@@ -1,8 +1,10 @@
 import { List } from 'immutable'
-import { ADD_AGGREGATORS, UPDATE_AGGREGATORS } from '../constants/ActionTypes'
+import { ADD_AGGREGATORS, UPDATE_AGGREGATORS, REMOVE_AGGREGATORS } from '../constants/ActionTypes'
 
 const initialState = List();
 //main functionality handled in deltable
+//all this aggregator coupling is for performance to save on joins at 60fps
+//join on write, rather than read
 export default function chatMessages(state = initialState, action) {
 	switch (action.type) {
 	case ADD_AGGREGATORS:
@@ -36,6 +38,17 @@ export default function chatMessages(state = initialState, action) {
 				}
 			});
 		}))	
+	case REMOVE_AGGREGATORS:
+		const findResultsRemove = state.findEntry(obj => obj.get('aggregatorId') === action.key);
+		if (!findResultsRemove) return state;
+		const [removeIndex, removeEntity] = findResultsRemove;	
+		return state.set(removeIndex, state.get(removeIndex).withMutations(message => {
+			message.set('hasAggregator', false);
+			message.set('aggregationLevel', 0);
+			message.set('isAggregationComplete', false);
+			message.set('aggregatorId', '');
+		}))
+
 	default:
     	return state;
   	}

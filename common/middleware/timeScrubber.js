@@ -1,5 +1,6 @@
 import { MOVE_TO_TIME, UPDATE_TIME } from '../constants/ActionTypes';
 import { List } from 'immutable';
+import { moveToTime } from '../actions/bufferedUpdates';
 
 /*
 	the timescrubber's job is to generate and dispatch the actions
@@ -30,8 +31,8 @@ export default function timeScrubber(opts) {
 	  const targetTime = action.time;
 	  const timeState = timeSelector(currentState);
 	  if (!timeState) throw new Error(`The timeScrubber middleware is set to depend on a time store (${timeStoreName}) but it is missing.`);
-	  const currentTime	= timeState.get('currentTime');
-	  const isForwardMove = targetTime > currentTime;
+	  const currentTime	= action.fromTime || timeState.get('currentTime');
+	  const isForwardMove = targetTime >= currentTime;
 	  const scrubbableStoresKeys = scrubbableStoresKeysSelector(currentState);
 	  let allUpdates = [];
 
@@ -41,8 +42,11 @@ export default function timeScrubber(opts) {
 	  	let scrubbableStore = currentState[scrubbableStoreKey];
 	  	let updates = scrubbableStore.get('updates');
 	  	let missedUpdateKeys = scrubbableStore.get('missedUpdates');
-	  	let storeUpdateKeys = List(updates.keys());
+	  	let storeUpdateKeys = List(updates.keys()).sort();
 	  	let filteredKeys = storeUpdateKeys.filter(key => isForwardMove ? key <= targetTime && key > currentTime : key >= targetTime && key < currentTime);
+
+	  	//if this is a ulility move to add in a missed update, we have to not rewind the update we never applied in the first place
+	  	let filterOutMissedKeysForUtility = action.isUtilityMove && !isForwardMove ? filteredKeys.filter(k => !missedUpdateKeys.includes(k)) : filteredKeys;
 	  	
 	  	/*
 		TODO - if there aren't any updates in this frame, we need to simulate the physics for the aggregators
@@ -57,21 +61,21 @@ export default function timeScrubber(opts) {
 
 	  	//if the server didn't provide an update for this time move, provide an
 	  	//opportunity for reducers to simulate it
-	  	if (filteredKeys.size === 0 && simulationStores.indexOf(scrubbableStoreKey) !== -1){
+	  	if (!action.isUtilityMove && filterOutMissedKeysForUtility.size === 0 && simulationStores.indexOf(scrubbableStoreKey) !== -1){
 	  		store.dispatch({
 	  			type : `RUN_SIMULATIONS_${scrubbableStoreKey.toUpperCase()}`,
 	  			currentTime,
 	  			targetTime,
 	  			activeClickerCount : currentState.room.activeClickerCount //obvious hack for aggregators
 	  		});
-	  	} else if (scrubbableStore.get('simulations').size !== 0) {
+	  	} else if (!action.isUtilityMove && scrubbableStore.get('simulations').size !== 0) {
 	  		store.dispatch({
 	  			type : `ROLL_BACK_SIMULATIONS_${scrubbableStoreKey.toUpperCase()}`
 	  		});
 	  	}
 
 	  	//turn the keys around if it's backwards, so the most recent ones fire first
-	  	let orderedKeys = isForwardMove ? filteredKeys : filteredKeys.reverse();
+	  	let orderedKeys = isForwardMove ? filterOutMissedKeysForUtility : filterOutMissedKeysForUtility.reverse();
 
 	  	//get updates by ordered keys
 	  	const orderedUpdates = orderedKeys.map(key => updates.get(key)).flatten(1);
@@ -98,10 +102,15 @@ export default function timeScrubber(opts) {
 			});
 		}
 
-
-		if (missedUpdateKeys.size > 0){
-			const missedUpdates = missedUpdateKeys.map(key => updates.get(key)).flatten(1).filter(u => !!u).toJS();
-			Array.prototype.unshift.apply(renderedOrderedUpdates, missedUpdates);
+		if (!action.isUtilityMove && missedUpdateKeys.size > 0){
+			const oldestMissedUpdateKey = missedUpdateKeys.first();
+			const oldestMissedUpdateKeyIndex = storeUpdateKeys.indexOf(oldestMissedUpdateKey);
+			const rollbackTime = oldestMissedUpdateKeyIndex !== 0 ? storeUpdateKeys.get(oldestMissedUpdateKeyIndex - 1) - 10 : oldestMissedUpdateKey - 10;
+			//move state back to right before missed update
+			store.dispatch(moveToTime(rollbackTime, true))
+			//play state forward back to now, with missed update included
+			store.dispatch(moveToTime(currentTime, true, rollbackTime))
+			
 	  		renderedOrderedUpdates.push({
 	  			type: `CLEAR_${actionNamespace}_MISSES`
 	  		})
@@ -110,11 +119,13 @@ export default function timeScrubber(opts) {
 	  	allUpdates = [...allUpdates, ...renderedOrderedUpdates]
 	  });
 
-	  //updates currentTime
-	  store.dispatch({
-	  	type : UPDATE_TIME,
-	  	time : targetTime
-	  });
+	  if (!action.isUtilityMove){
+	  	//updates currentTime
+		store.dispatch({
+		  type : UPDATE_TIME,
+		  time : targetTime
+		});
+	  }
 
 	  //dispatches those actions
 	  allUpdates.forEach(store.dispatch);

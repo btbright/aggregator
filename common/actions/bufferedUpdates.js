@@ -32,9 +32,11 @@ export function handleServerUpdate(updates){
 	return actions;
 }
 
-export function moveToTime(time){
+export function moveToTime(time, isUtilityMove = false, fromTime = undefined){
 	return {
 		type : MOVE_TO_TIME,
-		time
+		time,
+		isUtilityMove,
+		fromTime
 	}
 }

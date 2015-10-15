@@ -15,7 +15,12 @@ export default function deltable(reducer, opts){
 				return state.set(action.key.toString(), fromJS(action.entity));
 			} else {
 				//skip add if it exists already
-				if (action.keyField && action.key && state.find(entity => entity.get(action.keyField) === action.key)) return state;
+				if (action.keyField && action.key && !!state.find(entity => {
+					console.log(entity.get(action.keyField) === action.key);
+					return entity.get(action.keyField) === action.key;
+				})){ 
+					return state; 
+				}
 				return state.push(fromJS(action.entity));
 			}
 		case `REMOVE_${namespace}`:

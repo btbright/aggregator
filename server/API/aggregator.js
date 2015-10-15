@@ -150,7 +150,10 @@ function Aggregators(io, messenger){
 						[thisUpdate] : updateObjects
 					}
 				};
-				io.to(roomId).emit('update:new',updateObject);
+				//setTimeout for latency simulation
+				setTimeout(()=>{
+					io.to(roomId).emit('update:new',updateObject);
+				},5000)
 			}
 		});
 		lastUpdate = thisUpdate;
@@ -223,7 +226,12 @@ function Aggregators(io, messenger){
 			if (!aggregatorState[socket.currentRoom]){
 				aggregatorState[socket.currentRoom] = {}
 			}
-			aggregatorState[socket.currentRoom][aggregator.id] = aggregator;
+			var existingAggregator = Object.keys(aggregatorState[socket.currentRoom]).find(k => aggregatorState[socket.currentRoom][k].objectId === requestedAggregator.objectId);
+			if (!existingAggregator){
+				aggregatorState[socket.currentRoom][aggregator.id] = aggregator;
+			} else {
+				socket.emit('error:aggregator:new', requestedAggregator.id, existingAggregator.id);
+			}
 		});
 
 		socket.on('aggregator:pressing:change',function(aggregatorId, isPressing){

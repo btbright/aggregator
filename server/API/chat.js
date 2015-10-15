@@ -16,6 +16,7 @@ function Chat(io){
 					updateObjects.push({
 						type : 'ADD_CHATMESSAGES',
 						isUpdateAction : true,
+						time : thisUpdate,
 						key : savedMessage.id,
 						keyField : 'id',
 						entity : savedMessage

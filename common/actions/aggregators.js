@@ -49,3 +49,13 @@ export function newAggregator(objectType, objectId){
 		selectDeselectAggregator(aggregator.id)(dispatch, getState)
 	}
 }
+
+//when the server didn't add the aggregator, we should remove it
+export function addAggregatorError(requestedAggregatorId){
+	console.log('error error error')
+	return {
+		type : types.REMOVE_AGGREGATORS,
+		key : requestedAggregatorId,
+		keyField : 'id'
+	}
+}
