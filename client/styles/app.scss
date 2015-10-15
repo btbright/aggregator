@@ -489,6 +489,13 @@ body {
         }
     }
 
+    &.aggregator-completed,
+    &.aggregator-retired {
+        .pressing-dot {
+            opacity: 0;
+        }
+    }
+
     &.aggregator-initializing {
         .right-text,
         .left-text
