@@ -153,7 +153,7 @@ function Aggregators(io, messenger){
 				//setTimeout for latency simulation
 				setTimeout(()=>{
 					io.to(roomId).emit('update:new',updateObject);
-				},0)
+				},Math.random() > .96 ? 500 : 0)
 			}
 		});
 		lastUpdate = thisUpdate;

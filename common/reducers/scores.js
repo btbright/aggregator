@@ -1,5 +1,5 @@
 import { List, toJS, fromJS, Map } from 'immutable'
-import { UPDATE_USER_POINTS } from '../constants/ActionTypes';
+import { UPDATE_USER_POINTS, REMOVE_USER_POINTS } from '../constants/ActionTypes';
 
 const initialState = List()
 
@@ -12,6 +12,13 @@ export default function scores(state = initialState, action) {
 		}
 		const [index, userScore] = findResults;
 		return state.set(index, userScore.set('points',action.points)).sortBy(s => s.get('points')).reverse();
+	case REMOVE_USER_POINTS:
+		const findResultsRemove = state.findEntry(obj => obj.get('userName') === action.userName);
+		if (!findResultsRemove){
+			return state;
+		}
+		const [indexRemove, userScoreRemove] = findResultsRemove;
+		return state.delete(indexRemove).sortBy(s => s.get('points')).reverse();
 	default:
 		return state;
 	}

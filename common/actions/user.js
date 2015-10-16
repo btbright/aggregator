@@ -40,3 +40,10 @@ export function updateUserPoints(userName, points, newPoints){
 		dispatch(notificationActions.addNotification(`${constants.Points.Notifications.SAYINGS[cornyIndex]}, you got ${newPoints} points for doing something clever. ${constants.Points.Notifications.ENDINGS[endingIndex]}`, "informational"))
 	}
 }
+
+export function removeUserPoints(userName){
+	return {
+		type : types.REMOVE_USER_POINTS,
+		userName
+	}
+}

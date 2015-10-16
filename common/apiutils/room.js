@@ -8,6 +8,7 @@ export default {
 		'room:userCount:update' : actions.updateUserCount,
 		'room:activeClickers:update' : actions.updateActiveClickerCount,
 		'user:points:update' : userActions.updateUserPoints,
+		'user:points:remove' : userActions.removeUserPoints,
 		'error:user:name:change' : function(error) {
 			return [
 				userActions.removeUserName(), 

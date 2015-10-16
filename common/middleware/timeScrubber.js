@@ -104,6 +104,7 @@ export default function timeScrubber(opts) {
 
 		if (!action.isUtilityMove && missedUpdateKeys.size > 0){
 			console.log(`fixing ${missedUpdateKeys.size} misses`)
+			var perfTime = Date.now();
 			const oldestMissedUpdateKey = missedUpdateKeys.first();
 			const oldestMissedUpdateKeyIndex = storeUpdateKeys.indexOf(oldestMissedUpdateKey);
 			const rollbackTime = oldestMissedUpdateKeyIndex !== 0 ? storeUpdateKeys.get(oldestMissedUpdateKeyIndex - 1) - 10 : oldestMissedUpdateKey - 10;
@@ -112,6 +113,8 @@ export default function timeScrubber(opts) {
 			//play state forward back to now, with missed update included
 			store.dispatch(moveToTime(currentTime, true, rollbackTime))
 			
+			console.log('fixing miss took: ',Date.now() - perfTime)
+
 	  		renderedOrderedUpdates.push({
 	  			type: `CLEAR_${actionNamespace}_MISSES`
 	  		})

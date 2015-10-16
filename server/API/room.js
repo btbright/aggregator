@@ -101,6 +101,7 @@ function Room(io, messenger){
 			if (roomInfo[socket.currentRoom].users) delete roomInfo[socket.currentRoom].users[socket.userName];
 			roomInfo[socket.currentRoom].userCount--;
 			io.to(socket.currentRoom).emit('room:userCount:update', roomInfo[socket.currentRoom].userCount);
+			io.to(socket.currentRoom).emit('user:points:remove',socket.userName);
 		});
 	});
 }
