@@ -31,13 +31,11 @@ export function updateUserPoints(userName, points, newPoints){
 			points,
 			isRemoteTriggered : true
 		})
-
 		if (getState().user.userName !== userName) return;
 
-		const cornyIndex = Math.floor(Math.random()*constants.Points.Notifications.SAYINGS.length)
-		const endingIndex = Math.floor(Math.random()*constants.Points.Notifications.ENDINGS.length)
+		const descriptorIndex = Math.floor(Math.random()*constants.Points.Notifications.POINTDESCRIPTORS.length)
 
-		dispatch(notificationActions.addNotification(`${constants.Points.Notifications.SAYINGS[cornyIndex]}, you got ${newPoints} points for doing something clever. ${constants.Points.Notifications.ENDINGS[endingIndex]}`, "informational"))
+		dispatch(notificationActions.addNotification(`You got ${newPoints} ${constants.Points.Notifications.POINTDESCRIPTORS[descriptorIndex]} points for doing something clever.`, "informational"))
 	}
 }
 

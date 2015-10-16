@@ -27,31 +27,11 @@ export default {
 	},
 	Points : {
 		Notifications : {
-			SAYINGS : [
-						'Gee willikers', 
-						'Holy moly', 
-						'Sweet sassy molassy', 
-						'By golly', 
-						'By george', 
-						'Jumping Jehosaphat', 
-						'Heavens to betsy',
-						'Jiminy Cricket',
-						'Great scott',
-						'Crikey',
-						'Jeepers creepers',
-						'Jinkies'
-					],
-			ENDINGS : [
-						'Points are delicious.',
-						'Look at you.',
-						'Sweet, useless points.',
-						'That\'s good. One less thing.',
-						'What a success.',
-						'Tremendous.',
-						'Cowabunga.',
-						'Intermittent reinforcement.',
-						'Have some dopamine.'
-					]
+			POINTDESCRIPTORS : [
+				'useless internet',
+				'intermittent reinforcement',
+				'social validation'
+			]
 		}
 	}
 }
