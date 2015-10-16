@@ -53,6 +53,7 @@ export default function aggregators(state = initialState, action) {
 			return prev.concat(next);
 		}, fromJS(simulations)));
 		return savedSimulations.set('present',updatedAggregators);
+		
 	case ROLL_BACK_SIMULATIONS_AGGREGATORS:
 		const oldSimulations = state.get('simulations').toJS();
 		if (!oldSimulations) return state;

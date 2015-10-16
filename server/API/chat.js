@@ -1,11 +1,12 @@
 import { createChatMessage } from '../../common/models/chatMessage'
+import constants from '../../common/constants/App'
 
 function Chat(io){
 
 	var chatState = {};
 	var lastUpdate = 0;
 
-	setInterval(sendUpdate, 100)
+	setInterval(sendUpdate, constants.Chat.SERVERUPDATEFREQUENCY)
 	function sendUpdate(){
 		const thisUpdate = Date.now()
 		Object.keys(chatState).forEach(roomId => {

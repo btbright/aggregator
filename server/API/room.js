@@ -1,15 +1,16 @@
+import constants from '../../common/constants/App'
+
 function Room(io, messenger){
 
 	var roomInfo = {}
-	setInterval(updateActiveClickers,1000)
+	setInterval(updateActiveClickers,constants.Room.SERVERUPDATEFREQUENCY)
 	function updateActiveClickers(){
 		var timeToCheck = Date.now()
-		var threshold = 1000 * 60 * 2;
 		Object.keys(roomInfo).forEach(roomId => {
 			if (!roomInfo[roomId].activeClickers) return;
 			var oldCount = Object.keys(roomInfo[roomId].activeClickers).length;
 			Object.keys(roomInfo[roomId].activeClickers).forEach(socketId => {
-				if (timeToCheck - roomInfo[roomId].activeClickers[socketId] > threshold){
+				if (timeToCheck - roomInfo[roomId].activeClickers[socketId] > constants.Room.ACTIVECLICKERTIMETHRESHOLD){
 					delete roomInfo[roomId].activeClickers[socketId];
 				}
 			})

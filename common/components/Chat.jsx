@@ -47,9 +47,7 @@ class Chat extends Component {
 					return;
 				}
 				var secondsSinceMessage = (Date.now() - message.get('time')) / 1000;
-				const messageTimeoutSeconds = 60;
-				var isMessageFresh = secondsSinceMessage <= messageTimeoutSeconds;
-				if (isMessageFresh){
+				if (secondsSinceMessage <= constants.Chat.STALESECONDS){
 					//if a message already exists, but it's not aggregating
 					if (!message.get('hasAggregator') && this.props.user.userName !== message.get('userName')){
 						this.aggregatorActions.newAggregator("message",message.get('id'));

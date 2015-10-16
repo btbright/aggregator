@@ -1,5 +1,6 @@
 import * as types from '../constants/ActionTypes'
 import * as notificationActions from './notifications'
+import constants from '../constants/App'
 
 export function updateUserName(userName){
 	return {
@@ -11,6 +12,13 @@ export function updateUserName(userName){
 export function removeUserName(){
 	return {
 		type : types.REMOVE_USER_NAME
+	}
+}
+
+export function updateFilerLevel(filterLevel){
+	return {
+		type : types.UPDATE_FILTER_LEVEL,
+		filterLevel
 	}
 }
 
@@ -26,36 +34,9 @@ export function updateUserPoints(userName, points, newPoints){
 
 		if (getState().user.userName !== userName) return;
 
-		const cornySayings = [
-								'Gee willikers', 
-								'Holy moly', 
-								'Sweet sassy molassy', 
-								'By golly', 
-								'By george', 
-								'Jumping Jehosaphat', 
-								'Heavens to betsy',
-								'Jiminy Cricket',
-								'Great scott',
-								'Crikey',
-								'Jeepers creepers',
-								'Jinkies'
-							];
+		const cornyIndex = Math.floor(Math.random()*constants.Points.Notifications.SAYINGS.length)
+		const endingIndex = Math.floor(Math.random()*constants.Points.Notifications.ENDINGS.length)
 
-		const endings = [
-							'Points are delicious.',
-							'Look at you.',
-							'Sweet, useless points.',
-							'That\'s good. One less thing.',
-							'What a success.',
-							'Cool beans.',
-							'Cool cool coolio.',
-							'Tremendous.',
-							'Cowabunga.'
-						];
-
-		const cornyIndex = Math.floor(Math.random()*cornySayings.length)
-		const endingIndex = Math.floor(Math.random()*endings.length)
-
-		dispatch(notificationActions.addNotification(`${cornySayings[cornyIndex]}, you got ${newPoints} points for doing something clever. ${endings[endingIndex]}`, "informational"))
+		dispatch(notificationActions.addNotification(`${constants.Points.Notifications.SAYINGS[cornyIndex]}, you got ${newPoints} points for doing something clever. ${constants.Points.Notifications.ENDINGS[endingIndex]}`, "informational"))
 	}
 }
