@@ -1,4 +1,4 @@
-import { ADD_UPDATES, MOVE_TO_TIME } from '../constants/ActionTypes'
+import { ADD_UPDATES, MOVE_TO_TIME, TRIGGER_TIME_CORRECTION, CORRECT_TIME } from '../constants/ActionTypes'
 import constants from '../constants/App'
 
 //translates server updates into action structure
@@ -17,6 +17,7 @@ export function handleServerUpdate(updates){
 		Object.keys(updates[updatedNamespace]).forEach(time => {
 			let wasMissed = false;
 			let latency = (Date.now()-parseInt(time,10)); //this wont always be the latency, but it is right now
+			console.log('latency',latency)
 			if (latency > constants.App.BUFFERTIME){
 				wasMissed = true;
 			}
@@ -38,5 +39,19 @@ export function moveToTime(time, isUtilityMove = false, fromTime = undefined){
 		time,
 		isUtilityMove,
 		fromTime
+	}
+}
+
+export function triggerTimeCorrection(){
+	return {
+		type : TRIGGER_TIME_CORRECTION
+	}
+}
+
+export function handleTimeCorrection(originalClientTime, serverTime){
+	return {
+		type : CORRECT_TIME,
+		originalClientTime,
+		serverTime
 	}
 }

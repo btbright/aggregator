@@ -47,6 +47,10 @@ function Room(io, messenger){
 
 	io.on('connection', function (socket) {
 
+		socket.on('timeCorrection:ping', function(clientTime){
+			socket.emit('timeCorrection:pong', clientTime, Date.now());
+		});
+
 		socket.on("room:change",function(requestInfo){
 			//check if real room, etc.
 			//update counts

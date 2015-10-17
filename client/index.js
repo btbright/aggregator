@@ -7,7 +7,7 @@ import configureStore from '../common/store/configureStore';
 import App from '../common/containers/app';
 import ActivitySimulator from './simulation/ActivitySimulator';
 import setupApiUtils from '../common/apiutils';
-import { moveToTime } from '../common/actions/bufferedUpdates';
+import { moveToTime, triggerTimeCorrection } from '../common/actions/bufferedUpdates';
 
 (function () {
     var _log = console.log;
@@ -43,7 +43,9 @@ const store = configureStore(initialState, socket, apiHandlers.map(handler => ha
 startListeners(store.getState, store.dispatch);
 
 animLoop(function(dt){
-	store.dispatch(moveToTime(Date.now()-constants.App.BUFFERTIME));
+    const timeCompensation = store.getState().time.get('timeCompensation');
+    console.log(timeCompensation)
+	store.dispatch(moveToTime(Date.now() + timeCompensation - constants.App.BUFFERTIME));
 });
 
 function animLoop( render ) {
@@ -60,6 +62,10 @@ function animLoop( render ) {
     }
     loop( lastFrame );
 }
+
+setInterval(()=>{
+    store.dispatch(triggerTimeCorrection());
+},5000)
 
 if (false){
 	var simulator = new ActivitySimulator(store.getState, store.dispatch);
