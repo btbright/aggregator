@@ -70,7 +70,7 @@ const rootElement = document.getElementById(constants.React.ROOTELEMENTID);
 
 React.render(
   <Provider store={store}>
-    {() => <App/>}
+    {() => <App />}
   </Provider>,
   rootElement
 );

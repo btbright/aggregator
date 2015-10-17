@@ -40,13 +40,17 @@ server.listen(port, (error) => {
 });
 
 function handleRender(req, res) {
-  const params = qs.parse(req.query);
-
   const initialState = {
     room : {
       name : req.params.id
     }
   };
+
+  if (req.params.id === 'twitch'){
+    initialState.room.twitch = true;
+    initialState.room.twitchChannel = 'legendarylea';
+  }
+
   const store = configureStore(initialState);
 
   const html = React.renderToString(
@@ -76,6 +80,7 @@ function renderFullPage(html, initialState, reactRootId, roomName) {
         <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
         </script>
+        <script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/scripts/bundle.js"></script>      
       </body>

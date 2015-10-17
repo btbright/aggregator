@@ -105,6 +105,11 @@ $levelBackgroundGreen: rgba(51,195,51,.1);
 $levelBackgroundGold: rgba(255,182,0,.1);
 $levelBackgroundDefault: rgba(0,0,0,.05);
 
+html, body, #react-root
+{
+    height: 100%;
+}
+
 body {
     background:#fbfbfb;
     color:rgba(0,0,0,.5);
@@ -112,9 +117,12 @@ body {
 }
 
 .app-wrap {
-    width:1000px;
-    margin:0 auto;
+    max-width:1000px;
+    margin:20px auto;
     position: relative;
+    height:100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .leaderboard {
@@ -132,6 +140,15 @@ body {
     }
 }
 
+.channel-name,
+.room-name {
+    font-size: 45px;
+    font-family: "Poppins";
+    animation-name: coolFadeIn;
+    animation-duration: .7s;
+    line-height: 40px;
+}
+
 .room-info {
     margin-top:20px;
     position:relative;
@@ -147,13 +164,6 @@ body {
             display:inline;
             margin-right: 15px;
         }
-    }
-    .room-name {
-        font-size: 45px;
-        font-family: "Poppins";
-        animation-name: coolFadeIn;
-        animation-duration: .7s;
-        line-height: 40px;
     }
     .user-count,
     .user-name {
@@ -177,7 +187,7 @@ body {
         position: absolute;
         top: 50%;
         margin-top: -9px;
-        left: 0%;
+        left: 12px;
         animation-name: coolFadeIn;
         animation-duration: .3s;
         &.notification-fade {
@@ -753,6 +763,75 @@ body {
                 -ms-user-select: none;
             }
         }
+    }
+}
+
+
+.app-twitch-embeded {
+    margin:0px auto 20px;
+
+    .header {
+        padding: 0 12px;
+    }
+    .channel-name {
+        line-height: inherit;
+        float:left;
+    }
+    .upper-notification-bar {
+        margin:0;
+        padding: 0 12px;
+    }
+    .primary-content-wrap {
+        margin-top:10px;
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        padding: 0 12px 12px;
+    }
+    .room-info {
+        float:left;
+        margin-top:0;
+    }
+    .leaderboard {
+        margin-top:10px;
+        float:none;
+        tr {
+            float:left;
+            display:inline;
+            td {
+                padding-left:0;
+            }
+        }
+    }
+    .twitch-embed {
+        clear:both;
+    }
+    .twitch-meta {
+        display:inline;
+    }
+    .meta-wrap {
+        float:left;
+        margin-top: 18px;
+    }
+    .meta-info {
+        margin-left: 10px;
+    }
+    .chat {
+        flex:1;
+        order:1;
+        margin-right:15px;
+        min-height:inherit;
+    }
+    .chat-message-list {
+        max-height:inherit;
+    }
+    .aggregator-list {
+        flex:1;
+        order:2;
+        padding-bottom: 0;
+        min-height: inherit;
+        margin-left:15px;
+        overflow-y: auto;
     }
 }
 

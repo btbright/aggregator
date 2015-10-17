@@ -1,12 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { requestUpdateRoom } from '../actions/room'
 
 class RoomInfo extends Component {
-	constructor(props){
-		super(props)
-		this.props.dispatch(requestUpdateRoom(this.props.name))
-	}
 	render(){
 		var userName;
 		if (this.props.userName){
@@ -27,7 +22,6 @@ class RoomInfo extends Component {
 		}
 		return (
 			<div className="room-info">
-				<span className="room-name">#{this.props.name}</span>
 				<div className="left-info">
 					{userName}
 					{userCount}
@@ -41,7 +35,6 @@ class RoomInfo extends Component {
 function mapStateToProps(state) {
   return {
     userCount: state.room.userCount,
-    name: state.room.name,
     userName : state.user.userName,
     clickers : state.room.activeClickerCount,
     scores : state.scores

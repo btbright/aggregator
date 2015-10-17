@@ -11,9 +11,10 @@ class Leaderboard extends Component {
 			<div className="leaderboard">
 					<table>
 						<tbody>
-							{this.props.scores.map(score => {
+							{this.props.scores.map((score, index) => {
 								const classNames = classnames('userName', score.get('userName') === this.props.userName ? 'isUser' : '')
 								return (<tr key={score.get('userName')}>
+											{this.props.shouldShowPosition ? (<td className="position">{index+1}. </td>) : null}
 											<td className={classNames}>{score.get('userName')}</td>
 											<td className="points">{score.get('points')}</td>
 										</tr>)
@@ -23,6 +24,10 @@ class Leaderboard extends Component {
 				</div>
 			)
 	} 
+}
+
+Leaderboard.defaultProps = {
+	shouldShowPosition : false
 }
 
 function mapStateToProps(state) {
