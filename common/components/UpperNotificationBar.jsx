@@ -64,7 +64,8 @@ class UpperNotificationBar extends Component {
 	render(){
 		var notification;
 		if (this.props.notification){
-			var classes = classnames('notification', {'notification-fade' : this.state.shouldFadeOut});
+			var classes = classnames('notification', `notification-${this.props.notification.type}`,
+							{'notification-fade' : this.state.shouldFadeOut});
 			notification = <span className={classes}>{this.props.notification.text}</span>;
 		}
 		return (

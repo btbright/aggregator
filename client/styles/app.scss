@@ -194,6 +194,12 @@ body {
             transition: opacity .3s;
             opacity: 0;
         }
+        &.notification-warning {
+            color:#FF6868;
+        }
+        &.notification-error {
+            color:#FF6868;
+        }
     }
 }
 

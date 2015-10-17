@@ -1,10 +1,11 @@
 import room from './room'
 import chat from './chat'
 import aggregators from './aggregators'
+import connection from './connection'
 import bufferedUpdates from './bufferedUpdates'
 
 export default (socket) => {
-	const apiHandlerDefinitions = [room, chat, aggregators, bufferedUpdates];
+	const apiHandlerDefinitions = [room, chat, aggregators, bufferedUpdates, connection];
 	const apiHandlers = apiHandlerDefinitions.map(apiHandlerFactory);
 
 	return [apiHandlers, function(getState, dispatch){
