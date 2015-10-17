@@ -19,7 +19,8 @@ export default {
 		TIMETOSHOW : 4500
 	},
 	App : {
-		BUFFERTIME : 300
+		BUFFERTIME : 300,
+		MAXUSERS : 5
 	},
 	Room : {
 		ACTIVECLICKERTIMETHRESHOLD : 1000 * 60 * 2,

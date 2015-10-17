@@ -39,14 +39,26 @@ server.listen(port, (error) => {
   }
 });
 
+let roomStatus = {};
+messenger.on('room:isOpen:change', (roomName, isOpen) => {
+  roomStatus[roomName] = isOpen;
+});
+
 function handleRender(req, res) {
+  const requestedRoomName = req.params.id;
   const initialState = {
     room : {
-      name : req.params.id
+      name : requestedRoomName
     }
   };
 
-  if (req.params.id === 'twitch'){
+  //if the room is closed, don't let em in
+  if (typeof roomStatus[requestedRoomName] !== 'undefined' && roomStatus[requestedRoomName] === false){
+    res.send(`<html><head></head><body><h1>Sorry, the game for ${requestedRoomName} is full.</h1></body></html>`);
+    return;
+  }
+
+  if (requestedRoomName === 'twitch'){
     initialState.room.twitch = true;
     initialState.room.twitchChannel = 'legendarylea';
   }
@@ -60,7 +72,7 @@ function handleRender(req, res) {
 
   const finalState = store.getState();
 
-  res.send(renderFullPage(html, finalState, constants.React.ROOTELEMENTID, req.params.id));
+  res.send(renderFullPage(html, finalState, constants.React.ROOTELEMENTID, requestedRoomName));
 }
 
 function renderFullPage(html, initialState, reactRootId, roomName) {

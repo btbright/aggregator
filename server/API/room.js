@@ -37,6 +37,14 @@ function Room(io, messenger){
 		io.to(roomName).emit('user:points:update',userName, userObject.points, pointsAddition);
 	});
 
+	function openCloseRoom(roomName){
+		if (roomInfo[roomName].userCount >= constants.App.MAXUSERS){
+			messenger.emit('room:isOpen:change', roomName, false)
+		} else {
+			messenger.emit('room:isOpen:change', roomName, true)
+		}
+	}
+
 	io.on('connection', function (socket) {
 
 		socket.on("room:change",function(requestInfo){
@@ -48,11 +56,15 @@ function Room(io, messenger){
 			} else {
 				roomInfo[requestInfo.newRoom].userCount++;
 			}
+			openCloseRoom(requestInfo.newRoom);
+
 			if (requestInfo.oldRoom){
 				socket.leave(requestInfo.oldRoom);
 				roomInfo[requestInfo.oldRoom].userCount--;
 				io.to(requestInfo.oldRoom).emit('room:userCount:update', roomInfo[requestInfo.oldRoom].userCount);
+				openCloseRoom(requestInfo.oldRoom);
 			}
+
 			//join user to new room
 			socket.currentRoom = requestInfo.newRoom;
 			socket.join(requestInfo.newRoom);
@@ -100,6 +112,7 @@ function Room(io, messenger){
 			if (!roomInfo[socket.currentRoom]) return;
 			if (roomInfo[socket.currentRoom].users) delete roomInfo[socket.currentRoom].users[socket.userName];
 			roomInfo[socket.currentRoom].userCount--;
+			openCloseRoom(socket.currentRoom);
 			io.to(socket.currentRoom).emit('room:userCount:update', roomInfo[socket.currentRoom].userCount);
 			io.to(socket.currentRoom).emit('user:points:remove',socket.userName);
 		});
