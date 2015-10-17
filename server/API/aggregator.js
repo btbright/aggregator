@@ -88,7 +88,7 @@ function Aggregators(io, messenger){
 				if (hasStateChange && newState === 'completed'){
 					var aggPoints = getMaxValuePoints(maxValue)
 					messenger.emit('user:points:update', storedAggregator.objectUserName, aggPoints);
-					messenger.emit('user:points:update', storedAggregator.userName, Math.round(aggPoints/5));
+					messenger.emit('user:points:update', storedAggregator.userName, aggPoints !== 15 ? Math.round(aggPoints/5) : -10);
 				}
 
 				if (hasUpdate || hasStateChange){

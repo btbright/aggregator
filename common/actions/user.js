@@ -34,8 +34,11 @@ export function updateUserPoints(userName, points, newPoints){
 		if (getState().user.userName !== userName) return;
 
 		const descriptorIndex = Math.floor(Math.random()*constants.Points.Notifications.POINTDESCRIPTORS.length)
-
-		dispatch(notificationActions.addNotification(`You got ${newPoints} ${constants.Points.Notifications.POINTDESCRIPTORS[descriptorIndex]} points for doing something clever.`, "informational"))
+		let notificationText = `You got ${newPoints} ${constants.Points.Notifications.POINTDESCRIPTORS[descriptorIndex]} points for doing something clever.`;
+		if (newPoints < 0){
+			notificationText = `You lost ${newPoints} points for supporting something unpopular. At least they don't mean anything.`
+		}
+		dispatch(notificationActions.addNotification(notificationText, "informational"))
 	}
 }
 

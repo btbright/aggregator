@@ -19,16 +19,16 @@ class TwitchEmbed extends Component {
 		this.setVideoSizeState()
 	}
 	setVideoSizeState(){
-		const windowWidth = window.innerWidth-24;
-		if (windowWidth < 1024){
+		const windowWidth = window.innerWidth;
+		if (windowWidth < 1000){
 			this.setState({
-				width: windowWidth,
-				height: Math.round(windowWidth*9/16*10)/10
+				width: windowWidth-24,
+				height: Math.round((windowWidth-24)*9/16*10)/10
 			});
 		} else {
 			this.setState({
-				width: 960,
-				height: 540
+				width: 976,
+				height: 549
 			});
 		}
 	}
