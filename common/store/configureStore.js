@@ -6,8 +6,8 @@ import timeScrubber from '../middleware/timeScrubber'
 import { batchedUpdatesMiddleware } from '../middleware/batchedUpdates'
 
 const logger = store => next => action => {
-  const actionsTypesToLog = ['UPDATE_AGGREGATORS', 'ADD_AGGREGATORS', 'REMOVE_AGGREGATORS']
-  const reducersToLog = ['aggregatorListSlots']
+  const actionsTypesToLog = ['UPDATE_AGGREGATOR_SELECT_DESELECT']
+  const reducersToLog = ['user']
   if (actionsTypesToLog.indexOf(action.type) !== -1){
   	console.log('dispatching action:',action)
   }

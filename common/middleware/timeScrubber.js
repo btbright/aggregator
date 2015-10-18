@@ -47,17 +47,6 @@ export default function timeScrubber(opts) {
 
 	  	//if this is a ulility move to add in a missed update, we have to not rewind the update we never applied in the first place
 	  	let filterOutMissedKeysForUtility = action.isUtilityMove && !isForwardMove ? filteredKeys.filter(k => !missedUpdateKeys.includes(k)) : filteredKeys;
-	  	
-	  	/*
-		TODO - if there aren't any updates in this frame, we need to simulate the physics for the aggregators
-		after we do that, we need to dispatch an action that updates the state with the simulation
-		and store the simulation in a simulationUpdates list. Then, the next frame we come to that has
-		a server update to apply, we reverse all the actions in the simulationUpdates list and then apply the server
-		update OR if there is a server update for a frame, snapshot the state after the update has been applied. run
-		client simulations until the next update. When the next update comes, apply it to the snapshot and update the state
-		to match. Then take the next snapshot. That way we only store one at a time.... but the problem with that approach is
-		you can't go backwards
-	  	*/
 
 	  	//if the server didn't provide an update for this time move, provide an
 	  	//opportunity for reducers to simulate it

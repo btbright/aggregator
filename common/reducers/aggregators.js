@@ -1,17 +1,11 @@
 import { List, toJS, fromJS, Map } from 'immutable'
-import { UPDATE_AGGREGATOR_SELECT_DESELECT, RUN_SIMULATIONS_AGGREGATORS, ROLL_BACK_SIMULATIONS_AGGREGATORS } from '../constants/ActionTypes'
+import { RUN_SIMULATIONS_AGGREGATORS, ROLL_BACK_SIMULATIONS_AGGREGATORS } from '../constants/ActionTypes'
 import { scorer } from '../utils/scorer'
 
 const initialState = List();
 //main functionality handled in deltable
 export default function aggregators(state = initialState, action) {
 	switch (action.type) {
-	case UPDATE_AGGREGATOR_SELECT_DESELECT:
-		const findResults = state.findEntry(obj => obj.get('id') === action.id);
-		if (!findResults) return state;
-		const [index, aggregator] = findResults;
-		return state.set(index, aggregator.set('isPressing',action.isSelected))
-
 	//we get the full state from the 'scrubbable' store here
 	case RUN_SIMULATIONS_AGGREGATORS:
 		//just pulling running aggs for now, since they are the troublemakers. Might want to simulate state changes, too
