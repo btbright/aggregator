@@ -44,7 +44,6 @@ startListeners(store.getState, store.dispatch);
 
 animLoop(function(dt){
     const timeCompensation = store.getState().time.get('timeCompensation');
-    console.log(timeCompensation)
 	store.dispatch(moveToTime(Date.now() + timeCompensation - constants.App.BUFFERTIME));
 });
 

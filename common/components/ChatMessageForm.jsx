@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import cx from 'classnames'
-import $ from 'jquery'
 
 class ChatMessageForm extends Component {
 	constructor(props) {
@@ -16,9 +15,9 @@ class ChatMessageForm extends Component {
 		var hasConflict = false;
 		var inputText = e.target.value;
 		
-		var submitInstructionsWidth = $(React.findDOMNode(this.refs.submitInstructions)).width();
-		var textWidth = $(React.findDOMNode(this.refs.hiddenCommentMirror)).width() || 0;
-		var inputWidth = $(React.findDOMNode(e.target)).width();
+		var submitInstructionsWidth = React.findDOMNode(this.refs.submitInstructions).getBoundingClientRect().width;
+		var textWidth = this.refs.hiddenCommentMirror ?  React.findDOMNode(this.refs.hiddenCommentMirror).getBoundingClientRect().width : 0;
+		var inputWidth = React.findDOMNode(e.target).getBoundingClientRect().width;
 
 		if (inputWidth-submitInstructionsWidth<=textWidth+60){
 			hasConflict = true;

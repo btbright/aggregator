@@ -4,12 +4,11 @@ import { newListWithReplacementAtIndex, newListWithReplacementObjectAtIndex } fr
 export default function aggregatorListSlots(state = [], action){
 	switch (action.type) {
 	case ADD_AGGREGATORS:
+		var index = state.findIndex(slot => slot.id === action.entity.id);
+		if (index !== -1){
+			return newListWithReplacementAtIndex(state, index, () => ({ active: true, id: action.entity.id }) );
+		}
 		for (var i=0;i<state.length+1;i++){
-
-			if (state[i] && state[i].id === action.entity.id){
-				return state;
-			}
-
 			if (!state[i] || !state[i].active){
 				return newListWithReplacementAtIndex(state, i, () => ({ active: true, id: action.entity.id }) );
 			}
@@ -38,6 +37,7 @@ function findLastFilledSlot(slots){
 }
 
 function makeRemoveList(state, index, id){
+	if (index === -1) return state;
 
 	var newList = [
 	  ...state.slice(0, index),
