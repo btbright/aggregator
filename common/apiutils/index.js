@@ -44,8 +44,6 @@ function prepareActions(dispatch, getState, actionCreator){
 			let results = actionCreatorResults(dispatch, getState);
 			if (results){
 				actions = results;		
-			} else {
-				return actions;
 			}
 		}
 		if (!actions){
