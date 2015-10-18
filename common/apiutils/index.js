@@ -43,7 +43,7 @@ function apiHandlerFactory(apiDefinition){
 
 function prepareActions(dispatch, getState, actionCreator){
 	return function(){
-		let actions = [];
+		let actions;
 		let actionCreatorResults = actionCreator.apply(null, arguments);
 		if (!actionCreatorResults) return;
 		if (typeof actionCreatorResults === 'function'){
@@ -54,8 +54,12 @@ function prepareActions(dispatch, getState, actionCreator){
 				return actions;
 			}
 		}
-		if (!Array.isArray(actions)){
-			actions = [actions];
+		if (!actions){
+			if (!Array.isArray(actions)){
+				actions = [actionCreatorResults];
+			} else {
+				actions = actionCreatorResults;
+			}
 		}
 		actions.forEach(action => {
 			action.isRemoteTriggered = true;
