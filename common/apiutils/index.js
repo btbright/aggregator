@@ -22,13 +22,7 @@ function apiHandlerFactory(apiDefinition){
 			Object.keys(apiDefinition.remoteToLocalMap).forEach(remoteEventName => {
 				socket.on(remoteEventName, function(){
 					const actions = prepareActions(dispatch, getState, apiDefinition.remoteToLocalMap[remoteEventName]).apply(null, arguments);
-					actions.forEach(action => {
-						if (typeof action === 'function'){
-							action()
-						} else {
-							dispatch(action);
-						}
-					});
+					actions.forEach(dispatch);
 				});
 			});
 		},
