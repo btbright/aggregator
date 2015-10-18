@@ -1,4 +1,4 @@
-import { List, toJS, fromJS, Map } from 'immutable'
+import { List, Map } from 'immutable'
 import { UPDATE_USER_POINTS, REMOVE_USER_POINTS } from '../constants/ActionTypes';
 
 const initialState = List()

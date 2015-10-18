@@ -1,4 +1,4 @@
-import { Map, List, fromJS, Seq } from 'immutable'
+import { Map, List, fromJS } from 'immutable'
 
 export default function deltable(reducer, opts){
 

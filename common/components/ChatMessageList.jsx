@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import ChatMessage from './ChatMessage.jsx'
-import { toJS } from 'immutable'
 
 class ChatMessageList extends Component {
 	shouldComponentUpdate(nextProps){

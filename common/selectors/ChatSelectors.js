@@ -1,7 +1,5 @@
-import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
+import { createSelector } from 'reselect'
 import { levelColors, getLevel } from '../utils/levels'
-import _ from 'lodash';
-import { toJS } from 'immutable'
 
 const chatMessagesSelector = (state) => state.chatMessages.get('present')
 const userSelectorSelector = (state) => state.user
@@ -12,7 +10,7 @@ export const chatMessagesWithAggregationInfoSelector = createSelector(
 	[chatMessagesSelector, userSelectorSelector],
 	(chatMessages, user) => {
 		return {
-			chatMessages : chatMessages,
+			chatMessages : chatMessages.sortBy(cm => cm.get('time')),
 			user
 		}
 	});
