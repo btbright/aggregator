@@ -21,10 +21,10 @@ function apiHandlerFactory(apiDefinition){
 		remote : (socket, getState, dispatch) => {
 			Object.keys(apiDefinition.remoteToLocalMap).forEach(remoteEventName => {
 				socket.on(remoteEventName, function(){
-					const actions = prepareActions(apiDefinition.remoteToLocalMap[remoteEventName]).apply(null, arguments);
+					const actions = prepareActions(dispatch, getState, apiDefinition.remoteToLocalMap[remoteEventName]).apply(null, arguments);
 					actions.forEach(action => {
 						if (typeof action === 'function'){
-							action(dispatch, getState)
+							action()
 						} else {
 							dispatch(action);
 						}
@@ -41,10 +41,19 @@ function apiHandlerFactory(apiDefinition){
 	}
 }
 
-function prepareActions(actionCreator){
+function prepareActions(dispatch, getState, actionCreator){
 	return function(){
-		let actions = actionCreator.apply(null, arguments);
-		if (!actions) return;
+		let actions = [];
+		let actionCreatorResults = actionCreator.apply(null, arguments);
+		if (!actionCreatorResults) return;
+		if (typeof actionCreatorResults === 'function'){
+			let results = actionCreatorResults(dispatch, getState);
+			if (results){
+				actions = results;		
+			} else {
+				return actions;
+			}
+		}
 		if (!Array.isArray(actions)){
 			actions = [actions];
 		}

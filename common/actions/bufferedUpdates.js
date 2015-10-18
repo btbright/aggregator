@@ -11,26 +11,28 @@ export function handleServerUpdate(updates){
 		}
 	}
 	*/
+	return function(dispatch, getState){
+		let actions = [];
+		const currentTime = getState().time.get('currentTime');
+		Object.keys(updates).forEach(updatedNamespace => {
+			Object.keys(updates[updatedNamespace]).forEach(time => {
+				let wasMissed = false;
 
-	let actions = [];
-	Object.keys(updates).forEach(updatedNamespace => {
-		Object.keys(updates[updatedNamespace]).forEach(time => {
-			let wasMissed = false;
-			let latency = (Date.now()-parseInt(time,10)); //this wont always be the latency, but it is right now
-			console.log('latency',latency)
-			if (latency > constants.App.BUFFERTIME){
-				wasMissed = true;
-			}
-			let action = {
-				type : `ADD_${updatedNamespace.toUpperCase()}_UPDATES`,
-				time : parseInt(time,10),
-				updates : updates[updatedNamespace][time],
-				wasMissed
-			};
-			actions.push(action);
+				if (currentTime > parseInt(time,10)){
+					console.log('missssssssed')
+					wasMissed = true;
+				}
+				let action = {
+					type : `ADD_${updatedNamespace.toUpperCase()}_UPDATES`,
+					time : parseInt(time,10),
+					updates : updates[updatedNamespace][time],
+					wasMissed
+				};
+				actions.push(action);
+			});
 		});
-	});
-	return actions;
+		return actions;
+	}
 }
 
 export function moveToTime(time, isUtilityMove = false, fromTime = undefined){

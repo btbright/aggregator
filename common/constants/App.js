@@ -19,7 +19,7 @@ export default {
 		TIMETOSHOW : 4500
 	},
 	App : {
-		BUFFERTIME : 300,
+		BUFFERTIME : 150,
 		MAXUSERS : 5
 	},
 	Room : {
