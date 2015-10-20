@@ -14,11 +14,12 @@ export default function deltable(reducer, opts){
 				if (action.key && state.has(action.key.toString())) return state;
 				return state.set(action.key.toString(), fromJS(action.entity));
 			} else {
-				//skip add if it exists already
-				if (action.keyField && action.key && !!state.find(entity => {
-					return entity.get(action.keyField) === action.key;
-				})){ 
-					return state; 
+				//replace if it exists already
+				if (action.keyField && action.key){ 
+					const entityIndex = state.findIndex(obj => obj.get(action.keyField) === action.key)
+					if (entityIndex !== -1){
+						state.set(entityIndex, fromJS(action.entity))
+					}
 				}
 				return state.push(fromJS(action.entity));
 			}
@@ -32,29 +33,18 @@ export default function deltable(reducer, opts){
 			if (Map.isMap(state)){
 				if (!state.has(action.key.toString())) return state;
 				return state.set(action.key.toString(), state.get(action.key.toString()).withMutations(map => {
-					action.mutations.forEach(mutation => mutate(map, mutation));
+					action.mutations.forEach(mutation => map.set(mutation.property, mutation.value));
 				}))
 			} else {
 				const findResults = state.findEntry(obj => obj.get(action.keyField) === action.key);
 				if (!findResults) return state;
 				const [index, entity] = findResults;
 				return state.set(index, state.get(index).withMutations(map => {
-					action.mutations.forEach(mutation => mutate(map, mutation));
+					action.mutations.forEach(mutation => map.set(mutation.property, mutation.value));
 				}))
 			}
 		default:
 			return reducer(state, action);
 		}
-	}
-}
-
-function mutate(state, action){
-	switch(action.type){
-	case "addition":
-		return state.set(action.property, state.get(action.property) + action.value);
-	case "replacement":
-		return state.set(action.property, action.value);
-	default:
-		return state;
 	}
 }

@@ -61,6 +61,8 @@
     "gulp-uglify": "^1.4.1",
     "gulp-util": "^3.0.6",
     "immutable": "^3.7.5",
+    "immutablediff": "^0.4.2",
+    "immutablepatch": "^0.2.2",
     "lodash": "^3.10.1",
     "react": "^0.13.3",
     "react-redux": "^3.0.0",

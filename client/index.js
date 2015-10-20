@@ -36,6 +36,7 @@ let initialState = window.__INITIAL_STATE__;
 initialState.chatMessages = undefined;
 initialState.time = undefined;
 initialState.aggregators = undefined;
+initialState.aggregatorListSlots = undefined;
 initialState.scores = undefined;
 const socket = io();
 const [apiHandlers, startListeners] = setupApiUtils(socket);
@@ -62,6 +63,7 @@ function animLoop( render ) {
     loop( lastFrame );
 }
 
+store.dispatch(triggerTimeCorrection());
 setInterval(()=>{
     store.dispatch(triggerTimeCorrection());
 },5000)

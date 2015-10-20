@@ -8,7 +8,6 @@ export function selectDeselectAggregator(id){
 			id : id,
 			isSelected : getState().user.pressedAggregatorId !== id
 		});
-			
 	}
 }
 
@@ -25,7 +24,8 @@ export function newAggregator(objectType, objectId){
 		});
 		dispatch({
 			type : types.ADD_AGGREGATORS,
-			entity : aggregator
+			entity : aggregator,
+			time : getState().time.get('currentTime')
 		})
 		selectDeselectAggregator(aggregator.id)(dispatch, getState)
 	}

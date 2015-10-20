@@ -20,7 +20,7 @@ class AggregatorList extends Component {
 			<div className="aggregator-list">
 				{this.props.packagedAggregators.map(aggregatorData => {
 					return <Aggregator onAggregatorClick={this.handleOnAggregatorClick} key={aggregatorData.get('id')} aggregator={aggregatorData} />
-				})}
+				}).toArray()}
 			</div>
 			)
 	}

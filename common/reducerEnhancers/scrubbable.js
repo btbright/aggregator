@@ -1,108 +1,115 @@
 import { ADD_UPDATES, MOVE_TO_TIME } from '../constants/ActionTypes'
-import { Map, List, fromJS } from 'immutable'
+import { Map, List, fromJS, is } from 'immutable'
+import diff from 'immutablediff'
+import patch from 'immutablepatch'
 
 export default function scrubbable(reducer, opts){
 
 	const initialState = Map({
 		isScrubbable : true,
-		doesSimulate : opts && opts.doesSimulate,
+		doesSimulate : opts && opts.doesSimulate || false,
 		present : reducer(undefined, {}),
-		updates : Map(),
-		missedUpdates : List(),
-		simulations : Map()
+		currentPresentKey : 0,
+		history : Map(),
+		historyKeys : List(),
+		orphanedUpdates : Map()
 	});
-	const namespace = `${opts && opts.namespace ? opts.namespace.toUpperCase() : reducer.name.toUpperCase()}`;
     
 	return function(state = initialState, action){
 		if (!action || !action.type) return state;
-		const reducerState = state.get('present');
 
 		switch(action.type){
-		case `ADD_${namespace}_UPDATES`:
-			let updatedState = standardUpdate(reducer, state, action,(updateState) => {
-				updateState.updateIn(['updates',action.time], List(), updates => {
-					const newObj = updates.concat(fromJS(action.updates))
-					return newObj;
-				})
-			});
-			return updatedState.update('missedUpdates', List(), missed => {
-				return action.wasMissed ? missed.push(action.time) : missed;
-			});
-
-		case `CLEAR_${namespace}_MISSES`:
-			return standardUpdate(reducer, state, action, (updateState) => {
-				updateState.set('missedUpdates', List())
-			}); 
-
-		case `REMOVE_${namespace}`:
-			if (!action.time) return standardUpdate(reducer, state, action);
-
-			const removeUpdateIndex = getUpdateIndex(state, action.time.toString(), action.key);
-			const currentEntity = getReducerEntity(reducerState, action.key, action.keyField);
-
-			return standardUpdate(reducer, state, action, (updateState) => {
-				if (removeUpdateIndex !== -1 && currentEntity){
-					updateState.mergeIn(['updates',action.time.toString(),removeUpdateIndex], { entity : currentEntity });
-				}
-			});
-
-		case `UPDATE_${namespace}`:
-			if (!action.isUpdateAction) return standardUpdate(reducer, state, action);
-
-			const updateUpdateIndex = getUpdateIndex(state, action.time, action.key);
-			const currentEntityUpdate = getReducerEntity(reducerState, action.key, action.keyField);
-
-			return standardUpdate(reducer, state, action, (updateState) => {
-				if (updateUpdateIndex !== -1 && currentEntityUpdate){
-					//get all the mutations on the update object stored by scrubbable
-					const updateMutations = state.getIn(['updates',action.time,updateUpdateIndex,'mutations']);
-					if (updateMutations){
-						//update the mutations of the update to hold any current entity state, so we can go back
-						const newMutations = updateMutations.map(mutation => {
-							//a replacement mutation doesn't know what it is replacing, so we need to record it so
-							//we can reverse it
-							if (mutation.get('type') === "replacement"){
-								return mutation.update('replaced',List(), replaced => replaced.push(currentEntityUpdate.get(mutation.get('property'))));
-							}
-							return mutation;
-						})
-						updateState.setIn(['updates',action.time,updateUpdateIndex,'mutations'], newMutations);
+		case MOVE_TO_TIME:
+			const historyState = state.get('history');
+			const lastHistoryKeyBeforeTime = findPreviousHistoryKey(state.get('historyKeys'), action.time);
+			if (lastHistoryKeyBeforeTime > state.get('currentPresentKey')){
+				const lastHistoryBeforeNewTime = historyState.get(lastHistoryKeyBeforeTime, state.get('present'))
+				return state.set('present', lastHistoryBeforeNewTime).set('currentPresentKey', lastHistoryKeyBeforeTime);	
+			}
+			return state;
+		default:
+			if (action.time){
+				let returnedState = state;
+				const historyKeys = state.get('historyKeys');
+				if (historyKeys.indexOf(action.time) === -1){
+					const nextKeyIndex = findNextHistoryKeyIndex(historyKeys, action.time);
+					if (!nextKeyIndex) {
+						returnedState = state.update('historyKeys', historyKeys => historyKeys.unshift(action.time));
+					} else {
+						returnedState = state.update('historyKeys', historyKeys => historyKeys.splice(nextKeyIndex+1,0,action.time));
 					}
 				}
-			});
-		//dangerously sending sub-reducer the full state, 
-		//but it needs to update the simulations list 
-		case `RUN_SIMULATIONS_${namespace}`:
-			return reducer(state, action);
-		case `ROLL_BACK_SIMULATIONS_${namespace}`:
-			return reducer(state, action);
-		default:
-			return standardUpdate(reducer, state, action);
+				return returnedState.update('history', historyState => {
+					return makeHistoryChanges(historyState, historyKeys, action, reducer);
+				});
+			} else {
+				return state.update('present', present => reducer(present, action));
+			}
 		}
 	}
 }
 
-function getUpdateIndex(state, key, updateKey){
-	const entryResults = state.getIn(['updates', key], List()).findEntry(update => {
-		return update.get('key') === updateKey;
-	});
-	if (entryResults){
-		return entryResults[0];
-	}
-	return -1;
-}
+//make the changes to the correct place in the timeline, updating
+//histories around it if they need it (so we can handle out of order updates)
+function makeHistoryChanges(historyState, historyKeys, action, reducer){
+	const previousHistoryKey = findPreviousHistoryKey(historyKeys, action.time);
+	const previousHistory = historyState.get(previousHistoryKey)
 
-function getReducerEntity(state, key, keyField){
-	return Map.isMap(state) ? state.get(key) : state.find(item => {
-		return item.get(keyField) === key;
-	});
-}
+	const currentHistory = historyState.get(action.time, previousHistory);
+	const newCurrentHistory = reducer(currentHistory, action);
+	//main update
+	const withNewHistory = historyState.set(action.time, newCurrentHistory);
 
-function standardUpdate(reducer, state, action, mutationFunction){
-	return state.withMutations(updateState => {
-		updateState.update('present', present => reducer(present, action));
-		if (mutationFunction){
-			mutationFunction(updateState);
+	//updates for future histories that need this update's info
+	const nextHistoryKeyIndex = findNextHistoryKeyIndex(historyKeys, action.time);
+	const withFutureChanges = withNewHistory.withMutations(mutableHistory => {
+		if (nextHistoryKeyIndex){
+			const called = pushUpdateForward(mutableHistory, historyKeys, nextHistoryKeyIndex, previousHistory, newCurrentHistory);
 		}
-	});
+	})
+	return withFutureChanges;
 }
+
+function pushUpdateForward(historyState, historyKeys, currentKeyIndex, oldCurrentHistory, newCurrentHistory, called = 0){
+	called++;
+	const currentKey = historyKeys.get(currentKeyIndex);
+	const nextHistory = historyState.get(currentKey);
+	if (currentKeyIndex >= 0 && nextHistory){
+		const previousDiff = diff(oldCurrentHistory, nextHistory);
+		const updatedNextHistory = patch(newCurrentHistory, previousDiff);
+		//size compare just for speed
+		if (nextHistory.size !== updatedNextHistory.size || !is(nextHistory,updatedNextHistory)){
+			historyState.set(currentKey, updatedNextHistory);
+			return pushUpdateForward(historyState, historyKeys, currentKeyIndex-1, nextHistory, updatedNextHistory, called);
+		}
+	}
+	return called;
+}
+
+/*
+	historyKeysList ~= [1000,900,800,700,600,500,400,30,200,100]
+*/
+
+function findNextHistoryKeyIndex(historyKeysList, time){
+	if (historyKeysList.first() < time) return;
+	const timeIndex = historyKeysList.indexOf(time);
+	if (timeIndex !== -1) return timeIndex-1;
+	const firstSmallerIndex = historyKeysList.findIndex(k => k < time);
+	//return the index of the last element
+	if (firstSmallerIndex === -1) return historyKeysList.size - 1;
+	return firstSmallerIndex-1;
+}
+
+function findPreviousHistoryKey(historyKeysList, time){
+	if (historyKeysList.first() <= time) return historyKeysList.first();
+	const timeIndex = historyKeysList.indexOf(time);
+	if (timeIndex !== -1) return time;
+	const firstSmallerIndex = historyKeysList.findIndex(k => k < time);
+	return historyKeysList.get(firstSmallerIndex);
+}
+
+
+
+
+
+

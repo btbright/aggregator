@@ -1,26 +1,27 @@
 import { UPDATE_AGGREGATORS, ADD_AGGREGATORS, REMOVE_AGGREGATORS } from '../constants/ActionTypes';
 import { newListWithReplacementAtIndex, newListWithReplacementObjectAtIndex } from '../utils/reducerTools'
+import { Map, List, fromJS, is } from 'immutable'
 
-export default function aggregatorListSlots(state = [], action){
+export default function aggregatorListSlots(state = List(), action){
 	switch (action.type) {
 	case ADD_AGGREGATORS:
-		var index = state.findIndex(slot => slot.id === action.entity.id);
+		var index = state.findIndex(slot => slot.get('id') === action.entity.id);
 		if (index !== -1){
-			return newListWithReplacementAtIndex(state, index, () => ({ active: true, id: action.entity.id }) );
+			return state.set(index, Map({ active: true, id: action.entity.id }))
 		}
-		for (var i=0;i<state.length+1;i++){
-			if (!state[i] || !state[i].active){
-				return newListWithReplacementAtIndex(state, i, () => ({ active: true, id: action.entity.id }) );
+		for (var i=0;i<state.size+1;i++){
+			if (!state.has(i) || !state.get(i).get('active')){
+				return state.set(i, Map({ active: true, id: action.entity.id }))
 			}
 		}
 	case UPDATE_AGGREGATORS:
 		if (action.mutations && action.mutations.find(mutation => mutation.value === 'removed')){
-			var index = state.findIndex(slot => slot.id === action.key);
+			var index = state.findIndex(slot => slot.get('id') === action.key);
 			return makeRemoveList(state, index, action.key)
 		}
 		return state;
 	case REMOVE_AGGREGATORS:
-		var index = state.findIndex(slot => slot.id === action.key);
+		var index = state.findIndex(slot => slot.get('id') === action.key);
 		return makeRemoveList(state, index, action.key)
 	default:
 		return state;
@@ -28,8 +29,8 @@ export default function aggregatorListSlots(state = [], action){
 }
 
 function findLastFilledSlot(slots){
-	for (var i = slots.length - 1; i >= 0; i--) {
-		if (slots[i].active){
+	for (var i = slots.size - 1; i >= 0; i--) {
+		if (slots.get(i).get('active')){
 			return i;
 		}
 	};
@@ -39,15 +40,11 @@ function findLastFilledSlot(slots){
 function makeRemoveList(state, index, id){
 	if (index === -1) return state;
 
-	var newList = [
-	  ...state.slice(0, index),
-	  ({active : false, id }),
-	  ...state.slice(index + 1)
-	];
+	var newList = state.set(index, Map({active : false, id }));
 
 	var lastFilledSlotIndex = findLastFilledSlot(newList);
 	if (lastFilledSlotIndex !== false){
-		return [ ...newList.slice(0, lastFilledSlotIndex+1) ]
+		return newList.slice(0, lastFilledSlotIndex+1)
 	}
-	return []
+	return List()
 }

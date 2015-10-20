@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 
 const chatMessagesSelector = state => state.chatMessages.get('present')
 const aggregatorsSelector = state => state.aggregators.get('present')
-const aggregatorsListSlotsSelector = state => state.aggregatorListSlots
+const aggregatorsListSlotsSelector = state => state.aggregatorListSlots.get('present')
 const pressedAggregatorSelector = state => state.user.pressedAggregatorId
 
 //this selector handles the message->aggregator join
@@ -26,7 +26,7 @@ const mappedToSlotsSelector = createSelector(
 	(aggregators, slots) => {
 		var packed = slots
 			.map((slot) => {
-				return aggregators.find(a => a.get('id') === slot.id);
+				return aggregators.find(a => a.get('id') === slot.get('id'));
 			}).filter(a => !!a);
 		return packed;
 	});
@@ -38,11 +38,7 @@ const addPressedStateSelector = createSelector(
 		if (!pressedAggregatorId) return aggregators;
 		let pressedIndex = aggregators.findIndex(aggregator => aggregator.get('id') === pressedAggregatorId);
 		if (pressedIndex === -1) return aggregators;
-		return [
-		  ...aggregators.slice(0, pressedIndex),
-		  aggregators[pressedIndex].set('isPressing', true),
-		  ...aggregators.slice(pressedIndex + 1)
-		]
+		return aggregators.update(pressedIndex, aggregator => aggregator.set('isPressing', true))
 	});
 
 const activeClickCountSelector = (state) => state.room.activeClickerCount

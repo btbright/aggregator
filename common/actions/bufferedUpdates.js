@@ -16,22 +16,10 @@ export function handleServerUpdate(updates){
 		const currentTime = getState().time.get('currentTime');
 		Object.keys(updates).forEach(updatedNamespace => {
 			Object.keys(updates[updatedNamespace]).forEach(time => {
-				let wasMissed = false;
-
-				if (currentTime > parseInt(time,10)){
-					console.log('missssssssed')
-					wasMissed = true;
-				}
-				let action = {
-					type : `ADD_${updatedNamespace.toUpperCase()}_UPDATES`,
-					time : parseInt(time,10),
-					updates : updates[updatedNamespace][time],
-					wasMissed
-				};
-				actions.push(action);
+				actions = actions.concat(...updates[updatedNamespace][time]);
 			});
 		});
-		return actions;
+		actions.forEach(dispatch);
 	}
 }
 

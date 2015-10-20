@@ -83,7 +83,7 @@ function renderFullPage(html, initialState, reactRootId, roomName) {
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>${roomName}</title>
-        <link href='https://fonts.googleapis.com/css?family=Poppins:500' rel='stylesheet' type='text/css'>
+        
         <link rel="stylesheet" media="all" href="/css/normalize.css" />
         <link rel="stylesheet" media="all" href="/css/app.css" />
       </head>
@@ -92,7 +92,7 @@ function renderFullPage(html, initialState, reactRootId, roomName) {
         <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
         </script>
-        <script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+        
         <script src="/socket.io/socket.io.js"></script>
         <script src="/scripts/bundle.js"></script>      
       </body>

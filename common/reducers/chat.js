@@ -32,7 +32,7 @@ export default function chatMessages(state = initialState, action) {
 		return state.set(index, state.get(index).withMutations(message => {
 			relevantMutations.forEach(mutation => {
 				if (mutation.property === 'level'){
-					message.set('aggregationLevel', message.get('aggregationLevel') + mutation.value);
+					message.set('aggregationLevel', mutation.value);
 				} else if (mutation.property === 'state' && mutation.value === 'completed'){
 					message.set('isAggregationComplete', true);
 				}

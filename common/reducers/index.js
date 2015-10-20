@@ -8,17 +8,18 @@ import user from './user';
 import notifications from './notifications';
 import time from './time';
 import scores from './scores';
+import scrubbable from '../reducerEnhancers/scrubbable';
 
 
 let scrubbableReducers = scrubbableReducerFactory({chatMessages, aggregators});
 
 const reducers = Object.assign(scrubbableReducers,{
-	aggregatorListSlots,
 	user,
 	notifications,
 	room,
 	time,
-	scores
+	scores,
+	aggregatorListSlots : scrubbable(aggregatorListSlots)
 });
 
 const rootReducer = combineReducers(reducers);

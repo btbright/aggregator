@@ -37,25 +37,24 @@ function apiHandlerFactory(apiDefinition){
 
 function prepareActions(dispatch, getState, actionCreator){
 	return function(){
-		let actions;
-		let actionCreatorResults = actionCreator.apply(null, arguments);
-		if (!actionCreatorResults) return;
-		if (typeof actionCreatorResults === 'function'){
-			let results = actionCreatorResults(dispatch, getState);
-			if (results){
-				actions = results;		
-			}
+		let actions = actionCreator.apply(null, arguments);
+		if (!actions) return;
+		if (!Array.isArray(actions)){
+			actions = [actions];
 		}
-		if (!actions){
-			if (!Array.isArray(actions)){
-				actions = [actionCreatorResults];
-			} else {
-				actions = actionCreatorResults;
-			}
-		}
+		let returnActions = [];
 		actions.forEach(action => {
-			action.isRemoteTriggered = true;
+			if (typeof action === 'function'){
+				let results = action(dispatch, getState);
+				if (results){
+					results.isRemoteTriggered = true;
+					returnActions.push(results);
+				}
+			} else {
+				action.isRemoteTriggered = true;
+				returnActions.push(action)
+			}
 		});
-		return actions;
+		return returnActions;
 	}
 }

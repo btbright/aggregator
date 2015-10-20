@@ -20,6 +20,8 @@ class Aggregator extends Component {
 	render(){
 		var width = this.props.aggregator.get('x');
 		var color = levelColors[getLevel(this.props.aggregator.get('maxValue'))];
+		var scale = mapNumbers(width, 0,100,0,1);
+		var maxScale = mapNumbers(this.props.aggregator.get('maxValue'), 0,100,0,1);
 
 		//add optional text
 		var rightText;
@@ -35,7 +37,7 @@ class Aggregator extends Component {
 		var residue;
 		if (color){
 			var classes = classnames('bar-residue', "bar-residue-"+color);
-			residue = <div className={classes} style={{width:this.props.aggregator.get('maxValue') + '%'}}></div>
+			residue = <div className={classes} style={{width: '100%', transformOrigin:'left' ,transform:'scalex(' + maxScale + ')'}}></div>
 		}
 
 		if (this.props.aggregator.get('state') === 'initializing'){
@@ -65,7 +67,7 @@ class Aggregator extends Component {
 					<div className={barWrapClasses}>
 						{flash}
 						{residue}
-						<div className="bar-inner" style={{width:width + '%'}}></div>
+						<div className="bar-inner" style={{width: '100%', transformOrigin:'left' ,transform:'scalex(' + scale + ')'}}></div>
 						{rightText}
 						{leftText}
 					</div> 
@@ -76,6 +78,10 @@ class Aggregator extends Component {
 			</div>
 			);
 	}
+}
+
+function mapNumbers(value, in_min, in_max, out_min, out_max) {
+  return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 export default Aggregator

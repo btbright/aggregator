@@ -150,11 +150,20 @@ function Aggregators(io, messenger){
 						[thisUpdate] : updateObjects
 					}
 				};
+
+				let hasAggregatorAdd = false;
+				updateObject.aggregators[thisUpdate].forEach(update => {
+					if (update.type === 'ADD_AGGREGATORS'){
+						hasAggregatorAdd = true;
+					}
+				})
+
 				//setTimeout for latency simulation
 				setTimeout(()=>{
 					io.to(roomId).emit('update:new',updateObject);
-				//},Math.random() > .9 ? 500 : 0)
-				},0)
+				//},hasAggregatorAdd ? 500 : 0)
+				},Math.random() > 0.9 ? 500 : 0)
+				//},0)
 			}
 		});
 		lastUpdate = thisUpdate;
@@ -175,24 +184,11 @@ function Aggregators(io, messenger){
 		}
 
 		var mutations = [];
-		['x','maxValue','state','activePresserCount','level'].forEach(mutationField => {
-			var oldValue = lastSnapshot[mutationField];
-			var newValue = aggregator[mutationField];
-			if (oldValue !== newValue){
-				if (typeof oldValue === 'number' && typeof newValue === 'number'){
-					mutations.push({
-						type : 'addition',
-						property : mutationField,
-						value : aggregator[mutationField] - lastSnapshot[mutationField]
-					});
-				} else if (typeof oldValue === 'string' && typeof newValue === 'string'){
-					mutations.push({
-						type : 'replacement',
-						property : mutationField,
-						value : aggregator[mutationField]
-					});
-				}
-			}
+		['x','maxValue','state','activePresserCount','level', 'velocity'].forEach(mutationField => {
+			mutations.push({
+				property : mutationField,
+				value : aggregator[mutationField]
+			});
 		});
 
 		return {
