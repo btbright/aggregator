@@ -163,8 +163,8 @@ function Aggregators(io, messenger){
 					io.to(roomId).emit('update:new',updateObject);
 				//},hasAggregatorAdd ? 500 : 0)
 				//},Math.random() > 0.9 ? 500 : 0)
-				},424)
-				//},0)
+				//},424)
+				},0)
 			}
 		});
 		lastUpdate = thisUpdate;
