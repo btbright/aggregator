@@ -18,7 +18,7 @@ export default function deltable(reducer, opts){
 				if (action.keyField && action.key){ 
 					const entityIndex = state.findIndex(obj => obj.get(action.keyField) === action.key)
 					if (entityIndex !== -1){
-						state.set(entityIndex, fromJS(action.entity))
+						return state.set(entityIndex, fromJS(action.entity))
 					}
 				}
 				return state.push(fromJS(action.entity));

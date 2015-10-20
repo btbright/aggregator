@@ -162,7 +162,8 @@ function Aggregators(io, messenger){
 				setTimeout(()=>{
 					io.to(roomId).emit('update:new',updateObject);
 				//},hasAggregatorAdd ? 500 : 0)
-				},Math.random() > 0.9 ? 500 : 0)
+				//},Math.random() > 0.9 ? 500 : 0)
+				},424)
 				//},0)
 			}
 		});
