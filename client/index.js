@@ -14,7 +14,7 @@ import { moveToTime, triggerTimeCorrection } from '../common/actions/bufferedUpd
     console.log = function () {
         var converted = false;
         var args = Array.prototype.map.call(arguments, function (arg) {
-            if (typeof arg === 'undefined') return arg;
+            if (typeof arg === 'undefined' || arg === null) return arg;
             if (typeof arg.toJS === "function"){
                 converted = true;
                 return arg.toJS();
@@ -38,6 +38,9 @@ initialState.time = undefined;
 initialState.aggregators = undefined;
 initialState.aggregatorListSlots = undefined;
 initialState.scores = undefined;
+initialState.room = {name:window.__INITIAL_STATE__.room.name,
+    totalBytes : 0,
+    startTime : Date.now()};
 const socket = io();
 const [apiHandlers, startListeners] = setupApiUtils(socket);
 const store = configureStore(initialState, socket, apiHandlers.map(handler => handler.local));

@@ -21,6 +21,10 @@ function apiHandlerFactory(apiDefinition){
 		remote : (socket, getState, dispatch) => {
 			Object.keys(apiDefinition.remoteToLocalMap).forEach(remoteEventName => {
 				socket.on(remoteEventName, function(){
+					dispatch({
+						type : 'SOCKET_RECEIVED',
+						data : arguments
+					})
 					const actions = prepareActions(dispatch, getState, apiDefinition.remoteToLocalMap[remoteEventName]).apply(null, arguments);
 					actions.forEach(dispatch);
 				});

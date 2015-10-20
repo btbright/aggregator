@@ -23,6 +23,13 @@ export default function room(state = initialState, action) {
 		return Object.assign({},state,{
 			twitchChannelViewerCount : action.viewerCount
 		});
+	case 'SOCKET_RECEIVED':
+		//super naive guess - UTF-16 ~2 bytes per character + socket overhead
+		const newBytes = state.totalBytes + (JSON.stringify(action.data).length * 2)
+		console.log(newBytes / ((Date.now() - state.startTime)/1000))
+		return Object.assign({},state,{
+			totalBytes : newBytes
+		});
 	default:
 		return state;
 	}

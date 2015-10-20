@@ -176,7 +176,6 @@ function Aggregators(io, messenger){
 		if (!lastSnapshot){
 			return {
 				type : 'ADD_AGGREGATORS',
-				isUpdateAction : true,
 				time : time,
 				key : aggregator.id,
 				keyField : 'id',
@@ -194,7 +193,6 @@ function Aggregators(io, messenger){
 
 		return {
 				type : 'UPDATE_AGGREGATORS',
-				isUpdateAction : true,
 				time : time,
 				key : aggregator.id,
 				keyField : 'id',
