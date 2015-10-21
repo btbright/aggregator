@@ -1,4 +1,4 @@
-import { createAggregator } from '../../common/models/aggregator'
+import { createAggregator, updateMutations, encodeUpdate, states } from '../../common/models/aggregator'
 import constants from '../../common/constants/App'
 import { scorer } from '../../common/utils/scorer'
 import { roomInfo } from './room'
@@ -131,6 +131,7 @@ function Aggregators(io, messenger){
 	function sendUpdatedAggregators(){
 		const thisUpdate = Date.now()
 		Object.keys(aggregatorState).forEach(roomId => {
+			var addObjects = []
 			var updateObjects = [];
 			Object.keys(aggregatorState[roomId]).forEach(aggregatorId => {
 				var storedAggregator = aggregatorState[roomId][aggregatorId];
@@ -139,32 +140,42 @@ function Aggregators(io, messenger){
 				}
 				var lastSnapshot = aggregatorUpdateSnapshots[roomId][aggregatorId];
 				if (storedAggregator !== lastSnapshot){
-					updateObjects.push(createAggregatorServerUpdate(thisUpdate, storedAggregator, lastSnapshot));
+					if (!lastSnapshot){
+						addObjects.push({
+							type : 'ADD_AGGREGATORS',
+							time : thisUpdate,
+							isUpdateAction : true,
+							key : storedAggregator.id,
+							keyField : 'id',
+							entity : storedAggregator
+						})
+					} else {
+						updateObjects.push(createAggregatorServerUpdate(storedAggregator));
+					}
 					aggregatorUpdateSnapshots[roomId][aggregatorId] = storedAggregator;
 				}
 			});
+
 			if (updateObjects.length !== 0)
 			{
-				let updateObject = {
+				let updateObject = encodeUpdate(updateObjects);
+
+				setTimeout(()=>{
+					io.to(roomId).emit('12',thisUpdate, updateObject);
+				},0)
+			}
+
+			if (addObjects.length !== 0)
+			{
+				let addObject = {
 					aggregators : {
-						[thisUpdate] : updateObjects
+						[thisUpdate] : addObjects
 					}
 				};
-
-				let hasAggregatorAdd = false;
-				updateObject.aggregators[thisUpdate].forEach(update => {
-					if (update.type === 'ADD_AGGREGATORS'){
-						hasAggregatorAdd = true;
-					}
-				})
-
-				//setTimeout for latency simulation
 				setTimeout(()=>{
-					io.to(roomId).emit('update:new',updateObject);
-				//},hasAggregatorAdd ? 500 : 0)
-				//},Math.random() > 0.9 ? 500 : 0)
-				//},424)
+					io.to(roomId).emit('update:new',addObject);
 				},0)
+				
 			}
 		});
 		lastUpdate = thisUpdate;
@@ -172,32 +183,16 @@ function Aggregators(io, messenger){
 
 	var aggTest = 0;
 
-	function createAggregatorServerUpdate(time, aggregator, lastSnapshot){
-		if (!lastSnapshot){
-			return {
-				type : 'ADD_AGGREGATORS',
-				time : time,
-				key : aggregator.id,
-				keyField : 'id',
-				entity : aggregator
-			}
-		}
-
+	function createAggregatorServerUpdate(aggregator){
 		var mutations = [];
-		['x','maxValue','state','activePresserCount','level', 'velocity'].forEach(mutationField => {
-			mutations.push({
-				property : mutationField,
-				value : aggregator[mutationField]
-			});
-		});
-
-		return {
-				type : 'UPDATE_AGGREGATORS',
-				time : time,
-				key : aggregator.id,
-				keyField : 'id',
-				mutations : mutations
+		updateMutations.forEach(mutationField => {
+			if (mutationField.name === 'state'){
+				mutations.push(states[aggregator[mutationField.name]])	
+			} else {
+				mutations.push(aggregator[mutationField.name])
 			}
+		});
+		return {id : aggregator.id,mutations}
 	}
 
 	function createClientAggregator(aggregator){

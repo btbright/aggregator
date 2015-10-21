@@ -13,7 +13,6 @@ export function handleServerUpdate(updates){
 	*/
 	return function(dispatch, getState){
 		let actions = [];
-		const currentTime = getState().time.get('currentTime');
 		Object.keys(updates).forEach(updatedNamespace => {
 			Object.keys(updates[updatedNamespace]).forEach(time => {
 				actions = actions.concat(...updates[updatedNamespace][time]);

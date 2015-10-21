@@ -24,9 +24,8 @@ export default function room(state = initialState, action) {
 			twitchChannelViewerCount : action.viewerCount
 		});
 	case 'SOCKET_RECEIVED':
-		//super naive guess - UTF-16 ~2 bytes per character + socket overhead
-		const newBytes = state.totalBytes + (JSON.stringify(action.data).length * 2)
-		console.log(newBytes / ((Date.now() - state.startTime)/1000))
+		const newBytes = state.totalBytes + getUTF8Size(JSON.stringify(action.data))
+		//console.log(newBytes / ((Date.now() - state.startTime)/1000))
 		return Object.assign({},state,{
 			totalBytes : newBytes
 		});
@@ -34,3 +33,18 @@ export default function room(state = initialState, action) {
 		return state;
 	}
 }
+
+var getUTF8Size = function( str ) {
+  var sizeInBytes = str.split('')
+    .map(function( ch ) {
+      return ch.charCodeAt(0);
+    }).map(function( uchar ) {
+      // The reason for this is explained later in
+      // the section “An Aside on Text Encodings”
+      return uchar < 128 ? 1 : 2;
+    }).reduce(function( curr, next ) {
+      return curr + next;
+    });
+
+  return sizeInBytes;
+};

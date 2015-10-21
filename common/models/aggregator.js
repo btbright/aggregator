@@ -1,4 +1,5 @@
 import shortid from 'shortid'
+import { encodeUint8, encodeFloat32, decodeUint8, decodeFloat32 } from '../utils/otwTransportHelpers'
 
 export function createAggregator(props){
 	return {
@@ -18,3 +19,58 @@ export function createAggregator(props){
 		level : 0
 	}
 }
+
+export const states = {
+	'initializing' : 0,
+	'aggregating' : 1,
+	'completed' : 2,
+	'retired' : 3,
+	'removed' : 4
+}
+
+export const statesLookup = [ 'initializing', 'aggregating', 'completed', 'retired', 'removed' ];
+
+export const updateMutations = [
+				{name : 'x', isPrecise : true},
+				{name : 'maxValue', isPrecise : true},
+				{name : 'velocity', isPrecise : true},
+				{name : 'state', isPrecise : false},
+				{name : 'activePresserCount', isPrecise : false},
+				{name : 'level', isPrecise : false}
+				]
+
+export const encodeUpdate = function( updates ) {
+  var msg = '';
+  for ( var i = 0; i < updates.length; ++i ) {
+    var update = updates[i];
+    msg += update.id+'!!!';
+    for (var j=0; j < updateMutations.length; j++){
+    	msg += updateMutations[j].isPrecise === true ? encodeFloat32(update.mutations[j]) : encodeUint8(update.mutations[j])
+    }
+    msg += '|||'
+  }
+  return msg;
+};
+
+export const decodeUpdate = function( str ) {
+  var updates = [];
+  var rawUpdates = str.split('|||');
+
+  rawUpdates.forEach(rawUpdate => {
+  	if (rawUpdate){
+  		var charsRead = 0;
+	  	const splitRaw = rawUpdate.split('!!!');
+	  	const id = splitRaw[0];
+	  	const rawEncoded = splitRaw[1];
+	  	let mutations = {};
+
+	  	for (var i=0; i < updateMutations.length; i++){
+	  		let decodeFunction = updateMutations[i].isPrecise === true ? decodeFloat32 : decodeUint8;
+	    	charsRead += decodeFunction( rawEncoded, charsRead, mutations, updateMutations[i].name );
+	    };
+
+	    updates.push({id, mutations})
+  	}
+  })  
+  return updates;
+};

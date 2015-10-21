@@ -10,7 +10,8 @@ export default {
 				actions.addAggregatorError(erroredId),
 				actions.selectDeselectAggregator(realId)
 			]
-		}
+		},
+		'12' : actions.handlePackedUpdates
 	},
 	localToRemoteMap : {
 		[ADD_AGGREGATORS] : (action) => ({ event : 'aggregator:new', data : [action.entity]}),

@@ -29,6 +29,7 @@ export default function scrubbable(reducer, opts){
 			return state;
 		default:
 			if (action.time){
+				
 				let returnedState = state;
 				const historyKeys = state.get('historyKeys');
 				if (historyKeys.indexOf(action.time) === -1){
@@ -65,6 +66,7 @@ function makeHistoryChanges(historyState, historyKeys, action, reducer){
 	const withFutureChanges = withNewHistory.withMutations(mutableHistory => {
 		if (nextHistoryKeyIndex){
 			const called = pushUpdateForward(mutableHistory, historyKeys, nextHistoryKeyIndex, previousHistory, newCurrentHistory);
+			
 		}
 	})
 	return withFutureChanges;
@@ -78,7 +80,7 @@ function pushUpdateForward(historyState, historyKeys, currentKeyIndex, oldCurren
 		const previousDiff = diff(oldCurrentHistory, nextHistory);
 		const updatedNextHistory = patch(newCurrentHistory, previousDiff);
 		//size compare just for speed
-		if (nextHistory.size !== updatedNextHistory.size || !is(nextHistory,updatedNextHistory)){
+		if (nextHistory.size !== updatedNextHistory.size || !is(nextHistory, updatedNextHistory)){
 			historyState.set(currentKey, updatedNextHistory);
 			return pushUpdateForward(historyState, historyKeys, currentKeyIndex-1, nextHistory, updatedNextHistory, called);
 		}
@@ -87,7 +89,7 @@ function pushUpdateForward(historyState, historyKeys, currentKeyIndex, oldCurren
 }
 
 /*
-	historyKeysList ~= [1000,900,800,700,600,500,400,30,200,100]
+	historyKeysList ~= [1000,900,800,700,600,500,400,300,200,100]
 */
 
 function findNextHistoryKeyIndex(historyKeysList, time){
