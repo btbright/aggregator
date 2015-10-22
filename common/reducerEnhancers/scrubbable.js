@@ -30,19 +30,11 @@ export default function scrubbable(reducer, opts){
 			return state
 		default:
 			if (action.time){
-				if (action.type === 'UPDATE_AGGREGATORS' && (reducer.name || opts && opts.namespace.toLowerCase()) === 'aggregators'){
-					if (action.mutations.find(m => m.value === 'retired')){
-						console.log(action.time, 'RETIRED', action.key)
-					}
-					if (action.mutations.find(m => m.value === 'removed')){
-						console.log(action.time, 'REMOVED', action.key)
-					}
-				}
 				let returnedState = state;
 				const historyKeys = state.get('historyKeys');
 				if (historyKeys.indexOf(action.time) === -1){
 					const nextKeyIndex = findNextHistoryKeyIndex(historyKeys, action.time);
-					if (!nextKeyIndex) {
+					if (typeof nextKeyIndex === 'undefined') {
 						returnedState = state.update('historyKeys', historyKeys => historyKeys.unshift(action.time));
 					} else {
 						returnedState = state.update('historyKeys', historyKeys => historyKeys.splice(nextKeyIndex+1,0,action.time));

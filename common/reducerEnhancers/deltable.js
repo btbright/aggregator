@@ -40,7 +40,12 @@ export default function deltable(reducer, opts){
 				if (!findResults) return state;
 				const [index, entity] = findResults;
 				return state.set(index, state.get(index).withMutations(map => {
-					action.mutations.forEach(mutation => map.set(mutation.property, mutation.value));
+					action.mutations.forEach(mutation => {
+						if (mutation.value === 'removed'){
+							console.log('removing',action.key)
+						}
+						map.set(mutation.property, mutation.value)
+					});
 				}))
 			}
 		default:
