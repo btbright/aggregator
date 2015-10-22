@@ -1,5 +1,6 @@
 import { ADD_UPDATES, MOVE_TO_TIME } from '../constants/ActionTypes'
 import { Map, List, fromJS, is } from 'immutable'
+import { getFutureKeys, findPreviousHistoryKey, findNextHistoryKeyIndex, findNextHistoryKey, findPreviousHistoryKeyIndex } from '../utils/historyListHelpers'
 import diff from 'immutablediff'
 import patch from 'immutablepatch'
 
@@ -58,7 +59,7 @@ export default function scrubbable(reducer, opts){
 }
 
 //make the changes to the correct place in the timeline, updating
-//histories around it if they need it (so we can handle out of order updates)
+//future histories if they need it (so we can handle out of order updates)
 function makeHistoryChanges(historyState, historyKeys, action, reducer){
 	const previousHistoryKey = findPreviousHistoryKey(historyKeys, action.time);
 	const previousHistory = historyState.get(previousHistoryKey)
@@ -69,74 +70,11 @@ function makeHistoryChanges(historyState, historyKeys, action, reducer){
 	const withNewHistory = historyState.set(action.time, newCurrentHistory);
 
 	//updates for future histories that need this update's info
-	const nextHistoryKeyIndex = findNextHistoryKeyIndex(historyKeys, action.time);
+	const futureKeys = getFutureKeys(historyKeys, action.time);
 	const withFutureChanges = withNewHistory.withMutations(mutableHistory => {
-		if (nextHistoryKeyIndex >= 0){
-			const diffToPush = diff(currentHistory, newCurrentHistory);
-			const called = pushUpdateForward(mutableHistory, historyKeys, nextHistoryKeyIndex, previousHistory, newCurrentHistory, diffToPush);
-		}
+		futureKeys.forEach(key => {
+			mutableHistory.set(key, reducer(mutableHistory.get(key), action));
+		});	
 	})
 	return withFutureChanges;
 }
-
-function pushUpdateForward(fullState, stateKeys, nextStateKeyIndex, oldState, updatedState, masterDiff, called = 0){
-	called++;
-	const nextStateKey = stateKeys.get(nextStateKeyIndex);
-	const nextState = fullState.get(nextStateKey);
-	if (nextStateKeyIndex >= 0 && nextState){
-		const previousDiff = diff(oldState, nextState);
-		const previousDiffPaths = previousDiff.map(ops => ops.get('path'))
-		console.log(oldState, nextState)
-		previousDiffPaths.forEach(path => {
-			console.log('previousDiffPaths',nextStateKey,path)
-		})
-
-		masterDiff.forEach(diff => {
-			console.log('masterDiff',nextStateKey,diff.path, diff)
-		})
-
-		//if the property is changing anyway, don't override the server - it knows
-		const diffsToApply = masterDiff.map(ops => {
-			return !previousDiffPaths.includes(ops.get('path')) ? ops : false
-		}).filter(ops => ops !== false);
-		diffsToApply.forEach(diff => {
-			console.log('diffsToApply',nextStateKey,diff.path, diff)
-		})
-		const updatedNextState = patch(nextState, diffsToApply);
-
-		//size compare just for speed
-		if (diffsToApply.size > 0 && nextState.size !== updatedNextState.size || !is(nextState, updatedNextState)){
-			fullState.set(nextStateKey, updatedNextState);
-			return pushUpdateForward(fullState, stateKeys, nextStateKeyIndex-1, nextState, updatedNextState, diffsToApply, called);
-		}
-	}
-	return called;
-}
-
-/*
-	historyKeysList ~= [1000,900,800,700,600,500,400,300,200,100]
-*/
-
-function findNextHistoryKeyIndex(historyKeysList, time){
-	if (historyKeysList.first() < time) return;
-	const timeIndex = historyKeysList.indexOf(time);
-	if (timeIndex !== -1) return timeIndex-1;
-	const firstSmallerIndex = historyKeysList.findIndex(k => k < time);
-	//return the index of the last element
-	if (firstSmallerIndex === -1) return historyKeysList.size - 1;
-	return firstSmallerIndex-1;
-}
-
-function findPreviousHistoryKey(historyKeysList, time){
-	if (historyKeysList.first() <= time) return historyKeysList.first();
-	const timeIndex = historyKeysList.indexOf(time);
-	if (timeIndex !== -1) return time;
-	const firstSmallerIndex = historyKeysList.findIndex(k => k < time);
-	return historyKeysList.get(firstSmallerIndex);
-}
-
-
-
-
-
-
