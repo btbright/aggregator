@@ -16,7 +16,6 @@ export default function aggregatorListSlots(state = List(), action){
 		}
 	case UPDATE_AGGREGATORS:
 		if (action.mutations && action.mutations.find(mutation => mutation.value === 'removed')){
-			console.log('removing from slots', action.key)
 			var index = state.findIndex(slot => slot.get('id') === action.key);
 			return makeRemoveList(state, index, action.key)
 		}

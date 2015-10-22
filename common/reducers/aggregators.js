@@ -8,7 +8,6 @@ export default function aggregators(state = initialState, action) {
 	switch (action.type) {
 	case RUN_SIMULATIONS_AGGREGATORS:
 		//just pulling running aggs for now, since they are the troublemakers. Might want to simulate state changes, too
-
 		let updates = {};
 		state.forEach((aggregator,index) => {
 			if (aggregator.get('state') === 'aggregating'){
@@ -31,7 +30,9 @@ export default function aggregators(state = initialState, action) {
 
 		const updatedAggregators = state.withMutations(mutableAggregators => {
 			Object.keys(updates).forEach(index => {
-				mutableAggregators.update(index, aggregator => aggregator.merge(updates[index]));
+				mutableAggregators.update(index, aggregator => {
+					return aggregator.merge(updates[index])
+				});
 			});
 		});
 		return updatedAggregators;

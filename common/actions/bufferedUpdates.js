@@ -21,26 +21,3 @@ export function handleServerUpdate(updates){
 		actions.forEach(dispatch);
 	}
 }
-
-export function moveToTime(time, isUtilityMove = false, fromTime = undefined){
-	return {
-		type : MOVE_TO_TIME,
-		time,
-		isUtilityMove,
-		fromTime
-	}
-}
-
-export function triggerTimeCorrection(){
-	return {
-		type : TRIGGER_TIME_CORRECTION
-	}
-}
-
-export function handleTimeCorrection(originalClientTime, serverTime){
-	return {
-		type : CORRECT_TIME,
-		originalClientTime,
-		serverTime
-	}
-}

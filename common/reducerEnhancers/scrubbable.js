@@ -26,10 +26,17 @@ export default function scrubbable(reducer, opts){
 				const lastHistoryBeforeNewTime = historyState.get(lastHistoryKeyBeforeTime, state.get('present'))
 				return state.set('present', lastHistoryBeforeNewTime).set('currentPresentKey', lastHistoryKeyBeforeTime);	
 			}
-			return state;
+			return state
 		default:
 			if (action.time){
-				
+				if (action.type === 'UPDATE_AGGREGATORS' && (reducer.name || opts && opts.namespace.toLowerCase()) === 'aggregators'){
+					if (action.mutations.find(m => m.value === 'retired')){
+						console.log(action.time, 'RETIRED', action.key)
+					}
+					if (action.mutations.find(m => m.value === 'removed')){
+						console.log(action.time, 'REMOVED', action.key)
+					}
+				}
 				let returnedState = state;
 				const historyKeys = state.get('historyKeys');
 				if (historyKeys.indexOf(action.time) === -1){
@@ -64,25 +71,43 @@ function makeHistoryChanges(historyState, historyKeys, action, reducer){
 	//updates for future histories that need this update's info
 	const nextHistoryKeyIndex = findNextHistoryKeyIndex(historyKeys, action.time);
 	const withFutureChanges = withNewHistory.withMutations(mutableHistory => {
-		if (nextHistoryKeyIndex){
-			const called = pushUpdateForward(mutableHistory, historyKeys, nextHistoryKeyIndex, previousHistory, newCurrentHistory);
-			
+		if (nextHistoryKeyIndex >= 0){
+			const diffToPush = diff(currentHistory, newCurrentHistory);
+			const called = pushUpdateForward(mutableHistory, historyKeys, nextHistoryKeyIndex, previousHistory, newCurrentHistory, diffToPush);
 		}
 	})
 	return withFutureChanges;
 }
 
-function pushUpdateForward(historyState, historyKeys, currentKeyIndex, oldCurrentHistory, newCurrentHistory, called = 0){
+function pushUpdateForward(fullState, stateKeys, nextStateKeyIndex, oldState, updatedState, masterDiff, called = 0){
 	called++;
-	const currentKey = historyKeys.get(currentKeyIndex);
-	const nextHistory = historyState.get(currentKey);
-	if (currentKeyIndex >= 0 && nextHistory){
-		const previousDiff = diff(oldCurrentHistory, nextHistory);
-		const updatedNextHistory = patch(newCurrentHistory, previousDiff);
+	const nextStateKey = stateKeys.get(nextStateKeyIndex);
+	const nextState = fullState.get(nextStateKey);
+	if (nextStateKeyIndex >= 0 && nextState){
+		const previousDiff = diff(oldState, nextState);
+		const previousDiffPaths = previousDiff.map(ops => ops.get('path'))
+		console.log(oldState, nextState)
+		previousDiffPaths.forEach(path => {
+			console.log('previousDiffPaths',nextStateKey,path)
+		})
+
+		masterDiff.forEach(diff => {
+			console.log('masterDiff',nextStateKey,diff.path, diff)
+		})
+
+		//if the property is changing anyway, don't override the server - it knows
+		const diffsToApply = masterDiff.map(ops => {
+			return !previousDiffPaths.includes(ops.get('path')) ? ops : false
+		}).filter(ops => ops !== false);
+		diffsToApply.forEach(diff => {
+			console.log('diffsToApply',nextStateKey,diff.path, diff)
+		})
+		const updatedNextState = patch(nextState, diffsToApply);
+
 		//size compare just for speed
-		if (nextHistory.size !== updatedNextHistory.size || !is(nextHistory, updatedNextHistory)){
-			historyState.set(currentKey, updatedNextHistory);
-			return pushUpdateForward(historyState, historyKeys, currentKeyIndex-1, nextHistory, updatedNextHistory, called);
+		if (diffsToApply.size > 0 && nextState.size !== updatedNextState.size || !is(nextState, updatedNextState)){
+			fullState.set(nextStateKey, updatedNextState);
+			return pushUpdateForward(fullState, stateKeys, nextStateKeyIndex-1, nextState, updatedNextState, diffsToApply, called);
 		}
 	}
 	return called;

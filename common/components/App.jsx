@@ -4,6 +4,7 @@ import Chat from './Chat.jsx'
 import UpperNotificationBar from './UpperNotificationBar.jsx'
 import Leaderboard from './Leaderboard.jsx'
 import Twitch from './Twitch.jsx'
+import DebugScrubber from './DebugScrubber.jsx'
 import StandaloneMeta from './StandaloneMeta.jsx'
 import InstructionsModal from './InstructionsModal.jsx'
 import { connect } from 'react-redux'
@@ -62,6 +63,7 @@ class App extends Component {
 						<Chat />
 					</div>
 					<InstructionsModal isOpen={this.state.areInstructionsShown} onModalCloseClick={this.handleModalCloseClick} />
+					
 				</div>
 			</div>
 

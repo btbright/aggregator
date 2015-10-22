@@ -7,7 +7,8 @@ import configureStore from '../common/store/configureStore';
 import App from '../common/containers/app';
 import ActivitySimulator from './simulation/ActivitySimulator';
 import setupApiUtils from '../common/apiutils';
-import { moveToTime, triggerTimeCorrection } from '../common/actions/bufferedUpdates';
+import { moveToTime, triggerTimeCorrection } from '../common/actions/time';
+import { Map } from 'immutable'
 
 (function () {
     var _log = console.log;
@@ -34,7 +35,13 @@ window.React = React.addons.Perf; // save for later console calls
 
 let initialState = window.__INITIAL_STATE__;
 initialState.chatMessages = undefined;
-initialState.time = undefined;
+initialState.time = Map({
+    currentTime : 0,
+    isPaused : false,
+    timeCompensation : 0,
+    averageLatency : 0,
+    isReversed : false
+});
 initialState.aggregators = undefined;
 initialState.aggregatorListSlots = undefined;
 initialState.scores = undefined;
@@ -46,9 +53,16 @@ const [apiHandlers, startListeners] = setupApiUtils(socket);
 const store = configureStore(initialState, socket, apiHandlers.map(handler => handler.local));
 startListeners(store.getState, store.dispatch);
 
+window.store = store;
+
 animLoop(function(dt){
-    const timeCompensation = store.getState().time.get('timeCompensation');
-	store.dispatch(moveToTime(Date.now() + timeCompensation - constants.App.BUFFERTIME));
+    const timeStore = store.getState().time;
+    if (!timeStore.get('isPaused')){
+        const timeCompensation = store.getState().time.get('timeCompensation');
+        const delta = (dt > 0 ? dt : 0)*(timeStore.get('isReversed') ? -1 : 1)
+        const targetTime = parseInt(timeStore.get('currentTime') + delta, 10);
+        store.dispatch(moveToTime(Date.now() + timeCompensation - constants.App.BUFFERTIME));
+    }
 });
 
 function animLoop( render ) {
