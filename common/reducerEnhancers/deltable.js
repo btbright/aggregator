@@ -10,15 +10,17 @@ export default function deltable(reducer, opts){
 		switch(action.type){
 		case `ADD_${namespace}`:
 			if (Map.isMap(state)){
-				//skip add if it exists already
-				if (action.key && state.has(action.key.toString())) return state;
+				if (action.keyField && action.key){ 
+					//skip add if it exists already
+					if (state.has(action.key.toString())) return state;
+				}
 				return state.set(action.key.toString(), fromJS(action.entity));
 			} else {
-				//replace if it exists already
+				//skip add if it exists already
 				if (action.keyField && action.key){ 
 					const entityIndex = state.findIndex(obj => obj.get(action.keyField) === action.key)
 					if (entityIndex !== -1){
-						return state.set(entityIndex, fromJS(action.entity))
+						return state;
 					}
 				}
 				return state.push(fromJS(action.entity));

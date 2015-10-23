@@ -15,7 +15,6 @@ import { createChatMessage } from '../models/chatMessage'
 class Chat extends Component {
 	constructor(props){
 		super(props)
-		this.state = {}
 
 		this.handleChatMessageClick = this.handleChatMessageClick.bind(this)
 		this.handleMessageFormSubmit = this.handleMessageFormSubmit.bind(this)
@@ -25,8 +24,8 @@ class Chat extends Component {
 		this.userActions = bindActionCreators(UserActions, this.props.dispatch);
 		this.notificationActions = bindActionCreators(NotificationActions, this.props.dispatch);
 	}
-	shouldComponentUpdate(nextProps, nextState){
-		return this.props !== nextProps || this.state !== nextState;
+	shouldComponentUpdate(nextProps){
+		return this.props.chatMessages !== nextProps.chatMessages;
 	}
 	handleChatMessageClick(hasAggregator, isAggregationComplete, messageId, aggregatorId){
 		if (hasAggregator && !isAggregationComplete){
@@ -38,18 +37,18 @@ class Chat extends Component {
 	handleMessageFormSubmit(text){
 		if (!text) return;
 
-		if (this.props.user.userName){
+		if (this.props.userName){
 			//find the most recent message with the same text
 			var message = this.props.chatMessages.reverse().find(m => m.get('text').toLowerCase() === text.toLowerCase());
 			if (message){
 				if (message.get('isAggregationComplete')){
-					this.chatActions.addChatMessage(createChatMessage({text, userName: this.props.user.userName}))
+					this.chatActions.addChatMessage(createChatMessage({text, userName: this.props.userName}))
 					return;
 				}
 				var secondsSinceMessage = (Date.now() - message.get('time')) / 1000;
 				if (secondsSinceMessage <= constants.Chat.STALESECONDS){
 					//if a message already exists, but it's not aggregating
-					if (!message.get('hasAggregator') && this.props.user.userName !== message.get('userName')){
+					if (!message.get('hasAggregator') && this.props.userName !== message.get('userName')){
 						this.aggregatorActions.newAggregator("message",message.get('id'));
 						this.notificationActions.addNotification(`Your message has been combined with ${message.get('userName')}'s: ${message.get('text')}`,"informative");
 					}
@@ -58,7 +57,7 @@ class Chat extends Component {
 				}
 			}
 
-			this.chatActions.addChatMessage(createChatMessage({text, userName : this.props.user.userName}))
+			this.chatActions.addChatMessage(createChatMessage({text, userName : this.props.userName}))
 		} else {
 			this.userActions.updateUserName(text);
 		}
@@ -68,8 +67,8 @@ class Chat extends Component {
 		var chatClassNames = classnames('chat');
 		return (
 			<div className={chatClassNames}>
-			  <ChatMessageList onPressingStateChange={this.onPressingStateChange} userName={this.props.user.userName} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
-			  <ChatMessageForm placeholder={ this.props.user.userName ? 'Enter a comment...' : 'Enter a user name here to comment...' } onNewMessage={this.handleMessageFormSubmit} />
+			  <ChatMessageList onPressingStateChange={this.onPressingStateChange} userName={this.props.userName} messages={chatMessages} handleChatMessageClick={this.handleChatMessageClick} />
+			  <ChatMessageForm placeholder={ this.props.userName ? 'Enter a comment...' : 'Enter a user name here to comment...' } onNewMessage={this.handleMessageFormSubmit} />
 			</div>
 			);
 	}

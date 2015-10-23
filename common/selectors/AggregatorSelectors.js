@@ -13,8 +13,8 @@ const mappedToSlotsSelector = createSelector(
 	(aggregators, slots, chatMessages) => {
 		var packed = slots
 			.map((slot) => {
-				const chatMessage = chatMessages.find((message) => message.get('id') === slot.get('objectId'));
-				const aggregator = aggregators.find(a => a.get('id') === slot.get('id'));
+				const chatMessage = chatMessages.get(slot.get('objectId'));
+				const aggregator = aggregators.get(slot.get('id'));
 				if (aggregator){
 					return aggregator.set('chatMessage', chatMessage);
 				}

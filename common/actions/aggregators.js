@@ -26,6 +26,8 @@ export function newAggregator(objectType, objectId){
 		dispatch({
 			type : types.ADD_AGGREGATORS,
 			entity : aggregator,
+			key : aggregator.id,
+			keyField : 'id',
 			time : getState().time.get('currentTime')
 		})
 		selectDeselectAggregator(aggregator.id)(dispatch, getState)

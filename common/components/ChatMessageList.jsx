@@ -23,7 +23,7 @@ class ChatMessageList extends Component {
 							key={message.get('id')} 
 							message={message}
 							 />
-			  },this)}
+			  },this).toArray()}
 			</div>
 			);
 	}

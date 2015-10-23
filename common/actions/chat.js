@@ -7,6 +7,8 @@ export function addChatMessage(message){
 		dispatch({
 			type : types.ADD_CHATMESSAGES,
 			entity : message,
+			key : message.id,
+			keyField : 'id',
 			time : getState().time.get('currentTime')
 		})
 	}

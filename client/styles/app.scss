@@ -610,11 +610,13 @@ body {
                 -webkit-user-select:none;
                 background:$levelDefault;
                 height:100%;
+                width: 100%;
                 position: relative;
                 cursor: pointer;
                 position: relative;
                 z-index: 1;
                 transition: background-color .2s, width .1s;
+                will-change: transform;
 
                 &::before {
                     opacity: 0;

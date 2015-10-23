@@ -22,8 +22,8 @@ export default function timeScrubber(opts) {
 	  if (!timeState) throw new Error(`The timeScrubber middleware is set to depend on a time store (${timeStoreName}) but it is missing.`);
 	  const currentTime	= action.fromTime || timeState.get('currentTime');
 	  const isForwardMove = targetTime >= currentTime;
-	  const simulatingStoresKeys = simulatingStoresKeysSelector(currentState);
-
+	  //const simulatingStoresKeys = simulatingStoresKeysSelector(currentState); <-- performance hit strangely
+	  const simulatingStoresKeys = ['aggregators']
 
 	  simulatingStoresKeys.forEach(simulatingStoresKey => {
 	  	let simulatingStore = currentState[simulatingStoresKey];

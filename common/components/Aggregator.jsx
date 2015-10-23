@@ -37,16 +37,11 @@ class Aggregator extends Component {
 		var residue;
 		if (color){
 			var classes = classnames('bar-residue', "bar-residue-"+color);
-			residue = <div className={classes} style={{width: '100%', transformOrigin:'left' ,transform:'scalex(' + maxScale + ')'}}></div>
+			residue = <div className={classes} style={{transformOrigin:'left' ,transform:'scalex(' + maxScale + ')'}}></div>
 		}
 
 		if (this.props.aggregator.get('state') === 'initializing'){
 			residue = <div className="bar-residue"></div>	
-		}
-
-		var flash;
-		if (this.props.aggregator.get('isPressing') && (this.props.aggregator.get('state') === 'initializing' || this.props.aggregator.get('state') === 'aggregating')){
-			flash = <div style={{width:'100%',right:100-width + '%'}} className='bar-leader'></div>
 		}
 
 		//determine wrap class names
@@ -65,7 +60,6 @@ class Aggregator extends Component {
 				<div className='pressing-dot'></div>
 				<div className="bar">
 					<div className={barWrapClasses}>
-						{flash}
 						{residue}
 						<div className="bar-inner" style={{width: '100%', transformOrigin:'left' ,transform:'scalex(' + scale + ')'}}></div>
 						{rightText}
