@@ -17,10 +17,11 @@ export function newAggregator(objectType, objectId){
 		var object = getState().chatMessages.get('present').find(cm => cm.get('id') === objectId);
 		if (!object || object.get('userName') === userName) return;
 		var aggregator = createAggregator({
-		objectId,
-		objectType,
-		userName,
-		objectUserName : object.get('userName')
+			createdTime : getState().time.get('currentTime'),
+			objectId,
+			objectType,
+			userName,
+			objectUserName : object.get('userName')
 		});
 		dispatch({
 			type : types.ADD_AGGREGATORS,
@@ -33,10 +34,13 @@ export function newAggregator(objectType, objectId){
 
 //when the server didn't add the aggregator, we should remove it
 export function addAggregatorError(requestedAggregatorId){
-	return {
-		type : types.REMOVE_AGGREGATORS,
-		key : requestedAggregatorId,
-		keyField : 'id'
+	return function(dispatch, getState){
+		return {
+			type : types.REMOVE_AGGREGATORS,
+			key : requestedAggregatorId,
+			keyField : 'id',
+			time : getState().time.get('currentTime')
+		}
 	}
 }
 

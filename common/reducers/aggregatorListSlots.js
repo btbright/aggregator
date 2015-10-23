@@ -8,7 +8,7 @@ export default function aggregatorListSlots(state = List(), action){
 		//if the id already exists in list, make sure it's active, but keep the same place
 		var index = state.findIndex(slot => slot.get('id') === action.entity.id);
 		if (index !== -1){
-			return state.set(index, Map({ active: true, id: action.entity.id }))
+			return state.set(index, makeSlot(action.entity, true))
 		}
 		//if this is an out of order update, we may need move a aggregator down from
 		//where this one would have gone if it came in order, possibly repeating the process
@@ -21,12 +21,12 @@ export default function aggregatorListSlots(state = List(), action){
 						id : state.get(i).get('id')
 					}
 				}
-				return aggregatorListSlots(state.set(i, Map({ id: action.entity.id, active: true, createdTime : action.entity.createdTime })), recursiveAction)
+				return aggregatorListSlots(state.set(i, makeSlot(action.entity, true), recursiveAction))
 			}
 
 			//if we've run out of slots or this slot is inactive, set it
 			if (!state.has(i) || !state.get(i).get('active')){
-				return state.set(i, Map({ id: action.entity.id, active: true, createdTime : action.entity.createdTime }))
+				return state.set(i, makeSlot(action.entity, true))
 			}
 		}
 	case UPDATE_AGGREGATORS:
@@ -43,6 +43,16 @@ export default function aggregatorListSlots(state = List(), action){
 	}
 }
 
+function makeSlot(aggregator, isActive){
+	return Map({
+		id : aggregator.id,
+		createdTime : aggregator.createdTime,
+		active : isActive,
+		objectType : aggregator.objectType,
+		objectId : aggregator.objectId
+	})
+}
+
 function findLastFilledSlot(slots){
 	for (var i = slots.size - 1; i >= 0; i--) {
 		if (slots.get(i).get('active')){
@@ -55,7 +65,7 @@ function findLastFilledSlot(slots){
 function makeRemoveList(state, index, id){
 	if (index === -1) return state;
 
-	var newList = state.set(index, Map({active : false, id }));
+	var newList = state.setIn([index, 'active'], false);
 
 	var lastFilledSlotIndex = findLastFilledSlot(newList);
 	if (lastFilledSlotIndex !== false){
