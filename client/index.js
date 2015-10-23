@@ -45,9 +45,8 @@ initialState.time = Map({
 initialState.aggregators = undefined;
 initialState.aggregatorListSlots = undefined;
 initialState.scores = undefined;
-initialState.room = {name:window.__INITIAL_STATE__.room.name,
-    totalBytes : 0,
-    startTime : Date.now()};
+initialState.room.startTime = Date.now();
+initialState.room.totalBytes = 0;
 const socket = io();
 const [apiHandlers, startListeners] = setupApiUtils(socket);
 const store = configureStore(initialState, socket, apiHandlers.map(handler => handler.local));
