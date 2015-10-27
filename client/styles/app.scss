@@ -118,16 +118,16 @@ body {
 
 .app-wrap {
     max-width:1000px;
-    margin:20px auto;
+    margin:0px auto;
     position: relative;
     height:100%;
     display: flex;
     flex-direction: column;
+    position:relative;
 }
 
 .leaderboard {
     margin-top:20px;
-    float:right;
     td {
         padding:3px;
         &.points {
@@ -149,15 +149,13 @@ body {
     line-height: 40px;
 }
 
+.right-info {
+    float:right;
+}
+
 .room-info {
     margin-top:20px;
     position:relative;
-    .right-info {
-        position: absolute;
-        right: 0;
-        top: 50%;
-        margin-top: -14px;
-    }
     .left-info {
         .user-count {
             text-align: left;
@@ -187,7 +185,7 @@ body {
         position: absolute;
         top: 50%;
         margin-top: -9px;
-        left: 12px;
+        left: 0px;
         animation-name: coolFadeIn;
         animation-duration: .3s;
         &.notification-fade {
@@ -652,6 +650,7 @@ body {
             }
 
             .bar-residue {
+                width:100%;
                 height:100%;
                 position: absolute;
                 z-index: -2;
@@ -778,10 +777,24 @@ body {
 }
 
 .instructions-link {
-    float: right;
-    margin-top: 39px;
     font-size: 11px;
     cursor: pointer;
+    position:absolute;
+    bottom:10px;
+    left:0px;
+}
+
+.app-twitch-embeded .instructions-link {
+    position:static;
+    float: right;
+    margin: 39px 0px 10px;
+}
+
+@media only screen and (max-height: 800px) {
+    .instructions-link {
+        position: static;
+        margin-top:100px;
+    }
 }
 
 .instructions-modal {
@@ -820,6 +833,10 @@ body {
     }
 }
 
+.header {
+    padding-top:20px;
+}
+
 .app-twitch-embeded {
     margin:0px auto;
 
@@ -833,6 +850,9 @@ body {
     .upper-notification-bar {
         margin:0;
         padding: 0 12px;
+        .notification {
+            left:12px;
+        }
     }
     .primary-content-wrap {
         margin-top:10px;

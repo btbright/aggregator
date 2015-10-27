@@ -29,9 +29,7 @@ export default {
 	Points : {
 		Notifications : {
 			POINTDESCRIPTORS : [
-				'useless internet',
-				'intermittent reinforcement',
-				'social validation'
+				'internet'
 			]
 		}
 	}

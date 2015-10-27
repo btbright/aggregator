@@ -36,7 +36,7 @@ class App extends Component {
 		if (this.props.shouldTwitch){
 			header = (
 						<div className="header">
-							<span className="instructions-link" onClick={this.handleInstructionsLinkClick}>What is this? I need an adult</span>
+							<span className="instructions-link" onClick={this.handleInstructionsLinkClick}>What is all this? I need an adult</span>
 							<Twitch /> 
 							<Leaderboard shouldShowPosition={true} />
 						</div>
@@ -44,10 +44,19 @@ class App extends Component {
 		} else {
 			header = (
 					  <div className="header">
-						  <Leaderboard />
+					  	  <div className="right-info">
+						  	<Leaderboard />
+					  	  </div>
 					  	  <StandaloneMeta roomName={this.props.roomName} />
 					  </div>
 					  )
+		}
+
+		let footer;
+		if (!this.props.shouldTwitch){
+			footer = (
+					<span className="instructions-link" onClick={this.handleInstructionsLinkClick}>What is all this? I need an adult</span>
+				);
 		}
 
 		const classes = classnames('app-wrap','clearfix',{
@@ -63,7 +72,7 @@ class App extends Component {
 						<Chat />
 					</div>
 					<InstructionsModal isOpen={this.state.areInstructionsShown} onModalCloseClick={this.handleModalCloseClick} />
-					
+					{footer}
 				</div>
 			</div>
 
