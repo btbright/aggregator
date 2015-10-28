@@ -206,6 +206,7 @@ function Aggregators(io, messenger){
 			objectId : aggregator.objectId,
 			objectType : aggregator.objectType,
 			userName : aggregator.userName,
+			objectUserName : aggregator.objectUserName,
 			level : aggregator.level
 		}
 	}

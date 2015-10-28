@@ -29,8 +29,8 @@ class Aggregator extends Component {
 			rightText = <span className="right-text">{new Date(this.props.aggregator.get('chatMessage').get('time')).toLocaleTimeString()}</span>;
 		}
 		var leftText;
-		if (this.props.aggregator.get('userName')){
-			leftText = <span className="left-text">{this.props.aggregator.get('userName')}</span>;
+		if (this.props.aggregator.get('chatMessage').get('userName')){
+			leftText = <span className="left-text">{this.props.aggregator.get('chatMessage').get('userName')}</span>;
 		}
 
 		//add optional residue marker

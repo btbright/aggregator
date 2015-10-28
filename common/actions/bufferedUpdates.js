@@ -18,6 +18,17 @@ export function handleServerUpdate(updates){
 				actions = actions.concat(...updates[updatedNamespace][time]);
 			});
 		});
-		actions.forEach(dispatch);
+		const chatMessages = getState().chatMessages.get('present');
+		actions.forEach(action => {
+			if (action.type === "ADD_AGGREGATORS"){
+				//check that this client has the chatmessage
+				let chatMessage = chatMessages.find(chat => chat.get('id') === action.entity.objectId);
+				if (chatMessage){
+					dispatch(action)
+				}
+			} else {
+				dispatch(action);
+			}
+		});
 	}
 }
