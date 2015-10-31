@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
 import { levelColors, getLevel } from '../utils/levels'
 import constants from '../../common/constants/App'
+import { mapNumbers } from '../utils/mathUtils'
 
 class Aggregator extends Component {
 	constructor(props){
@@ -74,8 +75,6 @@ class Aggregator extends Component {
 	}
 }
 
-function mapNumbers(value, in_min, in_max, out_min, out_max) {
-  return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
+
 
 export default Aggregator

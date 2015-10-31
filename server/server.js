@@ -39,6 +39,14 @@ server.listen(port, (error) => {
   }
 });
 
+var roomTypes = {
+  standard : {},
+  twitch : {},
+  agario : {
+    permagators : ['lol', 'rekt', 'rip', 'sp!itki!!']
+  }
+}
+
 let roomStatus = {};
 messenger.on('room:isOpen:change', (roomName, isOpen) => {
   roomStatus[roomName] = isOpen;
@@ -72,10 +80,10 @@ function handleRender(req, res) {
 
   const finalState = store.getState();
 
-  res.send(renderFullPage(html, finalState, constants.React.ROOTELEMENTID, requestedRoomName));
+  res.send(renderFullPage(html, finalState, constants.React.ROOTELEMENTID, requestedRoomName, 'bundle'));
 }
 
-function renderFullPage(html, initialState, reactRootId, roomName) {
+function renderFullPage(html, initialState, reactRootId, roomName, bundleName) {
   return `
     <!doctype html>
     <html class="no-js" lang="">
@@ -94,7 +102,7 @@ function renderFullPage(html, initialState, reactRootId, roomName) {
         </script>
         <script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-        <script src="/scripts/bundle.js"></script>      
+        <script src="/scripts/${bundleName}.js"></script>      
       </body>
     </html>
     `;
