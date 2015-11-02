@@ -19,6 +19,24 @@ function Aggregators(io, messenger){
 	const completedTime = constants.Aggregator.COMPLETEDTIME;
 	const retirementTime = constants.Aggregator.RETIREMENTTIME;
 
+	let activeAggregators = {};
+
+	function removeAggregatorFromActiveList(roomId, aggregatorId){
+		if (!activeAggregators[roomId]) return;
+		const aggregatorIndex = activeAggregators[roomId].indexOf(aggregatorId);
+		activeAggregators.splice(aggregatorIndex, 1);
+	}
+
+	function addAggregatorToActiveList(roomId, aggregatorId){
+		if (!activeAggregators[roomId]){
+			activeAggregators[roomId] = [];
+		}
+		if (!aggregatorState[roomId]){
+			aggregatorState[roomId] = [];
+		}
+		activeAggregators[roomId].push(aggregatorId);
+	}
+
 	function updateAggregators(){
 		Object.keys(aggregatorState).forEach(roomId => {
 			Object.keys(aggregatorState[roomId]).forEach(aggregatorId => {
@@ -33,6 +51,7 @@ function Aggregators(io, messenger){
 				    hasUpdate = false,
 				    scoreResults;
 
+				//first pass through update function
 				if (newState === 'initializing' && storedAggregator.lastServerUpdate === 0){
 					hasUpdate = true;
 				}
@@ -64,6 +83,7 @@ function Aggregators(io, messenger){
 				if (newState === 'retired'  && !hasStateChange && time - storedAggregator.lastStateChangeTime > retirementTime){
 					newState = 'removed';
 				    hasStateChange = true;
+				    removeAggregatorFromActiveList(roomId, storedAggregator.id);
 				}
 
 				var x = storedAggregator.x,
@@ -74,15 +94,6 @@ function Aggregators(io, messenger){
 					x = Math.round(scoreResults.x * 100) / 100;
 					velocity = scoreResults.velocity;
 					maxValue = Math.round((storedAggregator.maxValue >= scoreResults.x ? storedAggregator.maxValue : scoreResults.x) * 100) / 100;
-				}
-
-				if (false){
-					if (hasStateChange){
-						console.log('state change: ',newState)
-					}
-					if (hasUpdate){
-						console.log('activePresserCount: ',storedAggregator.activePresserCount)
-					}
 				}
 
 				if (hasStateChange && newState === 'completed'){
@@ -212,17 +223,20 @@ function Aggregators(io, messenger){
 	}
 
 	io.on('connection', function (socket) {
-		socket.on('aggregator:new',function(requestedAggregator){
+		socket.on('aggregator:nominate',function(requestedAggregator){
 			var aggregator = createAggregator(requestedAggregator);
-
-			if (!aggregatorState[socket.currentRoom]){
-				aggregatorState[socket.currentRoom] = {}
+			if (!activeAggregators[socket.currentRoom]){
+				activeAggregators[socket.currentRoom] = {};
 			}
-			var existingAggregator = Object.keys(aggregatorState[socket.currentRoom]).find(k => aggregatorState[socket.currentRoom][k].objectId === requestedAggregator.objectId);
+
+			var existingAggregator = Object.keys(activeAggregators[socket.currentRoom]).find(k => aggregatorState[socket.currentRoom][k].objectId === requestedAggregator.objectId);
 			if (!existingAggregator){
+				addAggregatorToActiveList(roomId, aggregator.id);
 				aggregatorState[socket.currentRoom][aggregator.id] = aggregator;
 			} else {
-				socket.emit('error:aggregator:new', requestedAggregator.id, existingAggregator.id);
+				if (existingAggregator.state === 'nominating'){
+					existingAggregator
+				}
 			}
 		});
 
