@@ -2,7 +2,6 @@ import { createChatMessage } from '../../common/models/chatMessage'
 import constants from '../../common/constants/App'
 
 function Chat(io){
-
 	var chatState = {};
 	var lastUpdate = 0;
 
