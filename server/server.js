@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 
 import configureStore from '../common/store/configureStore';
 import App from '../common/containers/app';
+import TwitchApp from '../common/containers/app';
 import constants from '../common/constants/App'
 import ChatAPI from './API/chat'
 import RoomAPI from './API/room'
@@ -24,6 +25,7 @@ var io = socketio(server);
 
 app.use(Express.static('public'));
 app.use('/r/:id',handleRender);
+app.use('/t/:type/:streamer',handleTwitchRender);
 
 var messenger = new EventEmitter();
 
@@ -52,6 +54,43 @@ messenger.on('room:isOpen:change', (roomName, isOpen) => {
   roomStatus[roomName] = isOpen;
 });
 
+const allowedGameTypes = ['agario'];
+const allowedStreamers = ['test'];
+
+function handleTwitchRender(req, res){
+  const requestedGameType = req.params.type;
+  const requestedStreamer = req.params.streamer;
+
+  if (!allowedGameTypes.includes(requestedGameType)){
+    res.send(`<html><head></head><body><h1>Sorry, ${requestedGameType} games aren't ready yet. Coming soon...</h1></body></html>`);
+    return;
+  }
+
+  if (!allowedStreamers.includes(requestedStreamer)){
+    res.send(`<html><head></head><body><h1>Sorry, we haven't created a game for ${requestedStreamer}, yet. Coming soon...</h1></body></html>`);
+    return;
+  }
+
+  const initialState = {
+    room : {
+      name : requestedStreamer,
+      twitch : true,
+      twitchChannel : requestedStreamer
+    }
+  };
+
+  const store = configureStore(initialState);
+
+  const html = React.renderToString(
+    <Provider store={store}>
+      { () => <TwitchApp/> }
+    </Provider>);
+
+  const finalState = store.getState();
+
+  res.send(renderFullPage(html, finalState, constants.React.ROOTELEMENTID, requestedStreamer, 'twitchRoot'));
+}
+
 function handleRender(req, res) {
   const requestedRoomName = req.params.id;
   const initialState = {
@@ -66,11 +105,6 @@ function handleRender(req, res) {
     return;
   }
 
-  if (requestedRoomName === 'twitch'){
-    initialState.room.twitch = true;
-    initialState.room.twitchChannel = 'legendarylea';
-  }
-
   const store = configureStore(initialState);
 
   const html = React.renderToString(
@@ -80,7 +114,7 @@ function handleRender(req, res) {
 
   const finalState = store.getState();
 
-  res.send(renderFullPage(html, finalState, constants.React.ROOTELEMENTID, requestedRoomName, 'bundle'));
+  res.send(renderFullPage(html, finalState, constants.React.ROOTELEMENTID, requestedRoomName, 'standardRoot'));
 }
 
 function renderFullPage(html, initialState, reactRootId, roomName, bundleName) {

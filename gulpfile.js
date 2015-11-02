@@ -1,5 +1,4 @@
 var gulp = require('gulp'),
-    livereload = require('gulp-livereload'),
     assign = require('lodash').assign,
     uglify = require('gulp-uglify'),
     sass = require('gulp-sass'),
@@ -13,11 +12,11 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     packageConfig = require('./package.json'),
     envify = require('envify/custom'),
-    exec = require('child_process').exec,
+    rename = require('gulp-rename'),
+    glob = require('glob'),
+    path = require('path'),
     babelify = require('babelify'),
-    reactify = require('reactify');
-
-
+    es = require('event-stream');
 
 gulp.task('default', ['styles','scripts'], function(){
     gulp.watch(packageConfig.paths.sass,['styles']);
@@ -37,65 +36,30 @@ gulp.task('styles', function() {
 });
 
 gulp.task('scripts', function(done){
-    bundleJS(done);
-});
+    glob(packageConfig.paths.app, function(err, files) {
+        if(err) done(err);
 
-gulp.task('test', ['run-test'], function(){
-    gulp.watch(packageConfig.paths.js,['run-test']);
-    gulp.watch(packageConfig.paths.tests,['run-test']);
-});
-
-gulp.task('run-test', function(done){
-    exec('npm test', function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        done();
-      });
-});
-
-var customOpts = {
-  entries: [packageConfig.paths.app],
-  transform: [],
-  debug: true
-};
-var opts = assign({}, watchify.args, customOpts);
-
-var b = watchify(browserify(opts)); 
-b.transform(envify({
-  NODE_ENV: 'production'
-}))
-b.transform(
-
-    // We want to convert JSX to normal javascript
-    babelify.configure({
-
-        // load the runtime to be able to use Object.assign
-        optional: ["runtime"]
+        var tasks = files.map(function(entry) {
+            return browserify({ entries: [entry] })
+                .transform(
+                    babelify.configure({
+                        // load the runtime to be able to use Object.assign
+                        optional: ["runtime"]
+                    })
+                )
+                .transform('reactify')
+                .transform('debowerify')
+                .bundle()
+                .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+                .pipe(source(path.basename(entry)))
+                .pipe(buffer())
+                //.pipe(uglify())
+                // optional, remove if you dont want sourcemaps
+                .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+                   // Add transformation tasks to the pipeline here.
+                .pipe(sourcemaps.write('./')) // writes .map file
+                .pipe(gulp.dest(packageConfig.dest.scripts));
+            });
+        es.merge(tasks).on('end', done);
     })
-);
-b.transform('reactify');
-b.transform('debowerify');
-b.on('update', function(){
-    bundleJS(function(){})
 });
-b.on('log', gutil.log);
-
-function bundleJS(cb) {
-  return b.bundle()
-    // log errors if they happen
-    .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-    .pipe(source(packageConfig.dest.app))
-    // optional, remove if you don't need to buffer file contents
-    .pipe(buffer())
-    //.pipe(uglify())
-    // optional, remove if you dont want sourcemaps
-    .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-       // Add transformation tasks to the pipeline here.
-    .pipe(sourcemaps.write('./')) // writes .map file
-    .pipe(gulp.dest(packageConfig.dest.scripts))
-    .on('end', function(){
-        if (typeof cb !== 'undefined'){
-            cb()
-        } 
-    });
-}

@@ -3,13 +3,15 @@ import AggregatorList from './AggregatorList.jsx'
 import Chat from './Chat.jsx'
 import UpperNotificationBar from './UpperNotificationBar.jsx'
 import Leaderboard from './Leaderboard.jsx'
+import Twitch from './Twitch.jsx'
+import DebugScrubber from './DebugScrubber.jsx'
 import StandaloneMeta from './StandaloneMeta.jsx'
 import InstructionsModal from './InstructionsModal.jsx'
 import { connect } from 'react-redux'
 import { requestUpdateRoom } from '../actions/room'
 import classnames from 'classnames'
 
-class App extends Component {
+class TwitchApp extends Component {
 	constructor(props){
 		super(props)
 		this.props.dispatch(requestUpdateRoom(this.props.roomName))
@@ -30,22 +32,24 @@ class App extends Component {
 		})	
 	}
 	render(){
-		const classes = classnames('app-wrap','clearfix');
+		const classes = classnames('app-wrap','clearfix',{
+			'app-twitch-embeded' : this.props.shouldTwitch
+		});
 		return (
 			<div className="outer-wrap">
 				<div className={classes}>
 					<div className="header">
-					  	  <div className="right-info">
-						  	<Leaderboard />
-					  	  </div>
-					  	  <StandaloneMeta roomName={this.props.roomName} />
-					  </div>
+						<span className="instructions-link" onClick={this.handleInstructionsLinkClick}>What is all this? I need an adult</span>
+						<Twitch /> 
+						<Leaderboard shouldShowPosition={true} />
+					</div>
 					<UpperNotificationBar />
 					<div className="primary-content-wrap clearfix">
 						<AggregatorList />
 						<Chat />
 					</div>
 					<InstructionsModal isOpen={this.state.areInstructionsShown} onModalCloseClick={this.handleModalCloseClick} />
+					<span className="instructions-link" onClick={this.handleInstructionsLinkClick}>What is all this? I need an adult</span>
 				</div>
 			</div>
 
@@ -59,4 +63,4 @@ function mapStateToProps(state){
 	}
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(TwitchApp);
