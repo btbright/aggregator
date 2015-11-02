@@ -9,7 +9,15 @@ export default {
 		INITIALIZATIONTIME : 2000,
 		COMPLETEDTIME : 3500,
 		RETIREMENTTIME : 400,
-		SERVERUPDATEFREQUENCY : 100
+		SERVERUPDATEFREQUENCY : 100,
+		types : {
+			messages : {
+				NOMINTATIONTHRESHOLD : 1
+			},
+			permagators : {
+				NOMINTATIONTHRESHOLD : 3
+			}
+		}
 	},
 	Chat : {
 		STALESECONDS : 60,

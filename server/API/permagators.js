@@ -10,7 +10,12 @@ function Permagators(io, messenger){
 
 	io.on('connection', function (socket) {
 		socket.on('permagator:pressing:change',function(permagatorId, isPressing){
-			if (!permagatorState[socket.currentRoom] || !permagatorState[socket.currentRoom][permagatorId]) return;
+			if (!permagatorState[socket.currentRoom]) {
+				permagatorState[socket.currentRoom] = {};
+			}
+			if (!permagatorState[socket.currentRoom][permagatorId]){
+				permagatorState[socket.currentRoom][permagatorId] = {};
+			}
 
 			var storedPermagator = permagatorState[socket.currentRoom][permagatorId];
 			if (storedPermagator.state === 'aggregating' || storedPermagator.state === 'initializing'){

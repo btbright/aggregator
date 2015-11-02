@@ -6,6 +6,8 @@ export function createAggregator(props){
 		id: props.id || shortid.generate(),
 		createdTime: props.createdTime || Date.now(),
 		userName : props.userName,
+		nominationsCount : props.nominationsCount || 1,
+		nominators : [props.userName],
 		objectType : props.objectType,
 		objectId : props.objectId,
 		objectUserName : props.objectUserName || '',
@@ -13,7 +15,7 @@ export function createAggregator(props){
 		x : 0,
 		velocity : 0,
 		lastStateChangeTime : 0,
-		state : 'initializing',
+		state : 'nominating',
 		activePresserCount : 0,
 		lastServerUpdate : 0,
 		level : 0
@@ -21,14 +23,16 @@ export function createAggregator(props){
 }
 
 export const states = {
-	'initializing' : 0,
-	'aggregating' : 1,
-	'completed' : 2,
-	'retired' : 3,
-	'removed' : 4
+	'nominating' : 0,
+	'initializing' : 1,
+	'aggregating' : 2,
+	'completed' : 3,
+	'retired' : 4,
+	'removed' : 5,
+	'cancelled' : 6
 }
 
-export const statesLookup = [ 'initializing', 'aggregating', 'completed', 'retired', 'removed' ];
+export const statesLookup = [ 'nominating', 'initializing', 'aggregating', 'completed', 'retired', 'removed', 'cancelled' ];
 
 export const updateMutations = [
 				{name : 'x', isPrecise : true},
@@ -36,6 +40,7 @@ export const updateMutations = [
 				{name : 'velocity', isPrecise : true},
 				{name : 'state', isPrecise : false},
 				{name : 'activePresserCount', isPrecise : false},
+				{name : 'nominationsCount', isPrecise : false},
 				{name : 'level', isPrecise : false}
 				]
 

@@ -206,13 +206,15 @@ function Aggregators(io, messenger){
 			objectId : aggregator.objectId,
 			objectType : aggregator.objectType,
 			userName : aggregator.userName,
+			nominationsCount : aggregator.initializerCount,
 			objectUserName : aggregator.objectUserName,
 			level : aggregator.level
 		}
 	}
 
 	io.on('connection', function (socket) {
-		socket.on('aggregator:new',function(requestedAggregator){
+		socket.on('aggregator:nominate',function(requestedAggregator){
+			
 			var aggregator = createAggregator(requestedAggregator);
 
 			if (!aggregatorState[socket.currentRoom]){
@@ -221,8 +223,6 @@ function Aggregators(io, messenger){
 			var existingAggregator = Object.keys(aggregatorState[socket.currentRoom]).find(k => aggregatorState[socket.currentRoom][k].objectId === requestedAggregator.objectId);
 			if (!existingAggregator){
 				aggregatorState[socket.currentRoom][aggregator.id] = aggregator;
-			} else {
-				socket.emit('error:aggregator:new', requestedAggregator.id, existingAggregator.id);
 			}
 		});
 
