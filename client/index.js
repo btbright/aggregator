@@ -91,9 +91,11 @@ if (false){
 
 const rootElement = document.getElementById(constants.React.ROOTELEMENTID);
 
-React.render(
-  <Provider store={store}>
-    {() => <App />}
-  </Provider>,
-  rootElement
-);
+export function render(AppRoot){
+    React.render(
+      <Provider store={store}>
+        {() => <AppRoot />}
+      </Provider>,
+      rootElement
+    );
+}
