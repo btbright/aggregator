@@ -31,7 +31,7 @@ class Chat extends Component {
 		if (hasAggregator && !isAggregationComplete){
 			this.aggregatorActions.selectDeselectAggregator(aggregatorId);
 		} else if (!hasAggregator) {
-			this.aggregatorActions.newAggregator("message",messageId);
+			this.aggregatorActions.nominateAggregator("message",messageId);
 		}
 	}
 	handleMessageFormSubmit(text){
@@ -49,7 +49,7 @@ class Chat extends Component {
 				if (secondsSinceMessage <= constants.Chat.STALESECONDS){
 					//if a message already exists, but it's not aggregating
 					if (!message.get('hasAggregator') && this.props.userName !== message.get('userName')){
-						this.aggregatorActions.newAggregator("message",message.get('id'));
+						this.aggregatorActions.nominateAggregator("message",message.get('id'));
 						this.notificationActions.addNotification(`Your message has been combined with ${message.get('userName')}'s: ${message.get('text')}`,"informative");
 					}
 					//if the message exists but it's already aggregating?

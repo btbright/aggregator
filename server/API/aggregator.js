@@ -15,7 +15,6 @@ function Aggregators(io, messenger){
 	var frameRate = 1/60;
 	setInterval(updateAggregators,frameRate*1000);
 
-	const initializationTime = constants.Aggregator.INITIALIZATIONTIME;
 	const completedTime = constants.Aggregator.COMPLETEDTIME;
 	const retirementTime = constants.Aggregator.RETIREMENTTIME;
 
@@ -24,7 +23,7 @@ function Aggregators(io, messenger){
 	function removeAggregatorFromActiveList(roomId, aggregatorId){
 		if (!activeAggregators[roomId]) return;
 		const aggregatorIndex = activeAggregators[roomId].indexOf(aggregatorId);
-		activeAggregators.splice(aggregatorIndex, 1);
+		activeAggregators[roomId].splice(aggregatorIndex, 1);
 	}
 
 	function addAggregatorToActiveList(roomId, aggregatorId){
@@ -32,31 +31,37 @@ function Aggregators(io, messenger){
 			activeAggregators[roomId] = [];
 		}
 		if (!aggregatorState[roomId]){
-			aggregatorState[roomId] = [];
+			aggregatorState[roomId] = {};
 		}
 		activeAggregators[roomId].push(aggregatorId);
 	}
 
 	function updateAggregators(){
 		Object.keys(aggregatorState).forEach(roomId => {
-			Object.keys(aggregatorState[roomId]).forEach(aggregatorId => {
+			activeAggregators[roomId].forEach(aggregatorId => {
 				var storedAggregator = aggregatorState[roomId][aggregatorId];
-				if (storedAggregator.state === 'removed') return;
 				var time = Date.now();
 				var calculatedFrameRate = storedAggregator.lastServerUpdate !== 0 ? frameRate : (time - storedAggregator.lastServerUpdate)/1000;
 				if (!activeClickers[roomId]) activeClickers[roomId] = 1
-
 				var newState = storedAggregator.state,
 				    hasStateChange = false,
 				    hasUpdate = false,
-				    scoreResults;
+				    scoreResults,
+				    initializedTime = storedAggregator.initializedTime;
 
 				//first pass through update function
-				if (newState === 'initializing' && storedAggregator.lastServerUpdate === 0){
+				if (storedAggregator.lastServerUpdate === 0){
 					hasUpdate = true;
 				}
 
-				if (newState === 'initializing' && time - storedAggregator.createdTime > initializationTime){
+				if (newState === 'nominating' && storedAggregator.nominationsCount >= constants.Aggregator.types[storedAggregator.objectType].NOMINATIONTHRESHOLD){
+					hasUpdate = true;
+					hasStateChange = true;
+					newState = 'initializing';
+					initializedTime = time;
+				}
+
+				if (newState === 'initializing' && time - initializedTime > constants.Aggregator.types[storedAggregator.objectType].INITIALIZATIONTIME){
 					newState = 'aggregating';
 					hasStateChange = true;
 					//if no one is holding down a comment, just end it
@@ -107,11 +112,11 @@ function Aggregators(io, messenger){
 						state : newState,
 						id : aggregatorId,
 						x : x,
-						activePresserCount : storedAggregator.activePresserCount,
 						velocity : velocity,
 						maxValue : maxValue,
 						lastStateChangeTime : hasStateChange ? time : storedAggregator.lastStateChangeTime,
 						lastServerUpdate : time,
+						initializedTime : initializedTime ? initializedTime : storedAggregator.initializedTime,
 						level : getLevel(maxValue)
 					};
 					aggregatorState[roomId][aggregatorId] = Object.assign({},storedAggregator,updateObject);
@@ -227,17 +232,26 @@ function Aggregators(io, messenger){
 		socket.on('aggregator:nominate',function(requestedAggregator){
 			var aggregator = createAggregator(requestedAggregator);
 			if (!activeAggregators[socket.currentRoom]){
-				activeAggregators[socket.currentRoom] = {};
+				activeAggregators[socket.currentRoom] = [];
 			}
-
-			var existingAggregator = Object.keys(activeAggregators[socket.currentRoom]).find(k => aggregatorState[socket.currentRoom][k].objectId === requestedAggregator.objectId);
-			if (!existingAggregator){
-				addAggregatorToActiveList(roomId, aggregator.id);
+			var storedAggregatorId = activeAggregators[socket.currentRoom].find(k => aggregatorState[socket.currentRoom][k].objectId === requestedAggregator.objectId);
+			if (!storedAggregatorId){
+				addAggregatorToActiveList(socket.currentRoom, aggregator.id);
 				aggregatorState[socket.currentRoom][aggregator.id] = aggregator;
 			} else {
-				if (existingAggregator.state === 'nominating'){
-					existingAggregator
+				let storedAggregator = aggregatorState[socket.currentRoom][storedAggregatorId];
+				if (storedAggregator.state === 'nominating'){
+					aggregatorState[socket.currentRoom][aggregatorId] = Object.assign({},storedAggregator,{
+						nominationsCount : storedAggregator.nominationsCount++,
+						nominators : storedAggregator.nominators.push(requestedAggregator.userName),
+						activePresserCount : storedAggregator.activePresserCount++
+					});
+				} else if (existingAggregator.state === 'aggregating' || existingAggregator.state === 'initializing') {
+					aggregatorState[socket.currentRoom][aggregatorId] = Object.assign({},storedAggregator,{
+						activePresserCount : storedAggregator.activePresserCount++
+					});
 				}
+				//else don't do anything... effectively a cool-down period
 			}
 		});
 

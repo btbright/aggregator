@@ -11,11 +11,13 @@ export default {
 		RETIREMENTTIME : 400,
 		SERVERUPDATEFREQUENCY : 100,
 		types : {
-			messages : {
-				NOMINTATIONTHRESHOLD : 1
+			message : {
+				NOMINATIONTHRESHOLD : 1,
+				INITIALIZATIONTIME : 2000
 			},
-			permagators : {
-				NOMINTATIONTHRESHOLD : 3
+			permagator : {
+				NOMINATIONTHRESHOLD : 3,
+				INITIALIZATIONTIME : 1000
 			}
 		}
 	},
