@@ -234,13 +234,17 @@ function Aggregators(io, messenger){
 			if (!activeAggregators[socket.currentRoom]){
 				activeAggregators[socket.currentRoom] = [];
 			}
+			//check if there is an active/nominating aggregator for this object
 			var storedAggregatorId = activeAggregators[socket.currentRoom].find(k => aggregatorState[socket.currentRoom][k].objectId === requestedAggregator.objectId);
+			//if there isn't an active/nominating aggregator for this object
 			if (!storedAggregatorId){
 				addAggregatorToActiveList(socket.currentRoom, aggregator.id);
 				aggregatorState[socket.currentRoom][aggregator.id] = aggregator;
 			} else {
 				let storedAggregator = aggregatorState[socket.currentRoom][storedAggregatorId];
 				if (storedAggregator.state === 'nominating'){
+					//check if nominating user has already nominated / deactivate nomination if so
+					//increment the nomination/activepressers
 					aggregatorState[socket.currentRoom][aggregator.id] = Object.assign({},storedAggregator,{
 						nominationsCount : storedAggregator.nominationsCount++,
 						nominators : storedAggregator.nominators.push(requestedAggregator.userName),
