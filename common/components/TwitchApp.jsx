@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import AggregatorList from './AggregatorList.jsx'
+import PermagatorList from './PermagatorList.jsx'
 import Chat from './Chat.jsx'
 import UpperNotificationBar from './UpperNotificationBar.jsx'
 import Leaderboard from './Leaderboard.jsx'
@@ -7,6 +8,7 @@ import Twitch from './Twitch.jsx'
 import DebugScrubber from './DebugScrubber.jsx'
 import StandaloneMeta from './StandaloneMeta.jsx'
 import InstructionsModal from './InstructionsModal.jsx'
+import Permagator from './Permagator.jsx'
 import { connect } from 'react-redux'
 import { requestUpdateRoom } from '../actions/room'
 import classnames from 'classnames'
@@ -45,7 +47,7 @@ class TwitchApp extends Component {
 					</div>
 					<UpperNotificationBar />
 					<div className="primary-content-wrap clearfix">
-						<AggregatorList />
+						<PermagatorList />
 						<Chat />
 					</div>
 					<InstructionsModal isOpen={this.state.areInstructionsShown} onModalCloseClick={this.handleModalCloseClick} />
@@ -59,7 +61,8 @@ class TwitchApp extends Component {
 
 function mapStateToProps(state){
 	return {
-		roomName : state.room.name
+		roomName : state.room.name,
+		permagators : state.room.permagators
 	}
 }
 

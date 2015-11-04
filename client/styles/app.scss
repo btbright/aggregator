@@ -456,6 +456,26 @@ body {
     }
 }
 
+.pressing-dot {
+    height:6px;
+    width:6px;
+    display:block;
+    background:#BBB;
+    border-radius: 50%;
+    position:absolute;
+    top:50%;
+    left:-13px;
+    margin-top:-3px;
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.permagator .pressing-dot {
+    top: -13px;
+    left: 50%;
+    margin-left: -3px;
+}
+
 .aggregator-list {
     min-height:500px;
     float:right;
@@ -484,20 +504,6 @@ body {
         left:0;
         top:0;
         z-index: 9;
-    }
-
-    .pressing-dot {
-        height:6px;
-        width:6px;
-        display:block;
-        background:#BBB;
-        border-radius: 50%;
-        position:absolute;
-        top:50%;
-        left:-13px;
-        margin-top:-3px;
-        opacity: 0;
-        transition: opacity .15s;
     }
 
     &.aggregator-pressing {
@@ -909,6 +915,11 @@ body {
     }
 }
 
+.permagators {
+    float: right;
+    width: 48%;
+}
+
 .permagator {
   background: rgba(0,0,0,.04);
   border-radius: 150px;
@@ -917,6 +928,8 @@ body {
   line-height: 150px;
   text-align: center;
   position: relative;
+  float: left;
+  margin: 0px 10px 40px 0px;
 
   .text {
       position: absolute;
@@ -959,6 +972,7 @@ body {
     .wedge {
       height: 150px;
       width: 75px;
+      transition: background .2s;
     }
 
     .wedge-holder-right {
@@ -969,8 +983,39 @@ body {
       background: #E6E6E6;
     }
 
+    .residue-ring .wedge {
+      background: $levelBackgroundDefault;
+    }
+
     .progress-ring .wedge {
-      background: #3FCEF3;
+      background: $levelDefault;
+    }
+
+    &.permagator-level-gold {
+        .progress-ring .wedge {
+          background: $levelGold;
+        }
+        .residue-ring .wedge {
+          background: $levelBackgroundGold;
+        }
+    }
+
+    &.permagator-level-blue {
+        .progress-ring .wedge {
+          background: $levelBlue;
+        }
+        .residue-ring .wedge {
+          background: $levelBackgroundBlue;
+        }
+    }
+
+    &.permagator-level-green {
+        .progress-ring .wedge {
+          background: $levelGreen;
+        }
+        .residue-ring .wedge {
+          background: $levelBackgroundGreen;
+        }
     }
 
     .wedge-holder-right .wedge {
@@ -983,11 +1028,10 @@ body {
       transform-origin: 75px 75px;
     }
 
-    .progress-ring .wedge-holder-left .wedge {
-      animation: rotate-2 4s infinite linear;
-    }
-    .progress-ring .wedge-holder-right .wedge {
-      animation: rotate-1 4s infinite linear;
+    &.permagator-pressing {
+        .pressing-dot {
+            opacity: 1;
+        }
     }
 }
 

@@ -8,20 +8,22 @@ export function selectDeselectAggregator(id){
 			id : id,
 			isSelected : getState().user.pressedAggregatorId !== id
 		});
-	}
+	} 
 }
-
+ 
 export function nominateAggregator(objectType, objectId){
 	return function(dispatch, getState){
 		var userName = getState().user.userName;
 		var object = getState().chatMessages.get('present').find(cm => cm.get('id') === objectId);
-		if (!object || object.get('userName') === userName) return;
+		if (objectType === 'message'){
+			if (!object || object.get('userName') === userName) return;
+		}
 		var aggregator = createAggregator({
 			createdTime : getState().time.get('currentTime'),
 			objectId,
 			objectType,
 			userName,
-			objectUserName : object.get('userName')
+			objectUserName : object ? object.get('userName') : ''
 		});
 		dispatch({
 			type : types.NOMINATE_AGGREGATORS,
@@ -29,6 +31,7 @@ export function nominateAggregator(objectType, objectId){
 			key : aggregator.id,
 			keyField : 'id'
 		})
+		selectDeselectAggregator(aggregator.id)(dispatch, getState)
 	}
 }
 
@@ -47,6 +50,7 @@ export function handlePackedUpdates(time, rawUpdates){
 		}
 		actions.push(action)
 	});
+	console.log(actions)
 	return actions;
 }
 

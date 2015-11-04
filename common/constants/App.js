@@ -16,7 +16,7 @@ export default {
 				INITIALIZATIONTIME : 2000
 			},
 			permagator : {
-				NOMINATIONTHRESHOLD : 3,
+				NOMINATIONTHRESHOLD : 2,
 				INITIALIZATIONTIME : 1000
 			}
 		}
@@ -29,7 +29,7 @@ export default {
 		TIMETOSHOW : 4500
 	},
 	App : {
-		BUFFERTIME : 150,
+		BUFFERTIME : 150, 
 		MAXUSERS : 5
 	},
 	Room : {

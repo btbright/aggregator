@@ -11,12 +11,12 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { chatMessagesWithAggregationInfoSelector } from '../selectors/ChatSelectors.js';
 import { createChatMessage } from '../models/chatMessage'
-
-class Chat extends Component {
-	constructor(props){
-		super(props)
-
-		this.handleChatMessageClick = this.handleChatMessageClick.bind(this)
+      
+class Chat extends Component {  
+	constructor(props){ 
+		super(props) 
+  
+		this.handleChatMessageClick = this.handleChatMessageClick.bind(this) 
 		this.handleMessageFormSubmit = this.handleMessageFormSubmit.bind(this)
 
 		this.chatActions = bindActionCreators(ChatActions, this.props.dispatch);

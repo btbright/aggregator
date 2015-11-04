@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 import { ADD_AGGREGATORS, UPDATE_AGGREGATORS, REMOVE_AGGREGATORS } from '../constants/ActionTypes'
-
+ 
 const initialState = Map();
 //main functionality handled in deltable
 //all this aggregator coupling is for performance to save on joins at 60fps
@@ -19,6 +19,7 @@ export default function chatMessages(state = initialState, action) {
 				message.set('aggregatorId', action.key);
 			}))
 		}
+		return state;
 	case UPDATE_AGGREGATORS:
 		var relevantMutations = action.mutations.filter(mutation => {
 			return mutation.property === 'level' || mutation.property === 'state';

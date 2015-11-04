@@ -191,7 +191,7 @@ function Aggregators(io, messenger){
 				setTimeout(()=>{
 					io.to(roomId).emit('update:new',addObject);
 				},0)
-				
+				 
 			}
 		});
 		lastUpdate = thisUpdate;
@@ -241,13 +241,13 @@ function Aggregators(io, messenger){
 			} else {
 				let storedAggregator = aggregatorState[socket.currentRoom][storedAggregatorId];
 				if (storedAggregator.state === 'nominating'){
-					aggregatorState[socket.currentRoom][aggregatorId] = Object.assign({},storedAggregator,{
+					aggregatorState[socket.currentRoom][aggregator.id] = Object.assign({},storedAggregator,{
 						nominationsCount : storedAggregator.nominationsCount++,
 						nominators : storedAggregator.nominators.push(requestedAggregator.userName),
 						activePresserCount : storedAggregator.activePresserCount++
 					});
-				} else if (existingAggregator.state === 'aggregating' || existingAggregator.state === 'initializing') {
-					aggregatorState[socket.currentRoom][aggregatorId] = Object.assign({},storedAggregator,{
+				} else if (storedAggregator.state === 'aggregating' || storedAggregator.state === 'initializing') {
+					aggregatorState[socket.currentRoom][aggregator.id] = Object.assign({},storedAggregator,{
 						activePresserCount : storedAggregator.activePresserCount++
 					});
 				}

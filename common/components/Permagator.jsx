@@ -1,11 +1,16 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
 import { mapNumbers } from '../utils/mathUtils'
+import { levelColors } from '../utils/levels'
 
 class Permagator extends Component {
 	constructor(props){
 		super(props)
 		this.state = {}
+		this.handleOnClick = this.handleOnClick.bind(this)
+	} 
+	handleOnClick(){
+		this.props.onPermagatorClick(this.props.isActive, this.props.id, this.props.aggregatorId);
 	}
 	render(){
 		let nominationLeftRotation,
@@ -13,7 +18,7 @@ class Permagator extends Component {
 			residueLeftRotation,
 			residueRightRotation,
 			progressLeftRotation,
-			progressRightRotation;
+			progressRightRotation; 
 
 		if (this.props.nominationPercent >= 0 && this.props.nominationPercent <= 50){
 			nominationRightRotation = mapNumbers(this.props.nominationPercent, 0, 50, -180, 0);
@@ -39,34 +44,35 @@ class Permagator extends Component {
 			progressLeftRotation = mapNumbers(this.props.progressPercent, 50, 100, -180, 0);;
 		}
 
-		const classes = classnames('permagator', 'clearfix', `permagator-${this.props.id}` {
-			'permagator-is-pressing' : this.props.isPressing
+		const classes = classnames('permagator', 'clearfix', `permagator-${this.props.id}`, this.props.level ? `permagator-level-${levelColors[this.props.level]}` : '', {
+			'permagator-pressing' : this.props.isPressing
 		});
 		return (
-			   <div className={classes}>
+			   <div onClick={this.handleOnClick} className={classes}>
+			   	  <div className='pressing-dot'></div>
 		          <div className="progress-holder">
 		            <div className="nomination-ring">
-		                <div className="wedge-holder wedge-holder-left" style={{transform:`rotateZ(${nominationLeftRotation}deg)`}}>
-		                	<div className="wedge"></div>
+		                <div className="wedge-holder wedge-holder-left">
+		                	<div className="wedge" style={{transform:`rotateZ(${nominationLeftRotation}deg)`}}></div>
 		              	</div>
-		              <div className="wedge-holder wedge-holder-right" style={{transform:`rotateZ(${nominationRightRotation}deg)`}}>
-		                <div className="wedge"></div>
+		              <div className="wedge-holder wedge-holder-right">
+		                <div className="wedge" style={{transform:`rotateZ(${nominationRightRotation}deg)`}}></div>
 		              </div>
 		            </div>
 		            <div className="residue-ring">
-		                <div className="wedge-holder wedge-holder-left" style={{transform:`rotateZ(${residueLeftRotation}deg)`}}>
-		                <div className="wedge"></div>
+		                <div className="wedge-holder wedge-holder-left">
+		                <div className="wedge" style={{transform:`rotateZ(${residueLeftRotation}deg)`}}></div>
 		              </div>
-		              <div className="wedge-holder wedge-holder-right" style={{transform:`rotateZ(${residueRightRotation}deg)`}}>
-		                <div className="wedge"></div>
+		              <div className="wedge-holder wedge-holder-right">
+		                <div className="wedge" style={{transform:`rotateZ(${residueRightRotation}deg)`}}></div>
 		              </div>
 		            </div>
 		            <div className="progress-ring">
-		                <div className="wedge-holder wedge-holder-left" style={{transform:`rotateZ(${progressLeftRotation}deg)`}}>
-		                <div className="wedge"></div>
+		                <div className="wedge-holder wedge-holder-left">
+		                <div className="wedge" style={{transform:`rotateZ(${progressLeftRotation}deg)`}}></div>
 		              </div>
-		              <div className="wedge-holder wedge-holder-right" style={{transform:`rotateZ(${progressRightRotation}deg)`}}>
-		                <div className="wedge"></div>
+		              <div className="wedge-holder wedge-holder-right">
+		                <div className="wedge" style={{transform:`rotateZ(${progressRightRotation}deg)`}}></div>
 		              </div>
 		            </div>
 		          </div>
@@ -86,3 +92,4 @@ Permagator.propTypes = {
 	text : PropTypes.string.isRequired,
 	isPressing : PropTypes.bool
 }
+export default Permagator;

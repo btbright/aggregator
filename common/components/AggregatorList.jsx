@@ -13,7 +13,7 @@ class AggregatorList extends Component {
 		this.handleOnAggregatorClick = this.handleOnAggregatorClick.bind(this);
 	}
 	handleOnAggregatorClick(id){
-		this.actions.selectDeselectAggregator(id);
+		this.actions.selectDeselectAggregator(id); 
 	}
 	render(){
 		return (

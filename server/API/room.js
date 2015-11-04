@@ -90,7 +90,7 @@ function Room(io, messenger){
 		});
 
 
-		socket.on('aggregator:new',addActiveClicker);
+		socket.on('aggregator:nominate',addActiveClicker);
 		socket.on('aggregator:pressing:change',addActiveClicker);
 
 		function addActiveClicker(){

@@ -45,7 +45,25 @@ var roomTypes = {
   standard : {},
   twitch : {},
   agario : {
-    permagators : ['lol', 'rekt', 'rip', 'sp!itki!!']
+    //permagators : ['lol', 'rekt', 'rip', 'sp!itki!!']
+    permagators : [
+      {
+        id : 'lol',
+        text : 'lol'
+      },
+      {
+        id : 'rekt',
+        text : 'rekt'
+      },
+      {
+        id : 'rip',
+        text : 'rip'
+      },
+      {
+        id : 'splitkill',
+        text : 'sp!itki!!'
+      }
+    ]
   }
 }
 
@@ -75,7 +93,8 @@ function handleTwitchRender(req, res){
     room : {
       name : requestedStreamer,
       twitch : true,
-      twitchChannel : requestedStreamer
+      twitchChannel : requestedStreamer,
+      permagators : roomTypes[requestedGameType].permagators
     }
   };
 
