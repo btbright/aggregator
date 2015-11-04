@@ -26,12 +26,14 @@ function Room(io, messenger){
 	messenger.on('user:points:update', (userName, pointsAddition) => {
 		var roomName = Object.keys(roomInfo).find(r => {
 			if (!roomInfo[r] || !roomInfo[r].users) return false;
-			return Object.keys(roomInfo[r].users).includes(userName);
+			return Object.keys(roomInfo[r].users).map(k => roomInfo[r].users[k].userName).includes(userName);
 		});
 		var room = roomInfo[roomName];
 		if (!roomName || !room) return;
 
-		let userObject = room.users[userName];
+		let userObjectKey = Object.keys(room.users).find(k => room.users[k].userName === userName);
+		if (!userObjectKey) return;
+		let userObject = room.users[userObjectKey];
 		if (!userObject.points) userObject.points = 0;
 		userObject.points += pointsAddition;
 		io.to(roomName).emit('user:points:update',userName, userObject.points, pointsAddition);
@@ -81,11 +83,11 @@ function Room(io, messenger){
 			if (!room.users){
 				room.users = {};
 			}
-			if (Object.keys(room.users).includes(name)){
+			if (Object.keys(room.users).map(k => room.users[k].userName).includes(name)){
 				socket.emit('error:user:name:change','Someone is using that name. Please choose another.');
 				return;
 			}
-			room.users[name] = {name};
+			room.users[socket.id] = {userName : name, id : socket.id};
 			socket.userName = name;
 		});
 
@@ -114,7 +116,7 @@ function Room(io, messenger){
 
 		socket.on('disconnect', function () {
 			if (!roomInfo[socket.currentRoom]) return;
-			if (roomInfo[socket.currentRoom].users) delete roomInfo[socket.currentRoom].users[socket.userName];
+			if (roomInfo[socket.currentRoom].users) delete roomInfo[socket.currentRoom].users[socket.id];
 			roomInfo[socket.currentRoom].userCount--;
 			openCloseRoom(socket.currentRoom);
 			io.to(socket.currentRoom).emit('room:userCount:update', roomInfo[socket.currentRoom].userCount);
