@@ -23,6 +23,13 @@ export function createAggregator(props){
 	}
 }
 
+export const types = {
+	'message' : 0,
+	'permagator' : 1
+}
+
+export const typesLookup = [ 'message', 'permagator' ];
+
 export const states = {
 	'nominating' : 0,
 	'initializing' : 1,
@@ -50,6 +57,8 @@ export const encodeUpdate = function( updates ) {
   for ( var i = 0; i < updates.length; ++i ) {
     var update = updates[i];
     msg += update.id+'!!!';
+    msg += update.type+'!!!';
+    msg += update.objectId+'!!!';
     for (var j=0; j < updateMutations.length; j++){
     	msg += updateMutations[j].isPrecise === true ? encodeFloat32(update.mutations[j]) : encodeUint8(update.mutations[j])
     }
@@ -67,7 +76,9 @@ export const decodeUpdate = function( str ) {
   		var charsRead = 0;
 	  	const splitRaw = rawUpdate.split('!!!');
 	  	const id = splitRaw[0];
-	  	const rawEncoded = splitRaw[1];
+	  	const type = splitRaw[1];
+	  	const objectId = splitRaw[2];
+	  	const rawEncoded = splitRaw[3];
 	  	let mutations = {};
 
 	  	for (var i=0; i < updateMutations.length; i++){
@@ -75,7 +86,7 @@ export const decodeUpdate = function( str ) {
 	    	charsRead += decodeFunction( rawEncoded, charsRead, mutations, updateMutations[i].name );
 	    };
 
-	    updates.push({id, mutations})
+	    updates.push({id, type, objectId, mutations})
   	}
   })  
   return updates;

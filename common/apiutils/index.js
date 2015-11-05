@@ -51,8 +51,13 @@ function prepareActions(dispatch, getState, actionCreator){
 			if (typeof action === 'function'){
 				let results = action(dispatch, getState);
 				if (results){
-					results.isRemoteTriggered = true;
-					returnActions.push(results);
+					if (!Array.isArray(results)){
+						results = [results];
+					}
+					results.forEach(result => {
+						result.isRemoteTriggered = true;
+						returnActions.push(result);
+					})
 				}
 			} else {
 				action.isRemoteTriggered = true;

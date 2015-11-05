@@ -21,6 +21,11 @@ export default function user(state = initialState, action) {
 			filterLevel : action.filterLevel
 		});
 	case UPDATE_AGGREGATOR_SELECT_DESELECT:
+		if (!action.isSelected){
+			return Object.assign({},state,{
+				pressedAggregatorId : ""
+			});
+		}
 		return Object.assign({},state,{
 			pressedAggregatorId : state.pressedAggregatorId === action.id ? "" : action.id
 		});

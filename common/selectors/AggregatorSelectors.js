@@ -39,6 +39,7 @@ const permagatorSelector = createSelector(
 	aggregatorsSelector,
 	pressedAggregatorSelector,
 	(permagators, aggregators, pressedAggregatorId) => {
+		if (!permagators) return;
 		return permagators.map(permagator => {
 			const matched = aggregators.find(aggregator => aggregator.get('objectId') === permagator.id && aggregator.get('state') !== 'removed');
 			if (matched){

@@ -14,7 +14,7 @@ class PermagatorList extends Component {
 	}
 	handleOnPermagatorClick(isActive, permagatorId, aggregatorId){
 		if (!isActive){
-			this.actions.nominateAggregator("permagator",permagatorId);
+			this.actions.nominateAggregator("permagator", permagatorId, aggregatorId);
 		} else {
 			this.actions.selectDeselectAggregator(aggregatorId);
 		}

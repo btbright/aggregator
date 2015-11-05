@@ -1,11 +1,15 @@
-import { createAggregator, updateMutations, encodeUpdate, states } from '../../common/models/aggregator'
+import { createAggregator, updateMutations, encodeUpdate, states, types } from '../../common/models/aggregator'
 import constants from '../../common/constants/App'
 import { scorer } from '../../common/utils/scorer'
 import { roomInfo } from './room'
 import { getLevel } from '../../common/utils/levels'
 
 function Aggregators(io, messenger){
+	//tracks the number of active clickers per room
 	var activeClickers = {}
+
+	//tracks users' active pressing aggregator to prevent cheating
+	var userPressingAggregator = {}
 
 	messenger.on('room:activeClickers:update', function(roomId, activeClickerCount){
 		activeClickers[roomId] = activeClickerCount;
@@ -18,6 +22,9 @@ function Aggregators(io, messenger){
 	const completedTime = constants.Aggregator.COMPLETEDTIME;
 	const retirementTime = constants.Aggregator.RETIREMENTTIME;
 
+	//just a hash of the active ones, so when the main process is running
+	//it doesn't do calculations for each one. Also, hopefully drops lookup
+	//time for filtering aggs by object type
 	let activeAggregators = {};
 
 	function removeAggregatorFromActiveList(roomId, aggregatorId){
@@ -198,7 +205,6 @@ function Aggregators(io, messenger){
 	}
 
 	var aggTest = 0;
-
 	function createAggregatorServerUpdate(aggregator){
 		var mutations = [];
 		updateMutations.forEach(mutationField => {
@@ -208,24 +214,7 @@ function Aggregators(io, messenger){
 				mutations.push(aggregator[mutationField.name])
 			}
 		});
-		return {id : aggregator.id,mutations}
-	}
-
-	function createClientAggregator(aggregator){
-		return {
-			id : aggregator.id,
-			createdTime : aggregator.createdTime,
-			x : aggregator.x,
-			maxValue : aggregator.maxValue,
-			state : aggregator.state,
-			activePresserCount : aggregator.activePresserCount,
-			objectId : aggregator.objectId,
-			objectType : aggregator.objectType,
-			userName : aggregator.userName,
-			nominationsCount : aggregator.initializerCount,
-			objectUserName : aggregator.objectUserName,
-			level : aggregator.level
-		}
+		return {id : aggregator.id, type : types[aggregator.objectType], objectId : aggregator.objectId, mutations}
 	}
 
 	io.on('connection', function (socket) {
@@ -236,37 +225,80 @@ function Aggregators(io, messenger){
 			}
 			//check if there is an active/nominating aggregator for this object
 			var storedAggregatorId = activeAggregators[socket.currentRoom].find(k => aggregatorState[socket.currentRoom][k].objectId === requestedAggregator.objectId);
+			//remove another nomination for this user, if not this one
+			if (!userPressingAggregator[socket.currentRoom]){
+				userPressingAggregator[socket.currentRoom] = {}
+			}
+			const userCurrentlyPressingId = userPressingAggregator[socket.currentRoom][socket.id];
+			const relevantAggregatorId = (storedAggregatorId ? storedAggregatorId : aggregator.id);
+			if (userCurrentlyPressingId && userCurrentlyPressingId !== relevantAggregatorId){
+				const otherAggregator = aggregatorState[socket.currentRoom][userCurrentlyPressingId];
+				aggregatorState[socket.currentRoom][userCurrentlyPressingId] = Object.assign({}, otherAggregator,{
+					nominationsCount : otherAggregator.nominationsCount-1,
+					nominators : otherAggregator.nominators.filter(n => n !== socket.id),
+					activePresserCount : otherAggregator.activePresserCount-1
+				});
+			}
+
+
 			//if there isn't an active/nominating aggregator for this object
 			if (!storedAggregatorId){
+				aggregator.nominators = [socket.id];
 				addAggregatorToActiveList(socket.currentRoom, aggregator.id);
 				aggregatorState[socket.currentRoom][aggregator.id] = aggregator;
 			} else {
 				let storedAggregator = aggregatorState[socket.currentRoom][storedAggregatorId];
 				if (storedAggregator.state === 'nominating'){
+
 					//check if nominating user has already nominated / deactivate nomination if so
-					//increment the nomination/activepressers
-					aggregatorState[socket.currentRoom][aggregator.id] = Object.assign({},storedAggregator,{
-						nominationsCount : storedAggregator.nominationsCount++,
-						nominators : storedAggregator.nominators.push(requestedAggregator.userName),
-						activePresserCount : storedAggregator.activePresserCount++
-					});
+					if (storedAggregator.nominators && storedAggregator.nominators.includes(socket.id)){
+						//decrement the nomination/activepressers
+						aggregatorState[socket.currentRoom][storedAggregator.id] = Object.assign({},storedAggregator,{
+							nominationsCount : storedAggregator.nominationsCount-1,
+							nominators : storedAggregator.nominators.filter(n => n !== socket.id),
+							activePresserCount : storedAggregator.activePresserCount-1
+						});
+					} else {
+						//increment the nomination/activepressers
+						aggregatorState[socket.currentRoom][storedAggregator.id] = Object.assign({},storedAggregator,{
+							nominationsCount : storedAggregator.nominationsCount+1,
+							nominators : storedAggregator.nominators.concat([socket.id]),
+							activePresserCount : storedAggregator.activePresserCount+1
+						});
+					}
 				} else if (storedAggregator.state === 'aggregating' || storedAggregator.state === 'initializing') {
-					aggregatorState[socket.currentRoom][aggregator.id] = Object.assign({},storedAggregator,{
-						activePresserCount : storedAggregator.activePresserCount++
+					aggregatorState[socket.currentRoom][storedAggregator.id] = Object.assign({},storedAggregator,{
+						activePresserCount : storedAggregator.activePresserCount+1
 					});
 				}
 				//else don't do anything... effectively a cool-down period
 			}
 		});
 
+		function selectDeselectAggregator(roomId, isPressing, aggregator){
+			aggregatorState[roomId][aggregator.id] = Object.assign({}, aggregator,{
+				activePresserCount : aggregator.activePresserCount + (isPressing ? 1 : -1)
+			});
+		}
+
 		socket.on('aggregator:pressing:change',function(aggregatorId, isPressing){
 			if (!aggregatorState[socket.currentRoom] || !aggregatorState[socket.currentRoom][aggregatorId]) return;
 
+			if (!userPressingAggregator[socket.currentRoom]){
+				userPressingAggregator[socket.currentRoom] = {};
+			}
+
+			const userCurrentlyPressingId = userPressingAggregator[socket.currentRoom][socket.id];
+
+			if (isPressing && userCurrentlyPressingId){
+				selectDeselectAggregator(socket.currentRoom, false, aggregatorState[socket.currentRoom][userCurrentlyPressingId]);
+			}
+
+			userPressingAggregator[socket.currentRoom][socket.id] = isPressing ? aggregatorId : undefined;
+
 			var storedAggregator = aggregatorState[socket.currentRoom][aggregatorId];
 			if (storedAggregator.state === 'aggregating' || storedAggregator.state === 'initializing'){
-				aggregatorState[socket.currentRoom][aggregatorId] = Object.assign({},storedAggregator,{
-					activePresserCount : storedAggregator.activePresserCount + (isPressing ? 1 : -1)
-				});
+				selectDeselectAggregator(socket.currentRoom, isPressing, aggregatorId);
 			}
 		});
 	});
