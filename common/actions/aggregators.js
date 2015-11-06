@@ -3,8 +3,12 @@ import { createAggregator, decodeUpdate, statesLookup } from '../models/aggregat
 
 export function selectDeselectAggregator(id, objectId, objectType){
 	return function(dispatch, getState){
+		const pressingAggregatorId = getState().user.pressedAggregatorId;
+		const pressingObjectId = getState().user.pressedObjectId;
+		console.log('isSelecing',pressingAggregatorId !== id || pressingObjectId !== objectId, pressingAggregatorId, id, pressingObjectId, objectId)
 		dispatch({
 			type : types.UPDATE_AGGREGATOR_SELECT_DESELECT,
+			isSelected : pressingAggregatorId !== id || pressingObjectId !== objectId,
 			id,
 			objectId,
 			objectType

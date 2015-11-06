@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 import classnames from 'classnames'
-import { mapNumbers } from '../utils/mathUtils'
+import { mapNumbers } from '../utils/mathUtils' 
 import { levelColors } from '../utils/levels'
 
 class Permagator extends Component {
-	constructor(props){   
-		super(props)
-		this.state = {} 
-		this.handleOnClick = this.handleOnClick.bind(this)
-	}   
+	constructor(props){     
+		super(props) 
+		this.state = {}   
+		this.handleOnClick = this.handleOnClick.bind(this)  
+	}     
 	handleOnClick(){ 
 		this.props.onPermagatorClick(this.props.isActive, this.props.id, this.props.aggregatorId);
 	}    

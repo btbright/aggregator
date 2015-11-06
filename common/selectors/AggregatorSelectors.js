@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 
 const chatMessagesSelector = state => state.chatMessages.get('present')
-const aggregatorsSelector = state => state.aggregators.get('present')
+const aggregatorsSelector = state => state.aggregators.get('present') 
 const aggregatorsListSlotsSelector = state => state.aggregatorListSlots.get('present')
 const pressedAggregatorSelector = state => state.user.pressedAggregatorId
 const basePermagatorSelector = state => state.room.permagators
@@ -54,7 +54,6 @@ const permagatorSelector = createSelector(
 		return permagators.map(permagator => {
 			const matched = aggregators.find(aggregator => aggregator.get('objectId') === permagator.id && aggregator.get('state') !== 'removed');
 			if (matched){
-				console.log(matched.get('objectId'), pressedAggregatorData)
 				return Object.assign({},permagator,{
 					aggregator : matched.toJS(),
 					isPressing : matched.get('objectId') === pressedAggregatorData.pressedObjectId
