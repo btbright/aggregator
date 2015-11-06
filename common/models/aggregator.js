@@ -6,7 +6,7 @@ export function createAggregator(props){
 		id: props.id || shortid.generate(),
 		createdTime: props.createdTime || Date.now(),
 		initializedTime : 0,
-		userName : props.userName,
+		userName : props.userName, 
 		nominationsCount : props.nominationsCount || 1,
 		nominators : [props.userName],
 		objectType : props.objectType,

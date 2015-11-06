@@ -1,23 +1,13 @@
 import * as types from '../constants/ActionTypes'
 import { createAggregator, decodeUpdate, statesLookup } from '../models/aggregator'
 
-export function selectDeselectAggregator(id){
+export function selectDeselectAggregator(id, objectId, objectType){
 	return function(dispatch, getState){
-		const currentPressedId = getState().user.pressedAggregatorId;
-
-		//if currently pressing another aggregator, let the server know to deselect it
-		if (currentPressedId !== ""){
-			dispatch({
-				type : types.UPDATE_AGGREGATOR_SELECT_DESELECT,
-				id : currentPressedId,
-				isSelected : false
-			});			
-		}
-
 		dispatch({
 			type : types.UPDATE_AGGREGATOR_SELECT_DESELECT,
-			id : id,
-			isSelected : currentPressedId !== id
+			id,
+			objectId,
+			objectType
 		});
 	}
 }
@@ -42,7 +32,7 @@ export function nominateAggregator(objectType, objectId, aggregatorId){
 			key : aggregator.id,
 			keyField : 'id'
 		})
-		selectDeselectAggregator(aggregatorId ? aggregatorId : aggregator.id)(dispatch, getState)
+		selectDeselectAggregator(aggregatorId ? aggregatorId : aggregator.id, objectId, objectType)(dispatch, getState)
 	}
 }
 
@@ -51,13 +41,13 @@ export function handlePackedUpdates(time, rawUpdates){
 		let actions = [];
 		const updates = decodeUpdate(rawUpdates);
 		updates.forEach(update => {
-			console.log('update: ',update)
 			let action;
 			//if it's a permagator and hasn't been added, we can recreate from the update... how fancy
 			if (parseInt(update.type, 10) === 1 && !getState().aggregators.get('present').has(update.id)){
 				update.mutations.objectType = 'permagator';
 				update.mutations.id = update.id;
 				update.mutations.objectId = update.objectId;
+				update.mutations.state = statesLookup[update.mutations.state]
 				action = {
 					type : types.ADD_AGGREGATORS,
 					isUpdateAction : true,
@@ -67,7 +57,6 @@ export function handlePackedUpdates(time, rawUpdates){
 					keyField : 'id',
 					entity : update.mutations
 				}
-				console.log('fake add action: ',action)
 			} else {
 				action = {
 					type : types.UPDATE_AGGREGATORS,

@@ -5,20 +5,21 @@ import { packagedAggregatorSelector } from '../selectors/AggregatorSelectors.js'
 import * as AggregatorActions from '../actions/aggregators'
 import { bindActionCreators } from 'redux'
 import constants from '../constants/App'
-
+ 
 class PermagatorList extends Component {
 	constructor(props){
-		super(props)
+		super(props) 
 		this.actions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.handleOnPermagatorClick = this.handleOnPermagatorClick.bind(this);
 	}
 	handleOnPermagatorClick(isActive, permagatorId, aggregatorId){
+		console.log('handleOnPermagatorClick', isActive, permagatorId, aggregatorId);
 		if (!isActive){
 			this.actions.nominateAggregator("permagator", permagatorId, aggregatorId);
 		} else {
 			this.actions.selectDeselectAggregator(aggregatorId);
 		}
-	}
+	}    
 	render(){
 		return (
 			<div className="permagators">

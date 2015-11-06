@@ -4,18 +4,18 @@ import { mapNumbers } from '../utils/mathUtils'
 import { levelColors } from '../utils/levels'
 
 class Permagator extends Component {
-	constructor(props){
+	constructor(props){   
 		super(props)
-		this.state = {}
+		this.state = {} 
 		this.handleOnClick = this.handleOnClick.bind(this)
-	} 
-	handleOnClick(){
+	}   
+	handleOnClick(){ 
 		this.props.onPermagatorClick(this.props.isActive, this.props.id, this.props.aggregatorId);
-	}
+	}    
 	render(){
 		let nominationLeftRotation,
 			nominationRightRotation,
-			residueLeftRotation,
+			residueLeftRotation, 
 			residueRightRotation,
 			progressLeftRotation,
 			progressRightRotation; 
@@ -27,7 +27,7 @@ class Permagator extends Component {
 			nominationRightRotation = 0
 			nominationLeftRotation = mapNumbers(this.props.nominationPercent, 50, 100, -180, 0);;
 		}
-
+ 
 		if (this.props.residuePercent >= 0 && this.props.residuePercent <= 50){
 			residueRightRotation = mapNumbers(this.props.residuePercent, 0, 50, -180, 0);
 			residueLeftRotation = -180;

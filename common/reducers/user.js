@@ -21,13 +21,17 @@ export default function user(state = initialState, action) {
 			filterLevel : action.filterLevel
 		});
 	case UPDATE_AGGREGATOR_SELECT_DESELECT:
-		if (!action.isSelected){
+		if (state.pressedAggregatorId === action.id || state.pressedObjectId === action.objectId){
 			return Object.assign({},state,{
-				pressedAggregatorId : ""
+				pressedAggregatorId : "",
+				pressedObjectType : "",
+				pressedObjectId : ""
 			});
 		}
 		return Object.assign({},state,{
-			pressedAggregatorId : state.pressedAggregatorId === action.id ? "" : action.id
+			pressedAggregatorId : action.id,
+			pressedObjectType : action.objectType, //this is a hack to get around the few times we don't have the aggregator id, even
+			pressedObjectId : action.objectId      //though it exists on the server
 		});
 
 	default:

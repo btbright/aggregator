@@ -5,6 +5,7 @@ const aggregatorsSelector = state => state.aggregators.get('present')
 const aggregatorsListSlotsSelector = state => state.aggregatorListSlots.get('present')
 const pressedAggregatorSelector = state => state.user.pressedAggregatorId
 const basePermagatorSelector = state => state.room.permagators
+const userSelector = state => state.user
  
 //this selector maps aggregators to slots so they don't shift around
 const mappedToSlotsSelector = createSelector(
@@ -34,18 +35,29 @@ const addPressedStateSelector = createSelector(
 		return aggregators.update(pressedIndex, aggregator => aggregator.set('isPressing', true))
 	});
 
+const detailedPressedSelector = createSelector(
+	userSelector,
+	user => {
+		return {
+			pressedAggregatorId : user.pressedAggregatorId,
+			pressedObjectId : user.pressedObjectId,
+			pressedObjectType : user.pressedObjectType
+		}
+	})
+
 const permagatorSelector = createSelector(
 	basePermagatorSelector,
 	aggregatorsSelector,
-	pressedAggregatorSelector,
-	(permagators, aggregators, pressedAggregatorId) => {
+	detailedPressedSelector,
+	(permagators, aggregators, pressedAggregatorData) => {
 		if (!permagators) return;
 		return permagators.map(permagator => {
 			const matched = aggregators.find(aggregator => aggregator.get('objectId') === permagator.id && aggregator.get('state') !== 'removed');
 			if (matched){
+				console.log(matched.get('objectId'), pressedAggregatorData)
 				return Object.assign({},permagator,{
 					aggregator : matched.toJS(),
-					isPressing : matched.get('id') === pressedAggregatorId
+					isPressing : matched.get('objectId') === pressedAggregatorData.pressedObjectId
 				})
 			}
 			return permagator;
