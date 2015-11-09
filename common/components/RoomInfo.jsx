@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 class RoomInfo extends Component {
 	render(){
-		var userName;
+		var userName; 
 		if (this.props.userName){
 			var score;
 			var ownScore = this.props.scores.find(s => s.get('userName') === this.props.userName);

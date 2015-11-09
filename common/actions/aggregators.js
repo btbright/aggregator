@@ -5,10 +5,9 @@ export function selectDeselectAggregator(id, objectId, objectType){
 	return function(dispatch, getState){
 		const pressingAggregatorId = getState().user.pressedAggregatorId;
 		const pressingObjectId = getState().user.pressedObjectId;
-		console.log('isSelecing',pressingAggregatorId !== id || pressingObjectId !== objectId, pressingAggregatorId, id, pressingObjectId, objectId)
 		dispatch({
 			type : types.UPDATE_AGGREGATOR_SELECT_DESELECT,
-			isSelected : pressingAggregatorId !== id || pressingObjectId !== objectId,
+			isSelected : pressingAggregatorId !== id || (pressingObjectId && objectId) && pressingObjectId !== objectId,
 			id,
 			objectId,
 			objectType
@@ -36,7 +35,6 @@ export function nominateAggregator(objectType, objectId, aggregatorId){
 			key : aggregator.id,
 			keyField : 'id'
 		})
-		selectDeselectAggregator(aggregatorId ? aggregatorId : aggregator.id, objectId, objectType)(dispatch, getState)
 	}
 }
 

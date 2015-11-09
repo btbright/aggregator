@@ -23,20 +23,18 @@ function Room(io, messenger){
 	}
 
 	//brittle. Should be tracking the user per room, not guessing room from username
-	messenger.on('user:points:update', (userName, pointsAddition) => {
-		var roomName = Object.keys(roomInfo).find(r => {
-			if (!roomInfo[r] || !roomInfo[r].users) return false;
-			return Object.keys(roomInfo[r].users).map(k => roomInfo[r].users[k].userName).includes(userName);
-		});
-		var room = roomInfo[roomName];
-		if (!roomName || !room) return;
-
-		let userObjectKey = Object.keys(room.users).find(k => room.users[k].userName === userName);
+	messenger.on('user:points:update', (roomId, socketId, userName, pointsAddition) => {
+		const room = roomInfo[roomId];
+		if (!room.users){
+			room.users = {};
+		}
+		let userObjectKey = socketId || Object.keys(room.users).find(k => room.users[k].userName === userName);
 		if (!userObjectKey) return;
 		let userObject = room.users[userObjectKey];
+		if (!userObject) return;
 		if (!userObject.points) userObject.points = 0;
 		userObject.points += pointsAddition;
-		io.to(roomName).emit('user:points:update',userName, userObject.points, pointsAddition);
+		io.to(roomId).emit('user:points:update',userName || room.users[userObjectKey].userName, userObject.points, pointsAddition);
 	});
 
 	function openCloseRoom(roomName){

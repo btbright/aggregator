@@ -4,6 +4,10 @@ import { scorer } from '../../common/utils/scorer'
 import { roomInfo } from './room'
 import { getLevel } from '../../common/utils/levels'
 
+const debug = {
+	events : false
+}
+
 function Aggregators(io, messenger){
 	//tracks the number of active clickers per room
 	var activeClickers = {}
@@ -110,8 +114,16 @@ function Aggregators(io, messenger){
 
 				if (hasStateChange && newState === 'completed'){
 					var aggPoints = getMaxValuePoints(maxValue)
-					messenger.emit('user:points:update', storedAggregator.objectUserName, aggPoints);
-					messenger.emit('user:points:update', storedAggregator.userName, aggPoints !== 15 ? Math.round(aggPoints/5) : -10);
+					//this is an aggregator based on a user created object
+					if (storedAggregator.objectUserName){
+						messenger.emit('user:points:update', roomId, undefined, storedAggregator.objectUserName, aggPoints);
+						messenger.emit('user:points:update', roomId, undefined, storedAggregator.userName, aggPoints !== 15 ? Math.round(aggPoints/5) : -10);
+					} else {
+						//split the points between the nominators
+						storedAggregator.nominators.forEach(nominator => {
+							messenger.emit('user:points:update', roomId, nominator, undefined, Math.floor(aggPoints/storedAggregator.nominators.length));
+						})
+					}
 				}
 
 				if (hasUpdate || hasStateChange){
@@ -243,6 +255,7 @@ function Aggregators(io, messenger){
 
 	io.on('connection', function (socket) {
 		socket.on('aggregator:nominate',function(requestedAggregator){
+			if (debug.events) console.log('aggregator:nominate')
 			//create an aggregator based on the request, we may use it, we may not
 			var aggregator = createAggregator(requestedAggregator);
 			//prep active aggregators to prevent null errors
@@ -297,6 +310,7 @@ function Aggregators(io, messenger){
 		}
 
 		socket.on('aggregator:pressing:change',function(aggregatorId, isPressing){
+			if (debug.events) console.log('aggregator:pressing:change')
 			if (!aggregatorState[socket.currentRoom] || !aggregatorState[socket.currentRoom][aggregatorId]) return;
 			if (!userPressingAggregator[socket.currentRoom]){ userPressingAggregator[socket.currentRoom] = {}; }
 
@@ -307,7 +321,26 @@ function Aggregators(io, messenger){
 				if (isPressing && userCurrentlyPressingId && userCurrentlyPressingId !== aggregatorId){
 					selectDeselectAggregator(socket.currentRoom, socket.id, false, userCurrentlyPressingId);
 				}
-				selectDeselectAggregator(socket.currentRoom, socket.id, isPressing, aggregatorId);
+				//if changing pressing state of the currently pressing agg, unpress it. shouldn't get here 
+				//cause client should handle it but just in case it's being naughty
+				if (userCurrentlyPressingId && userCurrentlyPressingId === aggregatorId){
+					selectDeselectAggregator(socket.currentRoom, socket.id, false, userCurrentlyPressingId);	
+				} else {
+					selectDeselectAggregator(socket.currentRoom, socket.id, isPressing, aggregatorId);
+				}
+			}
+		});
+
+		//when a client disconnects, remove their nominations and aggregating support
+		socket.on('disconnect', function () {
+			if (!userPressingAggregator[socket.currentRoom]) return;
+			if (!userPressingAggregator[socket.currentRoom][socket.id]) return;
+			const currentPressingAggregator = aggregatorState[socket.currentRoom][userPressingAggregator[socket.currentRoom][socket.id]];
+			if (!currentPressingAggregator) return;
+			if (currentPressingAggregator.state === 'nominating'){
+				unnominateAggregator(socket.currentRoom, socket.id, currentPressingAggregator.id);
+			} else if (currentPressingAggregator.state === 'initializing' || currentPressingAggregator.state === 'aggregating'){
+				selectDeselectAggregator(socket.currentRoom, socket.id, false, currentPressingAggregator.id);
 			}
 		});
 	});

@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 
 import configureStore from '../common/store/configureStore';
 import App from '../common/containers/app';
-import TwitchApp from '../common/containers/app';
+import TwitchApp from '../common/containers/twitchApp';
 import constants from '../common/constants/App'
 import ChatAPI from './API/chat'
 import RoomAPI from './API/room'

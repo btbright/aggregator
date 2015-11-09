@@ -1,4 +1,4 @@
-import { UPDATE_AGGREGATORS, UPDATE_USER_NAME, REMOVE_USER_NAME, UPDATE_FILTER_LEVEL, UPDATE_AGGREGATOR_SELECT_DESELECT } from '../constants/ActionTypes';
+import { NOMINATE_AGGREGATORS, UPDATE_AGGREGATORS, UPDATE_USER_NAME, REMOVE_USER_NAME, UPDATE_FILTER_LEVEL, UPDATE_AGGREGATOR_SELECT_DESELECT } from '../constants/ActionTypes';
 
 const initialState = {
 	userName : "",
@@ -29,6 +29,19 @@ export default function user(state = initialState, action) {
 			});
 		}
 		return state;
+	case NOMINATE_AGGREGATORS:
+		if (state.pressedAggregatorId === action.id || state.pressedObjectId === action.entity.objectId){
+			return Object.assign({},state,{
+				pressedAggregatorId : "",
+				pressedObjectType : "",
+				pressedObjectId : ""
+			});
+		}
+		return Object.assign({},state,{
+			pressedAggregatorId : action.key,
+			pressedObjectType : action.entity.objectType, //this is a hack to get around the few times we don't have the aggregator id, even
+			pressedObjectId : action.entity.objectId      //though it exists on the server
+		});
 	case UPDATE_AGGREGATOR_SELECT_DESELECT:
 		if (state.pressedAggregatorId === action.id || state.pressedObjectId === action.objectId){
 			return Object.assign({},state,{

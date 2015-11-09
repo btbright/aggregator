@@ -19,6 +19,6 @@ export function scorer(activePresserCount, frameRate, initialX = 0, initialVeloc
 function calculateAdditionalVelocity(x, activePresserCount, frameRate, activeUsers){
 	//normalize each user's vote to 1/activeUsers so if half vote, we end up half-way, plus a little
 	var thrustDV = (activePresserCount / activeUsers) * arbitraryBoost;
-	//                G
+	//       'up'     G      dt
 	return thrustDV - x * frameRate;
 };
