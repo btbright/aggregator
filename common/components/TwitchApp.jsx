@@ -34,20 +34,20 @@ class TwitchApp extends Component {
 		})	
 	}
 	render(){
-		const classes = classnames('app-wrap','clearfix',{
-			'app-twitch-embeded' : this.props.shouldTwitch
-		});
+		const classes = classnames('app-wrap','clearfix','app-twitch-embeded');
 		return (
 			<div className="outer-wrap">
 				<div className={classes}>
 					<div className="header">
-						<span className="instructions-link" onClick={this.handleInstructionsLinkClick}>What is all this? I need an adult</span>
 						<Twitch /> 
 						<Leaderboard shouldShowPosition={true} />
 					</div>
 					<UpperNotificationBar />
 					<div className="primary-content-wrap clearfix">
-						<PermagatorList />
+						<div className="aggregators-wrap">
+							<PermagatorList />
+							<AggregatorList />
+						</div>
 						<Chat />
 					</div>
 					<InstructionsModal isOpen={this.state.areInstructionsShown} onModalCloseClick={this.handleModalCloseClick} />

@@ -7,13 +7,22 @@ class TwitchEmbed extends Component {
 		super()
 		this.state = {
 			height: 0,
-			width : 0
+			width : 0, 
+			shouldShowVideo : true
 		}
 		this.handleResize = this.handleResize.bind(this)
 		this.setVideoSizeState = this.setVideoSizeState.bind(this)
+		this.handleShowHideVideoClick = this.handleShowHideVideoClick.bind(this)
 	}
 	shouldComponentUpdate(nextProps, nextState){
-		return nextState.height !== this.state.height || nextState.width !== this.state.width;
+		return nextState.height !== this.state.height || 
+			   nextState.width !== this.state.width ||
+			   nextState.shouldShowVideo !== this.state.shouldShowVideo;
+	}
+	handleShowHideVideoClick(e){
+		this.setState({
+			shouldShowVideo : !this.state.shouldShowVideo
+		});
 	}
 	handleResize(e) {
 		this.setVideoSizeState()
@@ -45,7 +54,7 @@ class TwitchEmbed extends Component {
 
 		window.onTwitchPlayerEvent = data => {
           data.forEach(event => {
-		        if (event.event == "viewerCount") {
+		        if (event.event == "viewerCount") { 
 		          if (this.props.onViewerCountUpdated){
 		          	this.props.onViewerCountUpdated(event.data.count);
 		          }
@@ -66,9 +75,15 @@ class TwitchEmbed extends Component {
 		window.removeEventListener('resize', this.handleResize);
 	}
 	render(){
+		const classNames = classnames('twitch-embed-wrap', {
+			'twitch-embed-showing-video' : this.state.shouldShowVideo
+		});
 		return (
-			<div className="twitch-embed" style={{width:this.state.width, height:this.state.height}}>
-				<div id='twitch_embed_player'></div>
+			<div className={classNames}>
+				<span className="showHideVideo" onClick={this.handleShowHideVideoClick}>{this.state.shouldShowVideo ? 'Hide stream video' : 'Show stream video'}</span>
+				<div className="twitch-embed" style={{width:this.state.width, height:this.state.height}}>
+					<div id='twitch_embed_player'></div>
+				</div>
 			</div>
 			)
 	} 

@@ -56,10 +56,6 @@ var roomTypes = {
         text : 'rekt'
       },
       {
-        id : 'rip',
-        text : 'rip'
-      },
-      {
         id : 'splitkill',
         text : 'sp!itki!!'
       }

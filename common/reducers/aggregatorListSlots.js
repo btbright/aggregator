@@ -5,6 +5,7 @@ import { Map, List, fromJS, is } from 'immutable'
 export default function aggregatorListSlots(state = List(), action){
 	switch (action.type) {
 	case ADD_AGGREGATORS:
+		if (action.entity.objectType !== 'message') return state;
 		//if the id already exists in list, make sure it's active, but keep the same place
 		var index = state.findIndex(slot => slot.get('id') === action.entity.id);
 		if (index !== -1){

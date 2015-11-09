@@ -882,8 +882,18 @@ body {
             }
         }
     }
+    .showHideVideo {
+        cursor: pointer;
+        float:right;
+        font-size:12px;
+    }
+
     .twitch-embed {
         clear:both;
+        display:none;
+    }
+    .twitch-embed-showing-video .twitch-embed {
+        display: block;
     }
     .twitch-meta {
         display:inline;
@@ -906,7 +916,15 @@ body {
     .chat-message-list {
         max-height:inherit;
     }
-    .aggregator-list {
+    .aggregator-list,
+    .permagators {
+        width:auto;
+        float:none;
+    }
+    .permagator:nth-child(3){
+        margin-right:0;
+    }
+    .aggregators-wrap {
         flex:1;
         order:2;
         padding-bottom: 0;
@@ -1118,22 +1136,6 @@ body {
     clear: both;
 }
 
-/* ==========================================================================
-   EXAMPLE Media Queries for Responsive Design.
-   These examples override the primary ('mobile first') styles.
-   Modify as content requires.
-   ========================================================================== */
-
-@media only screen and (min-width: 35em) {
-    /* Style adjustments for viewports that meet the condition */
-}
-
-@media print,
-       (-webkit-min-device-pixel-ratio: 1.25),
-       (min-resolution: 1.25dppx),
-       (min-resolution: 120dpi) {
-    /* Style adjustments for high resolution devices */
-}
 
 /* ==========================================================================
    Print styles.
