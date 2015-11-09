@@ -100,10 +100,10 @@ $levelGreen: #33C333;
 $levelGold: #FFB600;
 $levelDefault: #BBBBBB;
 
-$levelBackgroundBlue: rgba(63,206,243,.1);
-$levelBackgroundGreen: rgba(51,195,51,.1);
-$levelBackgroundGold: rgba(255,182,0,.1);
-$levelBackgroundDefault: rgba(0,0,0,.05);
+$levelBackgroundBlue: #e1eff3;
+$levelBackgroundGreen: #e0eee0;
+$levelBackgroundGold: #f4eddb;
+$levelBackgroundDefault: #e8e8e8;
 
 html, body, #react-root, .outer-wrap
 {
@@ -930,6 +930,14 @@ body {
   position: relative;
   float: left;
   margin: 0px 10px 40px 0px;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0,0,0,.035);
+    .progress-holder::after {
+        background: #F3F3F3;
+    }
+  }
 
   .text {
       position: absolute;
