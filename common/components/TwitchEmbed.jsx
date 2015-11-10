@@ -8,7 +8,7 @@ class TwitchEmbed extends Component {
 		this.state = {
 			height: 0,
 			width : 0, 
-			shouldShowVideo : true
+			shouldShowVideo : false
 		}
 		this.handleResize = this.handleResize.bind(this)
 		this.setVideoSizeState = this.setVideoSizeState.bind(this)

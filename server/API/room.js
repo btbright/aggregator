@@ -100,12 +100,12 @@ function Room(io, messenger){
 			if (!roomInfo[socket.currentRoom].activeClickers){
 				roomInfo[socket.currentRoom].activeClickers = {}
 			}
-			var update = false;
+			var isNewClicker = false;
 			if (!roomInfo[socket.currentRoom].activeClickers[socket.id]){
-				update = true;
+				isNewClicker = true;
 			}
 			roomInfo[socket.currentRoom].activeClickers[socket.id] = Date.now();
-			if (update){
+			if (isNewClicker){
 				var activeClickerCount = Object.keys(roomInfo[socket.currentRoom].activeClickers).length
 				messenger.emit('room:activeClickers:update', socket.currentRoom, activeClickerCount)
 				io.to(socket.currentRoom).emit('room:activeClickers:update',activeClickerCount)

@@ -232,8 +232,9 @@ function Aggregators(io, messenger){
 	function unnominateAggregator(roomId, socketId, aggregatorId){
 		const aggregator = aggregatorState[roomId][aggregatorId];
 		aggregatorState[roomId][aggregatorId] = Object.assign({}, aggregator,{
-			nominationsCount : aggregator.nominationsCount-1,
-			nominators : aggregator.nominators.filter(n => n !== socketId),
+			//keep same nominators if aggregating. i.e. once it's been nominated, your nomination is locked in. still dec active presser
+			nominationsCount : aggregator.state === 'nominating' ? aggregator.nominationsCount-1 : aggregator.nominationsCount,
+			nominators : aggregator.state === 'nominating' ? aggregator.nominators.filter(n => n !== socketId) : aggregator.nominators,
 			activePresserCount : aggregator.activePresserCount-1
 		});
 		if (userPressingAggregator[roomId][socketId] === aggregatorId){
@@ -273,7 +274,7 @@ function Aggregators(io, messenger){
 			//requested aggregator to nominate
 			const requestedAggregatorId = (activeAggregatorId ? activeAggregatorId : aggregator.id);
 			//if the user was actively pressing another aggregator, deactivate it. only one at a time allowed
-			if (userCurrentlyPressingId && userCurrentlyPressingId !== requestedAggregatorId){
+			if (userCurrentlyPressingId && activeAggregators[socket.currentRoom].indexOf(userCurrentlyPressingId) !== -1 && userCurrentlyPressingId !== requestedAggregatorId){
 				unnominateAggregator(socket.currentRoom, socket.id, userCurrentlyPressingId)
 			}
 

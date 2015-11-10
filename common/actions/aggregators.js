@@ -1,5 +1,5 @@
 import * as types from '../constants/ActionTypes'
-import { createAggregator, decodeUpdate, statesLookup } from '../models/aggregator'
+import { createAggregator, decodeUpdate, statesLookup, typesLookup } from '../models/aggregator'
 
 export function selectDeselectAggregator(id, objectId, objectType){
 	return function(dispatch, getState){
@@ -66,6 +66,8 @@ export function handlePackedUpdates(time, rawUpdates){
 					isRemoteTriggered : true,
 					time,
 					key : update.id,
+					objectId : update.objectId,
+					objectType : typesLookup[update.type],
 					keyField : 'id',
 					mutations : buildMutations(update.mutations)
 				}

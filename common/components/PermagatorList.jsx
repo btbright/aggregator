@@ -11,14 +11,14 @@ class PermagatorList extends Component {
 		super(props) 
 		this.actions = bindActionCreators(AggregatorActions, this.props.dispatch);
 		this.handleOnPermagatorClick = this.handleOnPermagatorClick.bind(this);
-	}
-	handleOnPermagatorClick(isActive, permagatorId, aggregatorId){
-		if (!isActive){
+	} 
+	handleOnPermagatorClick(isNominating, permagatorId, aggregatorId){
+		if (isNominating){
 			this.actions.nominateAggregator("permagator", permagatorId, aggregatorId);
 		} else {
 			this.actions.selectDeselectAggregator(aggregatorId, permagatorId, 'permagator');
 		}
-	}    
+	}
 	render(){
 		return (
 			<div className="permagators">
@@ -28,7 +28,7 @@ class PermagatorList extends Component {
 						id={permagator.id}
 						key={permagator.id} 
 						text={permagator.text}
-						isActive={permagator.aggregator && permagator.aggregator.state !== 'nominating'}
+						isNominating={!permagator.aggregator || permagator.aggregator.state === 'nominating'}
 						isPressing={permagator.isPressing || false}
 						aggregatorId={permagator.aggregator ? permagator.aggregator.id : undefined}
 						level={permagator.aggregator ? permagator.aggregator.level : undefined}

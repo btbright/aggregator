@@ -21,7 +21,7 @@ export default function user(state = initialState, action) {
 			filterLevel : action.filterLevel
 		});
 	case UPDATE_AGGREGATORS:
-		if (action.mutations && action.key === state.pressedAggregatorId && action.mutations.find(mutation => mutation.value === 'removed')){
+		if (action.mutations && (action.key === state.pressedAggregatorId || state.pressedObjectId === action.objectId) && action.mutations.find(mutation => mutation.value === 'removed')){
 			return Object.assign({},state,{
 				pressedAggregatorId : "",
 				pressedObjectType : "",

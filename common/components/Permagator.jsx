@@ -10,7 +10,7 @@ class Permagator extends Component {
 		this.handleOnClick = this.handleOnClick.bind(this)  
 	}     
 	handleOnClick(){ 
-		this.props.onPermagatorClick(this.props.isActive, this.props.id, this.props.aggregatorId);
+		this.props.onPermagatorClick(this.props.isNominating, this.props.id, this.props.aggregatorId);
 	}    
 	render(){
 		let nominationLeftRotation,
