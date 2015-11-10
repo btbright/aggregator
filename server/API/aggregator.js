@@ -60,11 +60,12 @@ function Aggregators(io, messenger){
 				    scoreResults,
 				    initializedTime = storedAggregator.initializedTime;
 
-				//first pass through update function
+				//first pass through update function, send client info
 				if (storedAggregator.lastServerUpdate === 0){
 					hasUpdate = true;
 				}
 
+				//if nominating and passed threshold nominators for its type
 				if (newState === 'nominating' && storedAggregator.nominationsCount >= constants.Aggregator.types[storedAggregator.objectType].NOMINATIONTHRESHOLD){
 					hasUpdate = true;
 					hasStateChange = true;
@@ -72,6 +73,7 @@ function Aggregators(io, messenger){
 					initializedTime = time;
 				}
 
+				//if it's time to start the aggregation
 				if (newState === 'initializing' && time - initializedTime > constants.Aggregator.types[storedAggregator.objectType].INITIALIZATIONTIME){
 					newState = 'aggregating';
 					hasStateChange = true;
@@ -81,6 +83,7 @@ function Aggregators(io, messenger){
 					}
 				}
 
+				//score it when aggregating
 				if (newState === 'aggregating'){
 					hasUpdate = true;
 					scoreResults = scorer(storedAggregator.activePresserCount, calculatedFrameRate, storedAggregator.x, storedAggregator.velocity, activeClickers[roomId]);
@@ -91,11 +94,13 @@ function Aggregators(io, messenger){
 					}
 				}
 
-				if (newState === 'completed'  && !hasStateChange &&  time - storedAggregator.lastStateChangeTime > completedTime){
+				//if it has been completed long enough, retire it
+				if (newState === 'completed'  && !hasStateChange && time - storedAggregator.lastStateChangeTime > completedTime){
 					newState = 'retired';
 				    hasStateChange = true;
 				}
 
+				//if it has been retired long enough, remove it
 				if (newState === 'retired'  && !hasStateChange && time - storedAggregator.lastStateChangeTime > retirementTime){
 					newState = 'removed';
 				    hasStateChange = true;
@@ -106,12 +111,14 @@ function Aggregators(io, messenger){
 					velocity = storedAggregator.velocity,
 					maxValue = storedAggregator.maxValue;
 
+				//massage score results
 				if (scoreResults){
 					x = Math.round(scoreResults.x * 100) / 100;
 					velocity = scoreResults.velocity;
 					maxValue = Math.round((storedAggregator.maxValue >= scoreResults.x ? storedAggregator.maxValue : scoreResults.x) * 100) / 100;
 				}
 
+				//if it has just finished, send out score information
 				if (hasStateChange && newState === 'completed'){
 					var aggPoints = getMaxValuePoints(maxValue)
 					//this is an aggregator based on a user created object
@@ -126,6 +133,8 @@ function Aggregators(io, messenger){
 					}
 				}
 
+				//update the object with the new state, if needed. don't touch unchanged so the ref doesn't change and
+				//get picked up by the broadcasting function
 				if (hasUpdate || hasStateChange){
 					var updateObject = {
 						state : newState,
@@ -144,6 +153,7 @@ function Aggregators(io, messenger){
 		});
 	}
 
+	//root scoring numbers
 	function getMaxValuePoints(maxValue){
 		switch (getLevel(maxValue)){
 		case 0:
@@ -174,6 +184,8 @@ function Aggregators(io, messenger){
 					aggregatorUpdateSnapshots[roomId] = {}
 				}
 				var lastSnapshot = aggregatorUpdateSnapshots[roomId][aggregatorId];
+				//if the reference has changed, we know the clients don't have the latest version, so
+				//we setup the update
 				if (storedAggregator !== lastSnapshot){
 					if (!lastSnapshot){
 						addObjects.push({
@@ -193,8 +205,8 @@ function Aggregators(io, messenger){
 
 			if (updateObjects.length !== 0)
 			{
+				//the most frequent update object, so we compact it
 				let updateObject = encodeUpdate(updateObjects);
-
 				setTimeout(()=>{
 					io.to(roomId).emit('12',thisUpdate, updateObject);
 				},0)
