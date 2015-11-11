@@ -100,10 +100,10 @@ $levelGreen: #33C333;
 $levelGold: #FFB600;
 $levelDefault: #BBBBBB;
 
-$levelBackgroundBlue: #e1eff3;
-$levelBackgroundGreen: #e0eee0;
-$levelBackgroundGold: #f4eddb;
-$levelBackgroundDefault: #e8e8e8;
+$levelBackgroundBlue: rgba(63,206,243,.1);
+$levelBackgroundGreen: rgba(51,195,51,.1);
+$levelBackgroundGold: rgba(255,182,0,.1);
+$levelBackgroundDefault: rgba(0,0,0,.05);
 
 html, body, #react-root, .outer-wrap
 {
@@ -787,13 +787,14 @@ body {
     cursor: pointer;
     position:absolute;
     bottom:10px;
-    left:0px;
+    left:12px;
 }
 
 .app-twitch-embeded .instructions-link {
     position:static;
     float: right;
     margin: 39px 0px 10px;
+    padding: 0 12px;
 }
 
 @media only screen and (max-height: 800px) {
@@ -882,12 +883,17 @@ body {
             }
         }
     }
-    .showHideVideo {
-        cursor: pointer;
-        float:right;
-        font-size:12px;
+    .twitch-embed-wrap {
+        position:relative;
+        .showHideVideo {
+            cursor: pointer;
+            float:right;
+            font-size:12px;
+            position: absolute;
+            right: 0;
+            top: 40px;
+        }
     }
-
     .twitch-embed {
         clear:both;
         display:none;

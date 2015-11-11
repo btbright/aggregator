@@ -1,6 +1,5 @@
 import { UPDATE_AGGREGATORS, ADD_AGGREGATORS, REMOVE_AGGREGATORS } from '../constants/ActionTypes';
-import { newListWithReplacementAtIndex, newListWithReplacementObjectAtIndex } from '../utils/reducerTools'
-import { Map, List, fromJS, is } from 'immutable'
+import { Map, List } from 'immutable'
 
 export default function aggregatorListSlots(state = List(), action){
 	switch (action.type) {

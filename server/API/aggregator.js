@@ -332,7 +332,14 @@ function Aggregators(io, messenger){
 				const userCurrentlyPressingId = userPressingAggregator[socket.currentRoom][socket.id];
 				//if selecting a new aggregator and user is curently pressing another, deactivate it, only one at a time allowed
 				if (isPressing && userCurrentlyPressingId && userCurrentlyPressingId !== aggregatorId){
-					selectDeselectAggregator(socket.currentRoom, socket.id, false, userCurrentlyPressingId);
+					const currentPressedAggregator = aggregatorState[socket.currentRoom][userCurrentlyPressingId];
+					if (currentPressedAggregator){
+						if (currentPressedAggregator.state !== 'nominating'){
+							selectDeselectAggregator(socket.currentRoom, socket.id, false, userCurrentlyPressingId);
+						} else {
+							unnominateAggregator(socket.currentRoom, socket.id, userCurrentlyPressingId);
+						}
+					}
 				}
 				//if changing pressing state of the currently pressing agg, unpress it. shouldn't get here 
 				//cause client should handle it but just in case it's being naughty

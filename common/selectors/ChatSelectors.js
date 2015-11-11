@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect'
-import { levelColors, getLevel } from '../utils/levels'
 
 const chatMessagesSelector = (state) => state.chatMessages.get('present')
 const userSelectorSelector = (state) => state.user.userName

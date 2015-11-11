@@ -1,4 +1,4 @@
-import { List, toJS, fromJS, Map } from 'immutable'
+import { Map } from 'immutable'
 import { RUN_SIMULATIONS_AGGREGATORS, ROLL_BACK_SIMULATIONS_AGGREGATORS } from '../constants/ActionTypes'
 import { scorer } from '../utils/scorer'
 

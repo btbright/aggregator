@@ -16,7 +16,7 @@ export default {
 				INITIALIZATIONTIME : 2000
 			},
 			permagator : {
-				NOMINATIONTHRESHOLD : 3,
+				NOMINATIONTHRESHOLD : 2,
 				INITIALIZATIONTIME : 1000
 			}
 		}

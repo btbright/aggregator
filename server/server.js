@@ -57,7 +57,7 @@ var roomTypes = {
       },
       {
         id : 'splitkill',
-        text : 'sp!itki!!'
+        text : 'splitki!!'
       }
     ]
   }

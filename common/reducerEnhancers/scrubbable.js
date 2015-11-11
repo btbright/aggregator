@@ -1,8 +1,6 @@
 import { ADD_UPDATES, MOVE_TO_TIME } from '../constants/ActionTypes'
-import { Map, List, fromJS, is } from 'immutable'
-import { getFutureKeys, findPreviousHistoryKey, findNextHistoryKeyIndex, findNextHistoryKey, findPreviousHistoryKeyIndex } from '../utils/historyListHelpers'
-import diff from 'immutablediff'
-import patch from 'immutablepatch'
+import { Map, List } from 'immutable'
+import { getFutureKeys, findPreviousHistoryKey, findNextHistoryKeyIndex } from '../utils/historyListHelpers'
 
 export default function scrubbable(reducer, opts){
 

@@ -30,7 +30,7 @@ class Twitch extends Component {
 		}
 
 		return (
-			<div className="twitch">
+			<div className="twitch clearfix">
 				<span className="channel-name">{this.props.channel}</span>
 				<div className="meta-wrap">
 					<div className="game-meta">
