@@ -6,9 +6,9 @@ export function createChatMessage(props){
 		text : props.text,
 		userName : props.userName,
 		time : props.time || Date.now(),
-		hasAggregator : false,
+		hasAggregator : props.hasAggregator || false,
 		aggregationLevel : 0,
 		isAggregationComplete : false,
-		aggregatorId : ''
+		aggregatorId : props.aggregatorId || ''
 	}
 }

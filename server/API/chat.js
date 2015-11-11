@@ -1,9 +1,22 @@
 import { createChatMessage } from '../../common/models/chatMessage'
 import constants from '../../common/constants/App'
 
-function Chat(io){
+function Chat(io, messenger){
 	var chatState = {};
 	var lastUpdate = 0;
+
+	messenger.on('chatmessages:createpermagatormessage', function(roomId, permagator, storedAggregator){
+		var message = createChatMessage({
+			text : permagator.text,
+			userName : 'errbody',
+			hasAggregator : true,
+			aggregatorId : storedAggregator.id
+		});
+		if (!chatState[roomId]){
+			chatState[roomId] = {};
+		}
+		chatState[roomId][message.id] = message;
+	})
 
 	setInterval(sendUpdate, constants.Chat.SERVERUPDATEFREQUENCY)
 	function sendUpdate(){

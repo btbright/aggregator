@@ -3,6 +3,7 @@ import constants from '../../common/constants/App'
 import { scorer } from '../../common/utils/scorer'
 import { roomInfo } from './room'
 import { getLevel } from '../../common/utils/levels'
+import * as permagators from '../../common/constants/Permagators'
 
 const debug = {
 	events : false
@@ -71,6 +72,10 @@ function Aggregators(io, messenger){
 					hasStateChange = true;
 					newState = 'initializing';
 					initializedTime = time;
+					//if permagator, create a chat message for posterity
+					if (storedAggregator.objectType === 'permagator'){
+						messenger.emit('chatmessages:createpermagatormessage', roomId, permagators[storedAggregator.objectId], storedAggregator);
+					}
 				}
 
 				//if it's time to start the aggregation

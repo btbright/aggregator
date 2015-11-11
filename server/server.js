@@ -14,6 +14,8 @@ import ChatAPI from './API/chat'
 import RoomAPI from './API/room'
 import AggregatorAPI from './API/aggregator'
 
+import { lol, rekt, splitkill } from '../common/constants/Permagators'
+
 import { EventEmitter } from 'events'
 
 const app = new Express();
@@ -29,7 +31,7 @@ app.use('/t/:type/:streamer',handleTwitchRender);
 
 var messenger = new EventEmitter();
 
-ChatAPI(io)
+ChatAPI(io, messenger)
 RoomAPI(io, messenger)
 AggregatorAPI(io, messenger)
 
@@ -45,21 +47,7 @@ var roomTypes = {
   standard : {},
   twitch : {},
   agario : {
-    //permagators : ['lol', 'rekt', 'rip', 'sp!itki!!']
-    permagators : [
-      {
-        id : 'lol',
-        text : 'lol'
-      },
-      {
-        id : 'rekt',
-        text : 'rekt'
-      },
-      {
-        id : 'splitkill',
-        text : 'splitki!!'
-      }
-    ]
+    permagators : [ lol, rekt, splitkill ]
   }
 }
 
