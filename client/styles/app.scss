@@ -98,11 +98,13 @@ textarea {
 $levelBlue: #3FCEF3;
 $levelGreen: #33C333;
 $levelGold: #FFB600;
+$levelPurple: #9D80EC;
 $levelDefault: #BBBBBB;
 
 $levelBackgroundBlue: rgba(63,206,243,.1);
 $levelBackgroundGreen: rgba(51,195,51,.1);
 $levelBackgroundGold: rgba(255,182,0,.1);
+$levelBackgroundPurple: rgba(157,128,236,.1);
 $levelBackgroundDefault: rgba(0,0,0,.05);
 
 html, body, #react-root, .outer-wrap
@@ -247,6 +249,9 @@ body {
         &.comment-aggregation-level-blue {
             border-right:2px solid $levelBlue;
         }
+        &.comment-aggregation-level-purple {
+            border-right:2px solid $levelPurple;
+        }
         &.comment-aggregation-level-green {
             border-right:2px solid $levelGreen;
         }
@@ -265,6 +270,12 @@ body {
                 background-color:$levelBackgroundBlue;
                 &:hover {
                     background-color:$levelBackgroundBlue;
+                }
+            }
+            &.comment-aggregation-level-purple {
+                background-color:$levelBackgroundPurple;
+                &:hover {
+                    background-color:$levelBackgroundPurple;
                 }
             }
             &.comment-aggregation-level-green {
@@ -569,6 +580,13 @@ body {
         }
     }
 
+    &.aggregator-level-purple {
+        background: $levelBackgroundPurple;
+        &::before {
+            background: $levelPurple;
+        }
+    }
+
     &.aggregator-level-default {
         background: $levelBackgroundDefault;
         &::before {
@@ -677,6 +695,10 @@ body {
                     background: $levelDefault;
                     opacity: 0.2;
                 }
+                &.bar-residue-purple {
+                    background: $levelPurple;
+                    opacity: 0.2;
+                }
                 &.bar-residue-gold {
                     background: $levelGold;
                     opacity: 0.2;
@@ -747,6 +769,9 @@ body {
             }
             &.bar-gold .bar-inner {
                 background: $levelGold;
+            }
+            &.bar-purple .bar-inner {
+                background: $levelPurple;
             }
             &.bar-default .bar-inner {
                 background: $levelDefault;
@@ -955,6 +980,9 @@ body {
   float: left;
   margin: 0px 10px 40px 0px;
   cursor: pointer;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 
   &:hover {
     background: rgba(0,0,0,.035);
@@ -1038,6 +1066,15 @@ body {
         }
         .residue-ring .wedge {
           background: $levelBackgroundBlue;
+        }
+    }
+
+    &.permagator-level-purple {
+        .progress-ring .wedge {
+          background: $levelPurple;
+        }
+        .residue-ring .wedge {
+          background: $levelBackgroundPurple;
         }
     }
 

@@ -2,7 +2,7 @@ import { createAggregator, updateMutations, encodeUpdate, states, types } from '
 import constants from '../../common/constants/App'
 import { scorer } from '../../common/utils/scorer'
 import { roomInfo } from './room'
-import { getLevel } from '../../common/utils/levels'
+import { getLevel, getMaxValuePoints } from '../../common/utils/levels'
 import * as permagators from '../../common/constants/Permagators'
 
 const debug = {
@@ -156,22 +156,6 @@ function Aggregators(io, messenger){
 				}
 			});
 		});
-	}
-
-	//root scoring numbers
-	function getMaxValuePoints(maxValue){
-		switch (getLevel(maxValue)){
-		case 0:
-			return 15;
-		case 1:
-			return 40;
-		case 2:
-			return 70;
-		case 3:
-			return 100;
-		default:
-			return 0;
-		}
 	}
 
 	var aggregatorUpdateSnapshots = {};
