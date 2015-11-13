@@ -44,7 +44,7 @@ class Permagator extends Component {
 			progressLeftRotation = mapNumbers(this.props.progressPercent, 50, 100, -180, 0);;
 		}
 
-		const classes = classnames('permagator', 'clearfix', `permagator-${this.props.id}`, this.props.level ? `permagator-level-${levelColors[this.props.level]}` : '', {
+		const classes = classnames('permagator', 'clearfix', `permagator-${this.props.id}`, this.props.state ? `permagator-state-${this.props.state}` : false ,this.props.level ? `permagator-level-${levelColors[this.props.level]}` : '', {
 			'permagator-pressing' : this.props.isPressing
 		});
 		return (

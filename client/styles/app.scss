@@ -107,6 +107,12 @@ $levelBackgroundGold: rgba(255,182,0,.1);
 $levelBackgroundPurple: rgba(157,128,236,.1);
 $levelBackgroundDefault: rgba(0,0,0,.05);
 
+$levelSolidBackgroundBlue: #e1eff3;
+$levelSolidBackgroundGreen: #e0eee0;
+$levelSolidBackgroundGold: #f4eddb;
+$levelSolidBackgroundPurple: #eae8f2;
+$levelSolidBackgroundDefault: #e8e8e8;
+
 html, body, #react-root, .outer-wrap
 {
     height: 100%;
@@ -1017,6 +1023,34 @@ body {
           left: 50%;
           margin-top: -68px;
           margin-left: -68px;
+        }
+    }
+
+    &.permagator-state-completed,
+    &.permagator-state-retired {
+        .progress-holder::after {
+            width: 146px;
+            height: 146px;
+            margin-top: -73px;
+            margin-left: -73px;
+        }
+        &.permagator-level-default .progress-holder::after {
+            background-color: $levelSolidBackgroundDefault;
+        }
+        &.permagator-level-green .progress-holder::after {
+            background-color: $levelSolidBackgroundGreen;
+        }
+        &.permagator-level-blue .progress-holder::after {
+            background-color: $levelSolidBackgroundBlue;
+        }
+        &.permagator-level-purple .progress-holder::after {
+            background-color: $levelSolidBackgroundPurple;
+        }
+        &.permagator-level-gold .progress-holder::after {
+            background-color: $levelSolidBackgroundGold;
+        }
+        .wedge-holder .wedge {
+            transform: rotateZ(0deg) !important;
         }
     }
 

@@ -30,6 +30,7 @@ class PermagatorList extends Component {
 						text={permagator.text}
 						isNominating={!permagator.aggregator || permagator.aggregator.state === 'nominating'}
 						isPressing={permagator.isPressing || false}
+						state={permagator.aggregator ? permagator.aggregator.state : undefined}
 						aggregatorId={permagator.aggregator ? permagator.aggregator.id : undefined}
 						level={permagator.aggregator ? permagator.aggregator.level : undefined}
 						nominationPercent={permagator.aggregator ? (permagator.aggregator.nominationsCount / constants.Aggregator.types.permagator.NOMINATIONTHRESHOLD) * 100 : 0} 
