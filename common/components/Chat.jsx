@@ -33,7 +33,7 @@ class Chat extends Component {
 		} else if (!hasAggregator) {
 			this.aggregatorActions.nominateAggregator("message",messageId);
 		}
-	}      
+	}
 	handleMessageFormSubmit(text){
 		if (!text) return;
   
