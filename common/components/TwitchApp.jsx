@@ -5,10 +5,7 @@ import Chat from './Chat.jsx'
 import UpperNotificationBar from './UpperNotificationBar.jsx'
 import Leaderboard from './Leaderboard.jsx'
 import Twitch from './Twitch.jsx'
-import DebugScrubber from './DebugScrubber.jsx'
-import StandaloneMeta from './StandaloneMeta.jsx'
 import InstructionsModal from './InstructionsModal.jsx'
-import Permagator from './Permagator.jsx'
 import { connect } from 'react-redux'
 import { requestUpdateRoom } from '../actions/room'
 import classnames from 'classnames'
@@ -61,8 +58,7 @@ class TwitchApp extends Component {
 
 function mapStateToProps(state){
 	return {
-		roomName : state.room.name,
-		permagators : state.room.permagators
+		roomName : state.room.name
 	}
 }
 

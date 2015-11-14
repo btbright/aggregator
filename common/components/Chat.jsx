@@ -33,10 +33,10 @@ class Chat extends Component {
 		} else if (!hasAggregator) {
 			this.aggregatorActions.nominateAggregator("message",messageId);
 		}
-	}
+	}      
 	handleMessageFormSubmit(text){
 		if (!text) return;
-
+  
 		if (this.props.userName){
 			//find the most recent message with the same text
 			var message = this.props.chatMessages.reverse().find(m => m.get('text').toLowerCase() === text.toLowerCase());
@@ -51,11 +51,13 @@ class Chat extends Component {
 					if (!message.get('hasAggregator') && this.props.userName !== message.get('userName')){
 						this.aggregatorActions.nominateAggregator("message",message.get('id'));
 						this.notificationActions.addNotification(`Your message has been combined with ${message.get('userName')}'s: ${message.get('text')}`,"informative");
+					} else {
+						//if the message exists but it's already aggregating
+						this.aggregatorActions.selectDeselectAggregator(message.get('aggregatorId'))
 					}
-					//if the message exists but it's already aggregating?
 					return;
 				}
-			}
+			} 
 
 			this.chatActions.addChatMessage(createChatMessage({text, userName : this.props.userName}))
 		} else {

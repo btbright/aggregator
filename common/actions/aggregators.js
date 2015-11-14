@@ -5,6 +5,14 @@ export function selectDeselectAggregator(id, objectId, objectType){
 	return function(dispatch, getState){
 		const pressingAggregatorId = getState().user.pressedAggregatorId;
 		const pressingObjectId = getState().user.pressedObjectId;
+		if (id && !objectId){
+			const aggregator = getState().aggregators.get('present').find(a => a.get('id') === id);
+			console.log(aggregator)
+			if (aggregator){
+				objectId = aggregator.get('objectId');
+				objectType = aggregator.get('objectType');
+			}
+		}
 		dispatch({
 			type : types.UPDATE_AGGREGATOR_SELECT_DESELECT,
 			isSelected : pressingAggregatorId !== id || (pressingObjectId && objectId) && pressingObjectId !== objectId,
