@@ -984,7 +984,7 @@ body {
   text-align: center;
   position: relative;
   float: left;
-  margin: 0px 10px 40px 0px;
+  margin: 0px 10px 30px 0px;
   cursor: pointer;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -1028,6 +1028,7 @@ body {
 
     &.permagator-state-completed,
     &.permagator-state-retired {
+        cursor:default;
         .progress-holder::after {
             width: 146px;
             height: 146px;
@@ -1064,8 +1065,8 @@ body {
     }
 
     .wedge {
-      height: 150px;
-      width: 75px;
+      height: 100%;
+      width: 100%;
       transition: background .2s;
     }
 
@@ -1134,6 +1135,40 @@ body {
     &.permagator-pressing {
         .pressing-dot {
             opacity: 1;
+        }
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .permagator {
+        height:100px;
+        width:100px;
+        line-height: 100px;
+
+        .progress-holder::after {
+            height:90px;
+            width:90px;
+            margin-top:-45px;
+            margin-left:-45px;
+        }
+
+        &.permagator-state-completed,
+        &.permagator-state-retired {
+            .progress-holder::after {
+                width: 96px;
+                height: 96px;
+                margin-top: -48px;
+                margin-left: -48px;
+            }
+        }
+
+        .wedge-holder-right .wedge {
+          border-radius: 0 100px 100px 0;
+        }
+
+        .wedge-holder-left .wedge {
+          border-radius: 100px 0 0 100px;
+          transform-origin: 50px 50px;
         }
     }
 }
