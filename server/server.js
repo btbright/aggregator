@@ -21,7 +21,7 @@ import { lol, rekt, splitkill } from '../common/constants/Permagators'
 import { EventEmitter } from 'events'
 
 const app = new Express();
-const port = 80;
+const port = 3000;
 
 var server = http.Server(app);
 
