@@ -1,6 +1,5 @@
 var gulp = require('gulp'),
     assign = require('lodash').assign,
-    uglify = require('gulp-uglify'),
     sass = require('gulp-sass'),
     prefix = require('gulp-autoprefixer'),
     minifyCSS = require('gulp-minify-css'),
@@ -47,8 +46,12 @@ gulp.task('scripts', function(done){
                         optional: ["runtime"]
                     })
                 )
+                .transform(envify({
+                  NODE_ENV: 'production'
+                }))
                 .transform('reactify')
                 .transform('debowerify')
+                .transform('uglifyify')
                 .bundle()
                 .on('error', gutil.log.bind(gutil, 'Browserify Error'))
                 .pipe(source(path.basename(entry)))

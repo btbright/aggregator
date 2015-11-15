@@ -4,9 +4,8 @@ import { scorer } from '../../common/utils/scorer'
 import { roomInfo } from './room'
 import { getLevel, getMaxValuePoints } from '../../common/utils/levels'
 import * as permagators from '../../common/constants/Permagators'
-import logger from '../utils/logger'
 
-function Aggregators(io, messenger){
+function Aggregators(io, messenger, logger){
 	//tracks the number of active clickers per room
 	var activeClickers = {}
 

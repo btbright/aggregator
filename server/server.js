@@ -15,6 +15,7 @@ import RoomAPI from './API/room'
 import AggregatorAPI from './API/aggregator'
 import logger from './utils/logger'
 
+
 import { lol, rekt, splitkill } from '../common/constants/Permagators'
 
 import { EventEmitter } from 'events'
@@ -26,15 +27,22 @@ var server = http.Server(app);
 
 var io = socketio(server);
 
+io.on('connection', socket => {
+  socket.on('error', error => {
+    logger.error(error)
+    throw error
+  })
+})
+
 app.use(Express.static('public'));
 app.use('/r/:id',handleRender);
 app.use('/t/:type/:streamer',handleTwitchRender);
 
 var messenger = new EventEmitter();
 
-ChatAPI(io, messenger)
-RoomAPI(io, messenger)
-AggregatorAPI(io, messenger)
+ChatAPI(io, messenger, logger)
+RoomAPI(io, messenger, logger)
+AggregatorAPI(io, messenger, logger)
 
 server.listen(port, (error) => {
   if (error) {

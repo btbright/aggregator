@@ -47,13 +47,15 @@ class Chat extends Component {
 				}
 				var secondsSinceMessage = (Date.now() - message.get('time')) / 1000;
 				if (secondsSinceMessage <= constants.Chat.STALESECONDS){
-					//if a message already exists, but it's not aggregating
-					if (!message.get('hasAggregator') && this.props.userName !== message.get('userName')){
-						this.aggregatorActions.nominateAggregator("message",message.get('id'));
-						this.notificationActions.addNotification(`Your message has been combined with ${message.get('userName')}'s: ${message.get('text')}`,"informative");
-					} else {
-						//if the message exists but it's already aggregating
-						this.aggregatorActions.selectDeselectAggregator(message.get('aggregatorId'))
+					if (this.props.userName !== message.get('userName')){
+						//if a message already exists, but it's not aggregating
+						if (!message.get('hasAggregator')){
+							this.aggregatorActions.nominateAggregator("message",message.get('id'));
+							this.notificationActions.addNotification(`Your message has been combined with ${message.get('userName')}'s: ${message.get('text')}`,"informative");
+						} else {
+							//if the message exists but it's already aggregating
+							this.aggregatorActions.selectDeselectAggregator(message.get('aggregatorId'))
+						}
 					}
 					return;
 				}

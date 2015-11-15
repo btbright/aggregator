@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import constants from '../common/constants/App'
 import configureStore from '../common/store/configureStore';
 import App from '../common/containers/app';
-import ActivitySimulator from './simulation/ActivitySimulator';
 import setupApiUtils from '../common/apiutils';
 import { moveToTime, triggerTimeCorrection } from '../common/actions/time';
 import { Map } from 'immutable'
@@ -83,11 +82,6 @@ store.dispatch(triggerTimeCorrection());
 setInterval(()=>{
     store.dispatch(triggerTimeCorrection());
 },5000)
-
-if (false){
-	var simulator = new ActivitySimulator(store.getState, store.dispatch);
-	simulator.run();
-}
 
 const rootElement = document.getElementById(constants.React.ROOTELEMENTID);
 

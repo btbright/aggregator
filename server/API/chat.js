@@ -1,8 +1,7 @@
 import { createChatMessage } from '../../common/models/chatMessage'
 import constants from '../../common/constants/App'
-import logger from '../utils/logger'
 
-function Chat(io, messenger){
+function Chat(io, messenger, logger){
 	var chatState = {};
 	var lastUpdate = 0;
 

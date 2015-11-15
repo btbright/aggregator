@@ -1,7 +1,6 @@
 import constants from '../../common/constants/App'
-import logger from '../utils/logger'
 
-function Room(io, messenger){
+function Room(io, messenger, logger){
 
 	var roomInfo = {}
 	setInterval(updateActiveClickers,constants.Room.SERVERUPDATEFREQUENCY)
