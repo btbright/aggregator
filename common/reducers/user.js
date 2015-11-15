@@ -55,7 +55,6 @@ export default function user(state = initialState, action) {
 			pressedObjectType : action.objectType, //this is a hack to get around the few times we don't have the aggregator id, even
 			pressedObjectId : action.objectId      //though it exists on the server
 		});
-		console.log('newState',newState)
 		return newState;
 
 	default:

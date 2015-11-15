@@ -38,7 +38,14 @@ class Aggregator extends Component {
 		var residue;
 		if (color){
 			var classes = classnames('bar-residue', "bar-residue-"+color);
-			residue = <div className={classes} style={{transformOrigin:'left' ,transform:'scalex(' + maxScale + ')'}}></div>
+			residue = <div className={classes} style={{
+				WebkitTransformOrigin:'left',
+				msTransformOrigin:'left',
+				transformOrigin:'left',
+				WebkitTransform:'scalex(' + maxScale + ')',
+				msTransform:'scalex(' + maxScale + ')',
+				transform:'scalex(' + maxScale + ')'
+			}}></div>
 		}
 
 		if (this.props.aggregator.get('state') === 'initializing'){
@@ -62,7 +69,15 @@ class Aggregator extends Component {
 				<div className="bar">
 					<div className={barWrapClasses}>
 						{residue}
-						<div className="bar-inner" style={{width: '100%', transformOrigin:'left' ,transform:'scalex(' + scale + ')'}}></div>
+						<div className="bar-inner" style={{
+							width: '100%', 
+							WebkitTransformOrigin:'left',
+							msTransformOrigin:'left',
+							transformOrigin:'left',
+							WebkitTransform:'scalex(' + scale + ')',
+							msTransform:'scalex(' + scale + ')',
+							transform:'scalex(' + scale + ')'
+						}}></div>
 						{rightText}
 						{leftText}
 					</div> 

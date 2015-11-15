@@ -7,18 +7,20 @@ class Leaderboard extends Component {
 		return this.props.scores !== nextProps.scores;
 	}
 	render(){
+		const scoreRows = this.props.scores.map((score, index) => {
+			const classNames = classnames('userName', score.get('userName') === this.props.userName ? 'isUser' : '')
+			return (<tr key={score.get('userName')}>
+						{this.props.shouldShowPosition ? (<td className="position">{index+1}. </td>) : null}
+						<td className={classNames}>{score.get('userName')}</td>
+						<td className="points">{score.get('points')}</td>
+					</tr>)
+		}).toArray()
+
 		return (
 			<div className="leaderboard">
 					<table>
 						<tbody>
-							{this.props.scores.map((score, index) => {
-								const classNames = classnames('userName', score.get('userName') === this.props.userName ? 'isUser' : '')
-								return (<tr key={score.get('userName')}>
-											{this.props.shouldShowPosition ? (<td className="position">{index+1}. </td>) : null}
-											<td className={classNames}>{score.get('userName')}</td>
-											<td className="points">{score.get('points')}</td>
-										</tr>)
-							})}
+							{scoreRows}
 						</tbody>
 					</table>
 				</div>

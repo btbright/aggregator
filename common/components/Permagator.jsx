@@ -53,26 +53,50 @@ class Permagator extends Component {
 		          <div className="progress-holder">
 		            <div className="nomination-ring">
 		                <div className="wedge-holder wedge-holder-left">
-		                	<div className="wedge" style={{transform:`rotateZ(${nominationLeftRotation}deg)`}}></div>
+		                	<div className="wedge" style={{
+		                		WebkitTransform:`rotateZ(${nominationLeftRotation}deg)`,
+		                		msTransform:`rotateZ(${nominationLeftRotation}deg)`,
+		                		transform:`rotateZ(${nominationLeftRotation}deg)`
+		                	}}></div>
 		              	</div>
 		              <div className="wedge-holder wedge-holder-right">
-		                <div className="wedge" style={{transform:`rotateZ(${nominationRightRotation}deg)`}}></div>
+		                <div className="wedge" style={{
+		                	WebkitTransform:`rotateZ(${nominationRightRotation}deg)`,
+	                		msTransform:`rotateZ(${nominationRightRotation}deg)`,
+		                	transform:`rotateZ(${nominationRightRotation}deg)`
+		                }}></div>
 		              </div>
 		            </div>
 		            <div className="residue-ring">
 		                <div className="wedge-holder wedge-holder-left">
-		                <div className="wedge" style={{transform:`rotateZ(${residueLeftRotation}deg)`}}></div>
+		                <div className="wedge" style={{
+		                	WebkitTransform:`rotateZ(${residueLeftRotation}deg)`,
+	                		msTransform:`rotateZ(${residueLeftRotation}deg)`,
+		                	transform:`rotateZ(${residueLeftRotation}deg)`
+		                }}></div>
 		              </div>
 		              <div className="wedge-holder wedge-holder-right">
-		                <div className="wedge" style={{transform:`rotateZ(${residueRightRotation}deg)`}}></div>
+		                <div className="wedge" style={{
+		                	WebkitTransform:`rotateZ(${residueRightRotation}deg)`,
+	                		msTransform:`rotateZ(${residueRightRotation}deg)`,
+		                	transform:`rotateZ(${residueRightRotation}deg)`
+		                }}></div>
 		              </div>
 		            </div>
 		            <div className="progress-ring">
 		                <div className="wedge-holder wedge-holder-left">
-		                <div className="wedge" style={{transform:`rotateZ(${progressLeftRotation}deg)`}}></div>
+		                <div className="wedge" style={{
+		                	WebkitTransform:`rotateZ(${progressLeftRotation}deg)`,
+	                		msTransform:`rotateZ(${progressLeftRotation}deg)`,
+		                	transform:`rotateZ(${progressLeftRotation}deg)`
+		                }}></div>
 		              </div>
 		              <div className="wedge-holder wedge-holder-right">
-		                <div className="wedge" style={{transform:`rotateZ(${progressRightRotation}deg)`}}></div>
+		                <div className="wedge" style={{
+		                	WebkitTransform:`rotateZ(${progressRightRotation}deg)`,
+	                		msTransform:`rotateZ(${progressRightRotation}deg)`,
+		                	transform:`rotateZ(${progressRightRotation}deg)`
+		                }}></div>
 		              </div>
 		            </div>
 		          </div>

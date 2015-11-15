@@ -352,6 +352,8 @@ body {
                 text-align: center;
             }
             .count-label {
+                -ms-transform: rotate(-90deg);
+                -webkit-transform: rotate(-90deg);
                 transform: rotate(-90deg);
                 display: block;
                 float: right;
@@ -547,15 +549,51 @@ body {
         .bar-residue {
             background:$levelDefault !important;
             -webkit-animation: countdown 2s linear;
+            animation: countdown 2s linear;
+            -ms-transform-origin: left;
+            -webkit-transform-origin: left;
             transform-origin:left;
             opacity: 0;
         }
     }
 
     @-webkit-keyframes countdown {
-        0%{transform: scaleX(1);opacity:.2;width:100%;}
-        99%{transform: scaleX(0);opacity:.2;width:100%;}
-        100%{transform: scaleX(0);opacity:0;width:0%;}
+        0%{
+            -webkit-transform: scaleX(1);
+            opacity:.2;
+            width:100%;
+        }
+        99%{
+            -webkit-transform: scaleX(0);
+            opacity:.2;
+            width:100%;
+        }
+        100%{
+            -webkit-transform: scaleX(0);
+            opacity:0;
+            width:0%;
+        }
+    }
+
+    @keyframes countdown {
+        0%{
+            -ms-transform: scaleX(1);
+            transform: scaleX(1);
+            opacity:.2;
+            width:100%;
+        }
+        99%{
+            -ms-transform: scaleX(0);
+            transform: scaleX(0);
+            opacity:.2;
+            width:100%;
+        }
+        100%{
+            -ms-transform: scaleX(0);
+            transform: scaleX(0);
+            opacity:0;
+            width:0%;
+        }
     }
 
     @-webkit-keyframes pulse {
@@ -1050,6 +1088,8 @@ body {
             background-color: $levelSolidBackgroundGold;
         }
         .wedge-holder .wedge {
+            -ms-transform: rotateZ(0deg) !important;
+            -webkit-transform: rotateZ(0deg) !important;
             transform: rotateZ(0deg) !important;
         }
     }
@@ -1123,11 +1163,15 @@ body {
 
     .wedge-holder-right .wedge {
       border-radius: 0 150px 150px 0;
+      -ms-transform-origin: 0% 50%;
+      -webkit-transform-origin: 0% 50%;
       transform-origin: 0% 50%;
     }
 
     .wedge-holder-left .wedge {
       border-radius: 150px 0 0 150px;
+      -ms-transform-origin: 75px 75px;
+      -webkit-transform-origin: 75px 75px;
       transform-origin: 75px 75px;
     }
 
@@ -1167,6 +1211,8 @@ body {
 
         .wedge-holder-left .wedge {
           border-radius: 100px 0 0 100px;
+          -ms-transform-origin: 50px 50px;
+          -webkit-transform-origin: 50px 50px;
           transform-origin: 50px 50px;
         }
     }
