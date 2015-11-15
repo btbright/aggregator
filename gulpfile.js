@@ -51,16 +51,18 @@ gulp.task('scripts', function(done){
                 }))
                 .transform('reactify')
                 .transform('debowerify')
-                .transform('uglifyify')
+                .transform({
+                    global: true
+                }, 'uglifyify')
                 .bundle()
                 .on('error', gutil.log.bind(gutil, 'Browserify Error'))
                 .pipe(source(path.basename(entry)))
                 .pipe(buffer())
                 //.pipe(uglify())
                 // optional, remove if you dont want sourcemaps
-                .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+                //.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
                    // Add transformation tasks to the pipeline here.
-                .pipe(sourcemaps.write('./')) // writes .map file
+                //.pipe(sourcemaps.write('./')) // writes .map file
                 .pipe(gulp.dest(packageConfig.dest.scripts));
             });
         es.merge(tasks).on('end', done);
