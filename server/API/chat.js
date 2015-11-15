@@ -1,5 +1,6 @@
 import { createChatMessage } from '../../common/models/chatMessage'
 import constants from '../../common/constants/App'
+import logger from '../utils/logger'
 
 function Chat(io, messenger){
 	var chatState = {};
@@ -51,6 +52,8 @@ function Chat(io, messenger){
 
 	io.on('connection', function (socket) {
 		socket.on('chatMessage:new',function(requestedMessage){
+			logger.info('chatMessage:created', requestedMessage.id)
+
 			requestedMessage.time = Date.now();
 			var message = createChatMessage(requestedMessage);
 			//validate

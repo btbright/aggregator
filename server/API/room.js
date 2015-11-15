@@ -1,4 +1,5 @@
 import constants from '../../common/constants/App'
+import logger from '../utils/logger'
 
 function Room(io, messenger){
 
@@ -24,6 +25,7 @@ function Room(io, messenger){
 
 	//brittle. Should be tracking the user per room, not guessing room from username
 	messenger.on('user:points:update', (roomId, socketId, userName, pointsAddition) => {
+		logger.info('user:points:update', roomId, socketId, userName, pointsAddition)
 		const room = roomInfo[roomId];
 		if (!room.users){
 			room.users = {};
@@ -52,6 +54,7 @@ function Room(io, messenger){
 		});
 
 		socket.on("room:change",function(requestInfo){
+			logger.info('room:change', requestInfo)
 			//check if real room, etc.
 			//update counts
 			if (!roomInfo[requestInfo.newRoom]){
@@ -76,6 +79,7 @@ function Room(io, messenger){
 		});
 
 		socket.on("user:name:change",function(name){
+			logger.info("user:name:change", socket.id, name)
 			var room = roomInfo[socket.currentRoom];
 			if (!room) return; //oops
 			if (!room.users){

@@ -13,6 +13,7 @@ import constants from '../common/constants/App'
 import ChatAPI from './API/chat'
 import RoomAPI from './API/room'
 import AggregatorAPI from './API/aggregator'
+import logger from './utils/logger'
 
 import { lol, rekt, splitkill } from '../common/constants/Permagators'
 
@@ -39,7 +40,8 @@ server.listen(port, (error) => {
   if (error) {
     console.error(error);
   } else {
-    console.info(`==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`);
+    logger.info(`Listening on port ${port}`);
+    console.info(`Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`);
   }
 });
 

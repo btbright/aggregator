@@ -4,10 +4,7 @@ import { scorer } from '../../common/utils/scorer'
 import { roomInfo } from './room'
 import { getLevel, getMaxValuePoints } from '../../common/utils/levels'
 import * as permagators from '../../common/constants/Permagators'
-
-const debug = {
-	events : false
-}
+import logger from '../utils/logger'
 
 function Aggregators(io, messenger){
 	//tracks the number of active clickers per room
@@ -63,17 +60,20 @@ function Aggregators(io, messenger){
 
 				//first pass through update function, send client info
 				if (storedAggregator.lastServerUpdate === 0){
+					logger.info('aggregator:created', storedAggregator.id)
 					hasUpdate = true;
 				}
 
 				//if nominating and passed threshold nominators for its type
 				if (newState === 'nominating' && storedAggregator.nominationsCount >= constants.Aggregator.types[storedAggregator.objectType].NOMINATIONTHRESHOLD){
+					logger.info('aggregator:nominated', storedAggregator.id)
 					hasUpdate = true;
 					hasStateChange = true;
 					newState = 'initializing';
 					initializedTime = time;
 					//if permagator, create a chat message for posterity
 					if (storedAggregator.objectType === 'permagator'){
+						logger.info('chatmessages:createpermagatormessage', roomId, permagators[storedAggregator.objectId], storedAggregator)
 						messenger.emit('chatmessages:createpermagatormessage', roomId, permagators[storedAggregator.objectId], storedAggregator);
 					}
 				}
@@ -94,6 +94,7 @@ function Aggregators(io, messenger){
 					scoreResults = scorer(storedAggregator.activePresserCount, calculatedFrameRate, storedAggregator.x, storedAggregator.velocity, activeClickers[roomId]);
 					var isComplete = scoreResults.x >= 100 || scoreResults.x <= 0;
 					if (isComplete && !hasStateChange){
+						logger.info('aggregator:completed', storedAggregator.id)
 						newState = 'completed';
 				    	hasStateChange = true;
 					}
@@ -107,6 +108,7 @@ function Aggregators(io, messenger){
 
 				//if it has been retired long enough, remove it
 				if (newState === 'retired'  && !hasStateChange && time - storedAggregator.lastStateChangeTime > retirementTime){
+					logger.info('aggregator:removed', storedAggregator.id)
 					newState = 'removed';
 				    hasStateChange = true;
 				    removeAggregatorFromActiveList(roomId, storedAggregator.id);
@@ -256,8 +258,10 @@ function Aggregators(io, messenger){
 	}
 
 	io.on('connection', function (socket) {
+		logger.info('user connected', socket.id)
+
 		socket.on('aggregator:nominate',function(requestedAggregator){
-			if (debug.events) console.log('aggregator:nominate')
+			logger.info('aggregator:nominate', requestedAggregator)
 			//create an aggregator based on the request, we may use it, we may not
 			var aggregator = createAggregator(requestedAggregator);
 			//prep active aggregators to prevent null errors
@@ -312,7 +316,7 @@ function Aggregators(io, messenger){
 		}
 
 		socket.on('aggregator:pressing:change',function(aggregatorId, isPressing){
-			if (debug.events) console.log('aggregator:pressing:change')
+			logger.info('aggregator:pressing:change', aggregatorId, isPressing)
 			if (!aggregatorState[socket.currentRoom] || !aggregatorState[socket.currentRoom][aggregatorId]) return;
 			if (!userPressingAggregator[socket.currentRoom]){ userPressingAggregator[socket.currentRoom] = {}; }
 
@@ -342,6 +346,7 @@ function Aggregators(io, messenger){
 
 		//when a client disconnects, remove their nominations and aggregating support
 		socket.on('disconnect', function () {
+			logger.info('user disconnect', socket.id, socket.currentRoom)
 			if (!userPressingAggregator[socket.currentRoom]) return;
 			if (!userPressingAggregator[socket.currentRoom][socket.id]) return;
 			const currentPressingAggregator = aggregatorState[socket.currentRoom][userPressingAggregator[socket.currentRoom][socket.id]];
