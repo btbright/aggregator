@@ -91,7 +91,8 @@ function Aggregators(io, messenger, logger){
 				if (newState === 'aggregating'){
 					hasUpdate = true;
 					scoreResults = scorer(storedAggregator.activePresserCount, calculatedFrameRate, storedAggregator.x, storedAggregator.velocity, activeClickers[roomId]);
-					var isComplete = scoreResults.x >= 100 || scoreResults.x <= 0;
+					//it's complete if it's full or empty or lasts longer than 30 seconds
+					var isComplete = scoreResults.x >= 100 || scoreResults.x <= 0 || time - storedAggregator.lastStateChangeTime > 1000 * 30;
 					if (isComplete && !hasStateChange){
 						logger.info('aggregator:completed', storedAggregator.id)
 						newState = 'completed';
