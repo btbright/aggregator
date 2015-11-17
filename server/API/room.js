@@ -24,6 +24,7 @@ function Room(io, messenger, logger){
 
 	//brittle. Should be tracking the user per room, not guessing room from username
 	messenger.on('user:points:update', (roomId, socketId, userName, pointsAddition) => {
+		if (pointsAddition === 0) return;
 		logger.info('user:points:update', roomId, socketId, userName, pointsAddition)
 		const room = roomInfo[roomId];
 		if (!room.users){

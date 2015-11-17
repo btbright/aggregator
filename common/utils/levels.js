@@ -24,9 +24,3 @@ export function getLevel(x){
 	}
 	return;
 }
-
-const maxValuePoints = [20,40,60,80,100];
-
-export function getMaxValuePoints(maxValue){
-	return maxValuePoints[getLevel(maxValue)];
-}

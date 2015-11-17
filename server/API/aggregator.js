@@ -127,15 +127,14 @@ function Aggregators(io, messenger, logger){
 
 				//if it has just finished, send out score information
 				if (hasStateChange && newState === 'completed'){
-					var aggPoints = getMaxValuePoints(maxValue)
 					//this is an aggregator based on a user created object
 					if (storedAggregator.objectUserName){
-						messenger.emit('user:points:update', roomId, undefined, storedAggregator.objectUserName, aggPoints);
-						messenger.emit('user:points:update', roomId, undefined, storedAggregator.userName, aggPoints !== 15 ? Math.round(aggPoints/5) : -10);
+						messenger.emit('user:points:update', roomId, undefined, storedAggregator.objectUserName, storedAggregator.maxActivePresserCount);
+						messenger.emit('user:points:update', roomId, undefined, storedAggregator.userName, storedAggregator.maxActivePresserCount !== 1 ? Math.round((storedAggregator.maxActivePresserCount-1)/5) : -1);
 					} else {
 						//split the points between the nominators
 						storedAggregator.nominators.forEach(nominator => {
-							messenger.emit('user:points:update', roomId, nominator, undefined, Math.floor(aggPoints/storedAggregator.nominators.length));
+							messenger.emit('user:points:update', roomId, nominator, undefined, Math.floor(storedAggregator.maxActivePresserCount-1/storedAggregator.nominators.length));
 						})
 					}
 				}
@@ -250,7 +249,8 @@ function Aggregators(io, messenger, logger){
 		aggregatorState[roomId][aggregatorId] = Object.assign({}, aggregator,{
 			nominationsCount : aggregator.nominationsCount+1,
 			nominators : aggregator.nominators.concat([socketId]),
-			activePresserCount : aggregator.activePresserCount+1
+			activePresserCount : aggregator.activePresserCount+1,
+			maxActivePresserCount : aggregator.activePresserCount+1>aggregator.maxActivePresserCount ? aggregator.activePresserCount + 1 : aggregator.maxActivePresserCount
 		});
 		if (userPressingAggregator[roomId][socketId] !== aggregatorId){
 			userPressingAggregator[roomId][socketId] = aggregatorId;
@@ -306,7 +306,8 @@ function Aggregators(io, messenger, logger){
 		function selectDeselectAggregator(roomId, socketId, isPressing, aggregatorId){
 			const aggregator = aggregatorState[roomId][aggregatorId];
 			aggregatorState[roomId][aggregator.id] = Object.assign({}, aggregator,{
-				activePresserCount : aggregator.activePresserCount + (isPressing ? 1 : -1)
+				activePresserCount : aggregator.activePresserCount + (isPressing ? 1 : -1),
+				maxActivePresserCount : isPressing && aggregator.activePresserCount+1>aggregator.maxActivePresserCount ? aggregator.activePresserCount+1 : aggregator.maxActivePresserCount
 			});
 			if (isPressing && userPressingAggregator[roomId][socketId] !== aggregator.id){
 				userPressingAggregator[socket.currentRoom][socketId] = aggregator.id;

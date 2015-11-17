@@ -18,6 +18,7 @@ export function createAggregator(props){
 		lastStateChangeTime : 0,
 		state : 'nominating',
 		activePresserCount : 1,
+		maxActivePresserCount : 1,
 		lastServerUpdate : 0,
 		level : 0
 	}
